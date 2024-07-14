@@ -66,20 +66,24 @@ function handleDrop(event) {
     event.preventDefault();
     const courseId = event.dataTransfer.getData('text/plain');
     const courseElement = document.getElementById(courseId);
-    const targetSemester = event.target.closest('.semester');
+    let target = event.target;
 
-
-    if (targetSemester && courseElement && event.target.classList.contains('semester')) {
-        targetSemester.appendChild(courseElement);
+    if (target.classList.contains('course')) {
+        target = target.closest('.semester');
     }
-    else if (!targetSemester && courseElement) {
-        const coursePool = document.getElementById('course-pool');
 
+    const targetSemester = target.closest('.semester');
+
+    if (targetSemester && courseElement) {
+        targetSemester.appendChild(courseElement);
+    } else if (courseElement) {
+        const coursePool = document.getElementById('course-pool');
         if (event.target === coursePool || coursePool.contains(event.target)) {
             coursePool.appendChild(courseElement);
         }
     }
 }
+
 
 function newSemester() {
     const semesterPool = document.getElementById('semester-pool');
