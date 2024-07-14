@@ -1,0 +1,46 @@
+body {
+    background: #0f0f0f;
+}
+
+.semester {
+    border: 1px solid black;
+
+    padding: 10px;
+    margin: 10px;
+    width: 240px;
+    background: lightgrey;
+}
+.course {
+    margin: 5px;
+    padding: 5px;
+    border: 1px solid grey;
+    cursor: move;
+    width: 200px;
+    background: lightgrey;
+    font-size: 12px;
+}
+.hidden {
+    display: none;
+}
+.course-pool {
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+    margin: 20px;
+    height: 200px;
+    overflow-y: scroll;
+    background: darkgrey;
+    border-radius: 10px;
+}
+
+.semester-pool {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 10px;
+    margin: 20px;
+    border-radius: 10px;
+    background: darkgrey;
+}

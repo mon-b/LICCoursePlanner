@@ -1,14 +1,15 @@
-[
+const jsonData = [
     {
         "sem": 1,
         "courses": [
             {
                 "id": "IIC1103",
-                "name": "INTRODUCCIÓN A LA PROGRAMACIÓN",
+                "name": "INTRODUCCI\u00d3N A LA PROGRAMACI\u00d3N",
                 "prereq": null,
                 "cred": "10",
                 "hide": false,
-                "parity": "both"
+                "parity": "both",
+                "type": "dcc"
             },
             {
                 "id": "IIC1001",
@@ -16,35 +17,39 @@
                 "prereq": null,
                 "cred": "5",
                 "hide": false,
-                "parity": "odd"
+                "parity": "odd",
+                "type": "dcc"
             },
             {
                 "id": "MAT1107",
-                "name": "INTRODUCCIÓN AL CÁLCULO",
+                "name": "INTRODUCCI\u00d3N AL C\u00c1LCULO",
                 "prereq": null,
                 "cred": "10",
                 "hide": false,
-                "parity": "both"
+                "parity": "both",
+                "type": "fmat"
             },
             {
                 "id": "MAT1207",
-                "name": "INTRODUCCIÓN AL ÁLGEBRA Y GEOMETRÍA",
+                "name": "INTRODUCCI\u00d3N AL \u00c1LGEBRA Y GEOMETR\u00cdA",
                 "prereq": null,
                 "cred": "10",
                 "hide": false,
-                "parity": "both"
+                "parity": "both",
+                "type": "fmat"
             },
             {
                 "id": "FIL2001",
-                "name": "FILOSOFÍA: ¿PARA QUÉ?",
+                "name": "FILOSOF\u00cdA: \u00bfPARA QU\u00c9?",
                 "prereq": null,
                 "cred": "10",
                 "hide": false,
-                "parity": "both"
+                "parity": "both",
+                "type": "ofg"
             },
             {
                 "id": "VRA100C",
-                "name": "EXAMEN DE COMUNICACIÓN ESCRITA",
+                "name": "EXAMEN DE COMUNICACI\u00d3N ESCRITA",
                 "prereq": null,
                 "cred": "0",
                 "hide": true,
@@ -57,19 +62,21 @@
         "courses": [
             {
                 "id": "IIC1253",
-                "name": "MATEMÁTICAS DISCRETAS",
+                "name": "MATEM\u00c1TICAS DISCRETAS",
                 "prereq": "MAT1203 o (IIC1001 y MAT1207)",
                 "cred": "10",
                 "hide": false,
-                "parity": "both"
+                "parity": "both",
+                "type": "dcc"
             },
             {
                 "id": "IIC2233",
-                "name": "PROGRAMACIÓN AVANZADA",
+                "name": "PROGRAMACI\u00d3N AVANZADA",
                 "prereq": "IIC1103",
                 "cred": "10",
                 "hide": false,
-                "parity": "both"
+                "parity": "both",
+                "type": "dcc"
             },
             {
                 "id": "IIC2343",
@@ -77,23 +84,26 @@
                 "prereq": "IIC2233(c)",
                 "cred": "10",
                 "hide": false,
-                "parity": "both"
+                "parity": "both",
+                "type": "dcc"
             },
             {
                 "id": "MAT1610",
-                "name": "CÁLCULO I",
+                "name": "C\u00c1LCULO I",
                 "prereq": "MAT1107",
                 "cred": "10",
                 "hide": false,
-                "parity": "both"
+                "parity": "both",
+                "type": "fmat"
             },
             {
-                "id": null,
-                "name": "FORMACIÓN TEOLÓGICA",
+                "id": "TEO123",
+                "name": "FORMACI\u00d3N TEOL\u00d3GICA",
                 "prereq": null,
                 "cred": "10",
                 "hide": false,
-                "parity": "both"
+                "parity": "both",
+                "type": "ofg"
             },
             {
                 "id": "VRA3010",
@@ -114,7 +124,8 @@
                 "prereq": "IIC1253 y IIC2233",
                 "cred": "10",
                 "hide": false,
-                "parity": "both"
+                "parity": "both",
+                "type": "dcc"
             },
             {
                 "id": "IIC2413",
@@ -122,31 +133,35 @@
                 "prereq": "IIC2233",
                 "cred": "10",
                 "hide": false,
-                "parity": "both"
+                "parity": "both",
+                "type": "dcc"
             },
             {
                 "id": "MAT1620",
-                "name": "CÁLCULO II",
+                "name": "C\u00c1LCULO II",
                 "prereq": "MAT1610",
                 "cred": "10",
                 "hide": false,
-                "parity": "both"
+                "parity": "both",
+                "type": "fmat"
             },
             {
                 "id": "MAT1203",
-                "name": "ÁLGEBRA LINEAL",
+                "name": "\u00c1LGEBRA LINEAL",
                 "prereq": "MAT1207",
                 "cred": "10",
                 "hide": false,
-                "parity": "both"
+                "parity": "both",
+                "type": "fmat"
             },
             {
-                "id": null,
+                "id": "OFG1",
                 "name": "OFG",
                 "prereq": null,
                 "cred": "10",
                 "hide": false,
-                "parity": null
+                "parity": null,
+                "type": "ofg"
             }
         ]
     },
@@ -155,19 +170,21 @@
         "courses": [
             {
                 "id": "EYP1050",
-                "name": "MODELOS PROBABILÍSTICOS",
+                "name": "MODELOS PROBABIL\u00cdSTICOS",
                 "prereq": null,
                 "cred": "10",
                 "hide": false,
-                "parity": "even"
+                "parity": "even",
+                "type": "fmat"
             },
             {
                 "id": "IIC2143",
-                "name": "INGENIERÍA DE SOFTWARE",
+                "name": "INGENIER\u00cdA DE SOFTWARE",
                 "prereq": "IIC2233",
                 "cred": "10",
                 "hide": false,
-                "parity": "both"
+                "parity": "both",
+                "type": "dcc"
             },
             {
                 "id": "IIC2224",
@@ -175,7 +192,8 @@
                 "prereq": "IIC1253 y IIC2133",
                 "cred": "10",
                 "hide": false,
-                "parity": "even"
+                "parity": "even",
+                "type": "dcc"
             },
             {
                 "id": "IIC2333",
@@ -183,15 +201,17 @@
                 "prereq": "IIC2343",
                 "cred": "10",
                 "hide": false,
-                "parity": "both"
+                "parity": "both",
+                "type": "dcc"
             },
             {
-                "id": null,
+                "id": "OFG2",
                 "name": "OFG",
                 "prereq": null,
                 "cred": "10",
                 "hide": false,
-                "parity": null
+                "parity": null,
+                "type": "ofg"
             }
         ]
     },
@@ -200,51 +220,57 @@
         "courses": [
             {
                 "id": "IIC2560",
-                "name": "FUNDAMENTOS DE LENGUAJES DE PROGRAMACIÓN",
+                "name": "FUNDAMENTOS DE LENGUAJES DE PROGRAMACI\u00d3N",
                 "prereq": "IIC2343 y IIC2224",
                 "cred": "10",
                 "hide": false,
-                "parity": "odd"
+                "parity": "odd",
+                "type": "dcc"
             },
             {
                 "id": "IIC2214",
-                "name": "TEORÍA DE LA COMPUTACIÓN",
+                "name": "TEOR\u00cdA DE LA COMPUTACI\u00d3N",
                 "prereq": "IIC1253",
                 "cred": "10",
                 "hide": false,
-                "parity": "odd"
+                "parity": "odd",
+                "type": "dcc"
             },
             {
                 "id": "IIC2513",
-                "name": "TECNOLOGÍAS Y APLICACIONES",
+                "name": "TECNOLOG\u00cdAS Y APLICACIONES",
                 "prereq": "IIC2413",
                 "cred": "10",
                 "hide": false,
-                "parity": "both"
+                "parity": "both",
+                "type": "dcc"
             },
             {
-                "id": null,
+                "id": "OPTC1",
                 "name": "OPTATIVO DE CIENCIAS",
                 "prereq": null,
                 "cred": "10",
                 "hide": false,
-                "parity": null
+                "parity": null,
+                "type": "opt"
             },
             {
-                "id": null,
+                "id": "OFG3",
                 "name": "OFG",
                 "prereq": null,
                 "cred": "10",
                 "hide": false,
-                "parity": null
+                "parity": null,
+                "type": "ofg"
             },
             {
                 "id": "IIC2001",
-                "name": "PRÁCTICA DE CIENCIA DE LA COMPUTACIÓN",
+                "name": "PR\u00c1CTICA DE CIENCIA DE LA COMPUTACI\u00d3N",
                 "prereq": "IIC2143 o IIC2142",
                 "cred": "5",
                 "hide": false,
-                "parity": null
+                "parity": null,
+                "type": "dcc"
             }
         ]
     },
@@ -256,16 +282,17 @@
                 "name": "INTELIGENCIA ARTIFICIAL",
                 "prereq": "(EYP1113 y IIC2233) o (EYP1025 y IIC2233) o (AST0212 y IIC2233)",
                 "cred": "10",
-                "hide": false
+                "hide": false,
+                "type": "dcc"
             },
             {
                 "id": "IIC2283",
-                "name": "DISEÑO Y ANÁLISIS DE ALGORITMOS",
+                "name": "DISE\u00d1O Y AN\u00c1LISIS DE ALGORITMOS",
                 "prereq": "IIC2133",
                 "cred": "10",
                 "hide": false,
-                "parity": "even"
-
+                "parity": "even",
+                "type": "dcc"
             },
             {
                 "id": "IIC2531",
@@ -273,23 +300,25 @@
                 "prereq": "IIC2333",
                 "cred": "10",
                 "hide": false,
-                "parity": "even"
+                "parity": "even",
+                "type": "dcc"
             },
             {
                 "id": "IEA1001",
-                "name": "ÉTICA PARA LA CS DE LA COMPUTACIÓN",
+                "name": "\u00c9TICA PARA LA CS DE LA COMPUTACI\u00d3N",
                 "prereq": null,
                 "cred": "10",
                 "hide": false,
                 "parity": "even"
             },
             {
-                "id": null,
+                "id": "OFG4",
                 "name": "OFG",
                 "prereq": null,
                 "cred": "10",
                 "hide": false,
-                "parity": null
+                "parity": null,
+                "type": "ofg"
             }
         ]
     },
@@ -302,7 +331,8 @@
                 "prereq": "IIC2333",
                 "cred": "10",
                 "hide": false,
-                "parity": "odd"
+                "parity": "odd",
+                "type": "dcc"
             },
             {
                 "id": "IIC2182",
@@ -310,31 +340,35 @@
                 "prereq": "IIC2513",
                 "cred": "10",
                 "hide": false,
-                "parity": "odd"
+                "parity": "odd",
+                "type": "dcc"
             },
             {
-                "id": null,
+                "id": "OPT01",
                 "name": "OPT",
                 "prereq": null,
                 "cred": "10",
                 "hide": false,
-                "parity": null
+                "parity": null,
+                "type": "opt"
             },
             {
-                "id": null,
+                "id": "OPT02",
                 "name": "OPT",
                 "prereq": null,
                 "cred": "10",
                 "hide": false,
-                "parity": null
+                "parity": null,
+                "type": "opt"
             },
             {
-                "id": null,
+                "id": "OFG5",
                 "name": "OFG",
                 "prereq": null,
                 "cred": "10",
                 "hide": false,
-                "parity": null
+                "parity": null,
+                "type": "ofg"
             }
         ]
     },
@@ -343,44 +377,51 @@
         "courses": [
             {
                 "id": "IIC2164",
-                "name": "PROYECTO DE INNOVACIÓN Y COMPUTACIÓN",
+                "name": "PROYECTO DE INNOVACI\u00d3N Y COMPUTACI\u00d3N",
                 "prereq": "ETI1001 y IIC2182 y IIC2531",
                 "cred": "10",
                 "hide": false,
-                "parity": "even"
+                "parity": "even",
+                "type": "dcc"
             },
             {
-                "id": null,
+                "id": "OPT04",
                 "name": "OPT",
                 "prereq": null,
                 "cred": "10",
                 "hide": false,
-                "parity": null
+                "parity": null,
+                "type": "opt"
             },
             {
-                "id": null,
+                "id": "OPT05",
                 "name": "OPT",
                 "prereq": null,
                 "cred": "10",
                 "hide": false,
-                "parity": null
+                "parity": null,
+                "type": "opt"
             },
             {
-                "id": null,
+                "id": "OPT06",
                 "name": "OPT",
                 "prereq": null,
                 "cred": "10",
                 "hide": false,
-                "parity": null
+                "parity": null,
+                "type": "opt"
             },
             {
-                "id": null,
+                "id": "OFG6",
                 "name": "OFG",
                 "prereq": null,
                 "cred": "10",
                 "hide": false,
-                "parity": null
+                "parity": null,
+                "type": "ofg"
             }
         ]
     }
 ]
+
+export default jsonData
