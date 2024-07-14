@@ -1,15 +1,20 @@
 body {
-    background: #0f0f0f;
-    font-family: Roboto, sans-serif;
+    font-family: Helvetica, sans-serif;
+    background-color: #161A1D;
+    color: #ededed;
+}
+.container {
+    text-align: center;
 }
 
 .semester {
     text-align: center;
-    background: lightgrey;
+    background: #22272B;
     margin: 5px;
     padding: 2px;
-    border-radius: 10px;
+    border-radius: 6px;
 }
+
 .course {
     display: flex;
     flex-direction: column;
@@ -20,9 +25,8 @@ body {
     cursor: grab;
     width: 90px;
     height: 70px;
-    background: lightgrey;
     font-size: 10px;
-    border-radius: 10px;
+    border-radius: 4px;
 }
 .hidden {
     display: none;
@@ -45,7 +49,6 @@ body {
     margin: 20px;
     align-content: center;
     border-radius: 10px;
-    background: darkgrey;
 }
 
 .add-semester{
@@ -61,25 +64,25 @@ body {
 }
 
 .dcc {
-    background: cyan;
+    background: #0055CC;
 }
 
 .fmat {
-    background: lightcoral;
+    background: #DA62AC;
 }
 
 .ofg {
-    background: orange;
+    background: #F15B50;
 }
 
 .opt {
-    background: mediumpurple;
+    background: #6E5DC6;
 }
 
 .eti {
-    background: aquamarine;
+    background: #2898BD;
 }
 
 .general {
-    background: darkkhaki;
+    background: #6A9A23;
 }
