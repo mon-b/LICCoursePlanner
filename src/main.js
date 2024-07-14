@@ -13,7 +13,7 @@ function collectAllCourses(){
 
 function createCourse(course) {
     const courseDiv = document.createElement('div');
-    courseDiv.className = 'course';
+    courseDiv.className = 'course '+ course.type;
     courseDiv.draggable = true;
     courseDiv.textContent = `${course.name} (${course.cred} créditos)`;
     courseDiv.id = course.id;
