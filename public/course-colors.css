@@ -1,0 +1,107 @@
+/* Different colors and animations depending on the course type :D */
+
+.dcc {
+    background: #1D7AFC;
+}
+
+.dcc:hover {
+    background: #388BFF;
+}
+
+.fmat {
+    background: #DA62AC;
+}
+
+.fmat:hover {
+    background: #E774BB;
+}
+
+.ofg {
+    background: #F15B50;
+}
+
+.ofg:hover {
+    background: #F87168;
+}
+
+.opt {
+    background: #6E5DC6;
+}
+
+.opt:hover {
+    background: #8270DB;
+}
+
+.eti {
+    background: #2898BD;
+}
+
+.eti:hover {
+    background: #42B2D7;
+}
+
+.general {
+    background: #6A9A23;
+}
+
+
+.general:hover {
+    background: #82B536;
+}
+
+.opt-mat {
+    background: #943D73;
+}
+
+.opt-mat:hover {
+    background: #AE4787;
+}
+
+.optcom {
+    background: #5E4DB2;
+}
+
+.optcom:hover {
+    background: #6E5DC6;
+}
+
+.optlet {
+    background: #E56910;
+}
+
+.optlet:hover {
+    background: #F38A3F;
+}
+
+.econ {
+    background: #AE2E24;
+}
+
+.econ:hover {
+    background: #C9372C;
+}
+
+.opt-cien {
+    background: #1F845A;
+}
+
+.opt-cien:hover {
+    background: #22A06B;
+}
+
+.optbio {
+    background: #164B35;
+}
+
+.optbio:hover {
+    background: #216E4E;
+}
+
+.major {
+    background: #0055CC;
+}
+
+.major:hover {
+    background: #1D7AFC;
+
+}

@@ -3,16 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Course Management System</title>
+    <title>Malla Interactiva</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="course-colors.css">
 </head>
 <body>
 
-    <div class="container">
-        <h3> Malla Interactiva LCC</h3> <button id="add-semester-btn">Agregar Semestre</button>
-        <div id="semester-pool" class="semester-pool"></div>
+<div class="container">
+    <h2>Malla Interactiva LCC</h2>
+    <div class="collapsible-course-pool">
+        <div class="header" id="header">
+            <img src="more.png" alt="more" width="30px">
+            <span id="toggle-text">Mostrar Cursos Disponibles</span>
+        </div>
         <div id="course-pool" class="course-pool"></div>
     </div>
+    <button id="add-semester-btn">Agregar Semestre</button>
+    <div id="semester-pool" class="semester-pool"></div>
+
+</div>
 
 
     <script src="../src/main.js" type="module"></script>
