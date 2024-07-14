@@ -1,4 +1,4 @@
-const optData = [{
+{
     "courses": [
         {
             "id": "COM043",
@@ -7,7 +7,7 @@ const optData = [{
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "optcom",
+            "type": "opt",
             "name_stylized": "Periodismo de Datos"
         },
         {
@@ -17,7 +17,7 @@ const optData = [{
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "optcom",
+            "type": "opt",
             "name_stylized": "Narración Interactiva"
         },
 
@@ -28,7 +28,7 @@ const optData = [{
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "optcom",
+            "type": "opt",
             "name_stylized": "Taller de Prototipos Mediales"
         },
         {
@@ -38,7 +38,7 @@ const optData = [{
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "optcom",
+            "type": "opt",
             "name_stylized": "Taller de Prototipos Mediales"
         },
         {
@@ -48,18 +48,18 @@ const optData = [{
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "optcom",
+            "type": "opt",
             "name_stylized": "Taller de Prototipos Mediales"
         },
         {
             "id": "COM813",
-            "name": "Taller de Narracion e Industria de Esports",
+            "name": "Taller de Narracion e Industria de Esports o Deportes Electronicos",
             "prereq": null,
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "optcom",
-            "name_stylized": "Taller de Narracion e Industria de Esports"
+            "type": "opt",
+            "name_stylized": "Taller de Narracion e Industria de Esports o Deportes Electronicos"
         },
         {
             "id": "IMT2117",
@@ -68,17 +68,17 @@ const optData = [{
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt-mat",
+            "type": "opt",
             "name_stylized": "Probabilidades y Algoritmos"
         },
         {
-            "id": "MAT2225",
+            "id": "IMT2117",
             "name": "Teoria de Numeros",
             "prereq": null,
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt-mat",
+            "type": "opt",
             "name_stylized": "Teoria de Numeros"
         },
         {
@@ -88,7 +88,7 @@ const optData = [{
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt-mat",
+            "type": "opt",
             "name_stylized": "Calculo Cientifico I"
         },
         {
@@ -98,7 +98,7 @@ const optData = [{
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt-mat",
+            "type": "opt",
             "name_stylized": "Algebra Abstracta I"
         },
         {
@@ -108,7 +108,7 @@ const optData = [{
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "optlet",
+            "type": "opt",
             "name_stylized": "Grandes Preguntas sobre el Lenguaje"
         },
         {
@@ -118,7 +118,7 @@ const optData = [{
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "optlet",
+            "type": "opt",
             "name_stylized": "Gramatica Española I"
         },
         {
@@ -128,7 +128,7 @@ const optData = [{
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "optlet",
+            "type": "opt",
             "name_stylized": "Herramientas Informaticas para Analisis Linguisticos"
         },
         {
@@ -138,7 +138,7 @@ const optData = [{
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "optlet",
+            "type": "opt",
             "name_stylized": "Linguistica de Corpus y Computacional"
         },
         {
@@ -148,7 +148,7 @@ const optData = [{
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "econ",
+            "type": "opt",
             "name_stylized": "Introduccion a la Macroeconomia"
         },
         {
@@ -158,7 +158,7 @@ const optData = [{
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "econ",
+            "type": "opt",
             "name_stylized": "Introduccion a la Microeconomia"
         },
         {
@@ -168,7 +168,7 @@ const optData = [{
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "econ",
+            "type": "opt",
             "name_stylized": "Econometria"
         },
         {
@@ -178,7 +178,7 @@ const optData = [{
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "econ",
+            "type": "opt",
             "name_stylized": "Analisis Economico: la Experiencia Chilena"
         },
         {
@@ -188,7 +188,7 @@ const optData = [{
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt-cien",
+            "type": "opt",
             "name_stylized": "Introduccion al Analisis de Datos"
         },
         {
@@ -198,7 +198,7 @@ const optData = [{
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt-cien",
+            "type": "opt",
             "name_stylized": "Taller de Astronomia"
         },
         {
@@ -208,7 +208,7 @@ const optData = [{
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt-cien",
+            "type": "opt",
             "name_stylized": "Astronomia"
         },
         {
@@ -218,7 +218,7 @@ const optData = [{
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt-cien",
+            "type": "opt",
             "name_stylized": "Bioestadistica"
         },
         {
@@ -228,7 +228,7 @@ const optData = [{
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt-cien",
+            "type": "opt",
             "name_stylized": "Ecologia"
         },
         {
@@ -238,7 +238,7 @@ const optData = [{
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "optbio",
+            "type": "opt",
             "name_stylized": "Trabajo Experimental en Ecologia"
         },
         {
@@ -248,14 +248,11 @@ const optData = [{
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "optbio" +
-                "",
+            "type": "opt",
             "name_stylized": "Laboratorio Fisiologia"
         }
     ]
 
 
-}
-]
+  }
 
-export default optData

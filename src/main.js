@@ -1,4 +1,5 @@
 import jsonData from './data/default_data.js';
+import optData from './data/opt_data.js';
 
 function createCourse(course) {
     const courseDiv = document.createElement('div');
@@ -102,10 +103,47 @@ function handleAddSemesterClick() {
     }
 }
 
+function addOptCourses() {
+    const coursePool = document.getElementById('course-pool');
+    optData.forEach(opt => {
+        if (opt.courses && Array.isArray(opt.courses)) {
+            opt.courses.forEach(course => {
+                const courseElement = createCourse(course);
+                coursePool.appendChild(courseElement);
+            });
+        } else {
+            console.error('Invalid structure in optData:', opt);
+        }
+    });
+}
+
+function toggleCoursePool() {
+    const coursePool = document.getElementById('course-pool');
+    coursePool.classList.toggle('open');
+    const toggleText = document.getElementById('toggle-text');
+    const imgIcon = document.querySelector('#header img');
+
+    if (coursePool.classList.contains('open')) {
+        coursePool.style.display = 'flex';
+        toggleText.textContent = 'Ocultar Cursos Disponibles';
+        imgIcon.src = 'less.png';
+    } else {
+        coursePool.style.display = 'none';
+        toggleText.textContent = 'Mostrar Cursos Disponibles';
+        imgIcon.src = 'more.png';
+    }
+}
+
+
 document.addEventListener('DOMContentLoaded', function () {
     initializeCoursePool();
     initializeSemesters();
+    addOptCourses();
 
     const addSemesterBtn = document.getElementById('add-semester-btn');
     addSemesterBtn.addEventListener('click', handleAddSemesterClick);
+
+    const header = document.getElementById('header');
+    header.addEventListener('click', toggleCoursePool);
+
 });

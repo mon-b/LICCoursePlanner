@@ -214,7 +214,7 @@ const jsonData = [
                 "cred": "10",
                 "hide": false,
                 "parity": "even",
-                "type": "dcc",
+                "type": "major",
                 "name_stylized": "Aut\u00f3matas y Compiladores"
             },
             {
@@ -224,7 +224,7 @@ const jsonData = [
                 "cred": "10",
                 "hide": false,
                 "parity": "both",
-                "type": "dcc",
+                "type": "major",
                 "name_stylized": "Sistemas Operativos y Redes"
             },
             {
@@ -249,7 +249,7 @@ const jsonData = [
                 "cred": "10",
                 "hide": false,
                 "parity": "odd",
-                "type": "dcc",
+                "type": "major",
                 "name_stylized": "Fundamentos de Lenguajes de Programaci\u00f3n"
             },
             {
@@ -259,7 +259,7 @@ const jsonData = [
                 "cred": "10",
                 "hide": false,
                 "parity": "odd",
-                "type": "dcc",
+                "type": "major",
                 "name_stylized": "Teor\u00eda de la Computaci\u00f3n"
             },
             {
@@ -269,7 +269,7 @@ const jsonData = [
                 "cred": "10",
                 "hide": false,
                 "parity": "both",
-                "type": "dcc",
+                "type": "major",
                 "name_stylized": "Tecnolog\u00edas y Aplicaciones Web"
             },
             {
@@ -313,7 +313,7 @@ const jsonData = [
                 "prereq": "(EYP1113 y IIC2233) o (EYP1025 y IIC2233) o (AST0212 y IIC2233)",
                 "cred": "10",
                 "hide": false,
-                "type": "dcc",
+                "type": "major",
                 "name_stylized": "Inteligencia Artificial"
             },
             {
@@ -323,7 +323,7 @@ const jsonData = [
                 "cred": "10",
                 "hide": false,
                 "parity": "even",
-                "type": "dcc",
+                "type": "major",
                 "name_stylized": "Dise\u00f1o y An\u00e1lisis de Algoritmos"
             },
             {
@@ -333,7 +333,7 @@ const jsonData = [
                 "cred": "10",
                 "hide": false,
                 "parity": "even",
-                "type": "dcc",
+                "type": "major",
                 "name_stylized": "Seguridad Computacional"
             },
             {
@@ -368,7 +368,7 @@ const jsonData = [
                 "cred": "10",
                 "hide": false,
                 "parity": "odd",
-                "type": "dcc",
+                "type": "major",
                 "name_stylized": "Sistemas Distribuidos"
             },
             {
@@ -378,7 +378,7 @@ const jsonData = [
                 "cred": "10",
                 "hide": false,
                 "parity": "odd",
-                "type": "dcc",
+                "type": "major",
                 "name_stylized": "Interfaces y Experiencia de Usuario"
             },
             {
