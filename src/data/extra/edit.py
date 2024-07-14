@@ -2,12 +2,12 @@ import json
 
 # This script enhances our JSON course data by mapping each course to a corresponding type based on its ID prefix and creating a 'name_stylized' attribute with lowercase versions of course names.
 # The primary goal of this mapping is to assign a cute color to each course :D.
-# Note: If you decide to run this script, please ensure to update data.js accordingly, as the changes made to the JSON file will need to be reflected in our main data source.
+# Note: If you decide to run this script, please ensure to update default_data.js accordingly, as the changes made to the JSON file will need to be reflected in our main data source.
 
-with open('src/cursos.txt', 'r', encoding='utf-8') as cursos_file:
+with open('src/data/cursos.txt', 'r', encoding='utf-8') as cursos_file:
     cursos = [line.strip() for line in cursos_file.readlines() if line.strip()]
 
-with open('src/data.json', 'r') as file:
+with open('src/data/data.json', 'r') as file:
     data = json.load(file)
 
 prefix_to_type = {
@@ -34,5 +34,5 @@ for semester in data:
         
         course['name_stylized'] = name_mapping.get(course['name'].upper(), course['name'])  # Use mapping or default to original name
 
-with open('src/data.json', 'w') as file:
+with open('src/data/data.json', 'w') as file:
     json.dump(data, file, indent=4)

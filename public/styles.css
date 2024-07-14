@@ -11,16 +11,18 @@ body {
     border-radius: 10px;
 }
 .course {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     text-align: center;
-    margin: 8px;
-    padding: 10px;
+    margin: 6px;
+    padding: 2px;
     cursor: grab;
-    width: 80px;
-    height: 60px;
+    width: 90px;
+    height: 70px;
     background: lightgrey;
     font-size: 10px;
     border-radius: 10px;
-
 }
 .hidden {
     display: none;

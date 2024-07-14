@@ -1,10 +1,14 @@
-import jsonData from './data.js';
+import jsonData from './data/default_data.js';
 
 function createCourse(course) {
     const courseDiv = document.createElement('div');
-    courseDiv.className = 'course '+ course.type;
+    courseDiv.className = 'course ' + course.type;
     courseDiv.draggable = true;
-    courseDiv.textContent = `${course.name_stylized}`;
+    courseDiv.innerHTML = `
+        <b>${course.name_stylized}</b>
+        [${course.id}]
+        <small>${course.cred} créditos</small>
+    `;
     courseDiv.id = course.id;
 
     courseDiv.addEventListener('dragstart', handleDragStart);
@@ -14,8 +18,6 @@ function createCourse(course) {
 
 function initializeCoursePool() {
     const coursePool = document.getElementById('course-pool');
-
-
 
     coursePool.addEventListener('dragover', allowDrop);
     coursePool.addEventListener('drop', handleDrop);
