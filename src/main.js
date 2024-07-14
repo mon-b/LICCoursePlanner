@@ -4,7 +4,7 @@ function createCourse(course) {
     const courseDiv = document.createElement('div');
     courseDiv.className = 'course '+ course.type;
     courseDiv.draggable = true;
-    courseDiv.textContent = `${course.name} (${course.cred} créditos)`;
+    courseDiv.textContent = `${course.name_stylized}`;
     courseDiv.id = course.id;
 
     courseDiv.addEventListener('dragstart', handleDragStart);
@@ -79,7 +79,27 @@ function handleDrop(event) {
     }
 }
 
+function newSemester() {
+    const semesterPool = document.getElementById('semester-pool');
+    const newSemesterNumber = semesterPool.children.length + 1;
+
+    const semesterDiv = createSemester(newSemesterNumber);
+    semesterPool.appendChild(semesterDiv);
+}
+
+
+function handleAddSemesterClick() {
+    const confirmed = window.confirm('Are you sure you want to add a new semester?');
+
+    if (confirmed) {
+        newSemester();
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     initializeCoursePool();
     initializeSemesters();
+
+    const addSemesterBtn = document.getElementById('add-semester-btn');
+    addSemesterBtn.addEventListener('click', handleAddSemesterClick);
 });

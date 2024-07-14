@@ -1,23 +1,26 @@
 body {
     background: #0f0f0f;
+    font-family: Roboto, sans-serif;
 }
 
 .semester {
-    border: 1px solid black;
-
-    padding: 10px;
-    margin: 10px;
-    width: 240px;
+    text-align: center;
     background: lightgrey;
+    margin: 5px;
+    padding: 2px;
+    border-radius: 10px;
 }
 .course {
-    margin: 5px;
-    padding: 5px;
-    border: 1px solid grey;
-    cursor: move;
-    width: 200px;
+    text-align: center;
+    margin: 8px;
+    padding: 10px;
+    cursor: grab;
+    width: 80px;
+    height: 60px;
     background: lightgrey;
-    font-size: 12px;
+    font-size: 10px;
+    border-radius: 10px;
+
 }
 .hidden {
     display: none;
@@ -36,13 +39,23 @@ body {
 
 .semester-pool {
     display: flex;
-    align-content: center;
     justify-content: center;
-    flex-wrap: wrap;
-    padding: 10px;
     margin: 20px;
+    align-content: center;
     border-radius: 10px;
     background: darkgrey;
+}
+
+.add-semester{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #c3c3c3;
+}
+
+.add-semester:hover {
+    background-color: #e0e0e0;
 }
 
 .dcc {
@@ -61,6 +74,10 @@ body {
     background: mediumpurple;
 }
 
-.null{
+.eti {
     background: aquamarine;
+}
+
+.general {
+    background: darkkhaki;
 }
