@@ -9,7 +9,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": "both",
-                "type": "dcc"
+                "type": "dcc",
+                "name_stylized": "Introducci\u00f3n a la Programaci\u00f3n"
             },
             {
                 "id": "IIC1001",
@@ -18,7 +19,8 @@
                 "cred": "5",
                 "hide": false,
                 "parity": "odd",
-                "type": "dcc"
+                "type": "dcc",
+                "name_stylized": "Algoritmos y Sistemas Computacionales"
             },
             {
                 "id": "MAT1107",
@@ -27,7 +29,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": "both",
-                "type": "fmat"
+                "type": "fmat",
+                "name_stylized": "Introducci\u00f3n al C\u00e1lculo"
             },
             {
                 "id": "MAT1207",
@@ -36,7 +39,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": "both",
-                "type": "fmat"
+                "type": "fmat",
+                "name_stylized": "Introducci\u00f3n al \u00c1lgebra y Geometr\u00eda"
             },
             {
                 "id": "FIL2001",
@@ -45,7 +49,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": "both",
-                "type": "ofg"
+                "type": "ofg",
+                "name_stylized": "Filosof\u00eda: \u00bfPara Qu\u00e9?"
             },
             {
                 "id": "VRA100C",
@@ -53,7 +58,9 @@
                 "prereq": null,
                 "cred": "0",
                 "hide": true,
-                "parity": "both"
+                "parity": "both",
+                "type": "general",
+                "name_stylized": "Examen de Comunicación Escrita"
             }
         ]
     },
@@ -67,7 +74,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": "both",
-                "type": "dcc"
+                "type": "dcc",
+                "name_stylized": "Matem\u00e1ticas Discretas"
             },
             {
                 "id": "IIC2233",
@@ -76,7 +84,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": "both",
-                "type": "dcc"
+                "type": "dcc",
+                "name_stylized": "Programaci\u00f3n Avanzada"
             },
             {
                 "id": "IIC2343",
@@ -85,7 +94,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": "both",
-                "type": "dcc"
+                "type": "dcc",
+                "name_stylized": "Arquitectura de Computadores"
             },
             {
                 "id": "MAT1610",
@@ -94,7 +104,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": "both",
-                "type": "fmat"
+                "type": "fmat",
+                "name_stylized": "C\u00e1lculo I"
             },
             {
                 "id": "TEO123",
@@ -103,7 +114,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": "both",
-                "type": "ofg"
+                "type": "ofg",
+                "name_stylized": "Formaci\u00f3n Teol\u00f3gica"
             },
             {
                 "id": "VRA3010",
@@ -111,7 +123,9 @@
                 "prereq": null,
                 "cred": "0",
                 "hide": true,
-                "parity": "both"
+                "parity": "both",
+                "type": "general",
+                "name_stylized": "English Test ALTE 3"
             }
         ]
     },
@@ -120,12 +134,13 @@
         "courses": [
             {
                 "id": "IIC2133",
-                "name": "ESTRUCTURA DE DATOS Y ALGORITMOS",
+                "name": "ESTRUCTURAS DE DATOS Y ALGORITMOS",
                 "prereq": "IIC1253 y IIC2233",
                 "cred": "10",
                 "hide": false,
                 "parity": "both",
-                "type": "dcc"
+                "type": "dcc",
+                "name_stylized": "Estructuras de Datos y Algoritmos"
             },
             {
                 "id": "IIC2413",
@@ -134,7 +149,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": "both",
-                "type": "dcc"
+                "type": "dcc",
+                "name_stylized": "Bases de Datos"
             },
             {
                 "id": "MAT1620",
@@ -143,7 +159,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": "both",
-                "type": "fmat"
+                "type": "fmat",
+                "name_stylized": "C\u00e1lculo II"
             },
             {
                 "id": "MAT1203",
@@ -152,7 +169,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": "both",
-                "type": "fmat"
+                "type": "fmat",
+                "name_stylized": "\u00c1lgebra Lineal"
             },
             {
                 "id": "OFG1",
@@ -161,7 +179,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": null,
-                "type": "ofg"
+                "type": "ofg",
+                "name_stylized": "OFG"
             }
         ]
     },
@@ -175,7 +194,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": "even",
-                "type": "fmat"
+                "type": "fmat",
+                "name_stylized": "Modelos Probabil\u00edsticos"
             },
             {
                 "id": "IIC2143",
@@ -184,16 +204,18 @@
                 "cred": "10",
                 "hide": false,
                 "parity": "both",
-                "type": "dcc"
+                "type": "dcc",
+                "name_stylized": "Ingenier\u00eda de Software"
             },
             {
                 "id": "IIC2224",
-                "name": "AUTOMATAS Y COMPILADORES",
+                "name": "AUT\u00d3MATAS Y COMPILADORES",
                 "prereq": "IIC1253 y IIC2133",
                 "cred": "10",
                 "hide": false,
                 "parity": "even",
-                "type": "dcc"
+                "type": "dcc",
+                "name_stylized": "Aut\u00f3matas y Compiladores"
             },
             {
                 "id": "IIC2333",
@@ -202,7 +224,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": "both",
-                "type": "dcc"
+                "type": "dcc",
+                "name_stylized": "Sistemas Operativos y Redes"
             },
             {
                 "id": "OFG2",
@@ -211,7 +234,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": null,
-                "type": "ofg"
+                "type": "ofg",
+                "name_stylized": "OFG"
             }
         ]
     },
@@ -225,7 +249,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": "odd",
-                "type": "dcc"
+                "type": "dcc",
+                "name_stylized": "Fundamentos de Lenguajes de Programaci\u00f3n"
             },
             {
                 "id": "IIC2214",
@@ -234,16 +259,18 @@
                 "cred": "10",
                 "hide": false,
                 "parity": "odd",
-                "type": "dcc"
+                "type": "dcc",
+                "name_stylized": "Teor\u00eda de la Computaci\u00f3n"
             },
             {
                 "id": "IIC2513",
-                "name": "TECNOLOG\u00cdAS Y APLICACIONES",
+                "name": "TECNOLOG\u00cdAS Y APLICACIONES WEB",
                 "prereq": "IIC2413",
                 "cred": "10",
                 "hide": false,
                 "parity": "both",
-                "type": "dcc"
+                "type": "dcc",
+                "name_stylized": "Tecnolog\u00edas y Aplicaciones Web"
             },
             {
                 "id": "OPTC1",
@@ -252,7 +279,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": null,
-                "type": "opt"
+                "type": "opt",
+                "name_stylized": "Optativo de Ciencias"
             },
             {
                 "id": "OFG3",
@@ -261,7 +289,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": null,
-                "type": "ofg"
+                "type": "ofg",
+                "name_stylized": "OFG"
             },
             {
                 "id": "IIC2001",
@@ -270,7 +299,8 @@
                 "cred": "5",
                 "hide": false,
                 "parity": null,
-                "type": "dcc"
+                "type": "dcc",
+                "name_stylized": "Pr\u00e1ctica de Ciencia de la Computaci\u00f3n"
             }
         ]
     },
@@ -283,7 +313,8 @@
                 "prereq": "(EYP1113 y IIC2233) o (EYP1025 y IIC2233) o (AST0212 y IIC2233)",
                 "cred": "10",
                 "hide": false,
-                "type": "dcc"
+                "type": "dcc",
+                "name_stylized": "Inteligencia Artificial"
             },
             {
                 "id": "IIC2283",
@@ -292,7 +323,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": "even",
-                "type": "dcc"
+                "type": "dcc",
+                "name_stylized": "Dise\u00f1o y An\u00e1lisis de Algoritmos"
             },
             {
                 "id": "IIC2531",
@@ -301,15 +333,18 @@
                 "cred": "10",
                 "hide": false,
                 "parity": "even",
-                "type": "dcc"
+                "type": "dcc",
+                "name_stylized": "Seguridad Computacional"
             },
             {
-                "id": "IEA1001",
+                "id": "ETI1001",
                 "name": "\u00c9TICA PARA LA CS DE LA COMPUTACI\u00d3N",
                 "prereq": null,
                 "cred": "10",
                 "hide": false,
-                "parity": "even"
+                "parity": "even",
+                "type": "eti",
+                "name_stylized": "\u00c9tica para la Cs de la Computaci\u00f3n"
             },
             {
                 "id": "OFG4",
@@ -318,7 +353,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": null,
-                "type": "ofg"
+                "type": "ofg",
+                "name_stylized": "OFG"
             }
         ]
     },
@@ -332,7 +368,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": "odd",
-                "type": "dcc"
+                "type": "dcc",
+                "name_stylized": "Sistemas Distribuidos"
             },
             {
                 "id": "IIC2182",
@@ -341,7 +378,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": "odd",
-                "type": "dcc"
+                "type": "dcc",
+                "name_stylized": "Interfaces y Experiencia de Usuario"
             },
             {
                 "id": "OPT01",
@@ -350,7 +388,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": null,
-                "type": "opt"
+                "type": "opt",
+                "name_stylized": "OPT"
             },
             {
                 "id": "OPT02",
@@ -359,7 +398,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": null,
-                "type": "opt"
+                "type": "opt",
+                "name_stylized": "OPT"
             },
             {
                 "id": "OFG5",
@@ -368,7 +408,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": null,
-                "type": "ofg"
+                "type": "ofg",
+                "name_stylized": "OFG"
             }
         ]
     },
@@ -382,7 +423,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": "even",
-                "type": "dcc"
+                "type": "dcc",
+                "name_stylized": "Proyecto de Innovaci\u00f3n y Computaci\u00f3n"
             },
             {
                 "id": "OPT04",
@@ -391,7 +433,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": null,
-                "type": "opt"
+                "type": "opt",
+                "name_stylized": "OPT"
             },
             {
                 "id": "OPT05",
@@ -400,7 +443,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": null,
-                "type": "opt"
+                "type": "opt",
+                "name_stylized": "OPT"
             },
             {
                 "id": "OPT06",
@@ -409,7 +453,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": null,
-                "type": "opt"
+                "type": "opt",
+                "name_stylized": "OPT"
             },
             {
                 "id": "OFG6",
@@ -418,7 +463,8 @@
                 "cred": "10",
                 "hide": false,
                 "parity": null,
-                "type": "ofg"
+                "type": "ofg",
+                "name_stylized": "OFG"
             }
         ]
     }
