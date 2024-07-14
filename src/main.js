@@ -1,16 +1,5 @@
 import jsonData from './data.js';
 
-const allCourses = [];
-
-function collectAllCourses(){
-    jsonData.forEach(semester => {
-        semester.courses.forEach(course => {
-            allCourses.push(course);
-            console.log('Course ' + course.name + ' added ' + course.id);
-        });
-    });
-}
-
 function createCourse(course) {
     const courseDiv = document.createElement('div');
     courseDiv.className = 'course '+ course.type;
@@ -25,10 +14,8 @@ function createCourse(course) {
 
 function initializeCoursePool() {
     const coursePool = document.getElementById('course-pool');
-    allCourses.forEach(course => {
-        const courseElement = createCourse(course);
-        coursePool.appendChild(courseElement);
-    });
+
+
 
     coursePool.addEventListener('dragover', allowDrop);
     coursePool.addEventListener('drop', handleDrop);
@@ -45,12 +32,23 @@ function createSemester(number) {
     return semesterDiv;
 }
 
+
 function initializeSemesters() {
     const semesterPool = document.getElementById('semester-pool');
-    for (let semester_number = 1; semester_number <= 8; semester_number++) {
-        const semester = createSemester(semester_number);
-        semesterPool.appendChild(semester);
-    }
+
+    jsonData.forEach(semester => {
+        const semesterDiv = createSemester(semester.sem);
+
+        semester.courses.forEach(course => {
+            const courseElement = createCourse(course);
+            semesterDiv.appendChild(courseElement);
+        });
+
+        semesterPool.appendChild(semesterDiv);
+    });
+
+    semesterPool.addEventListener('dragover', allowDrop);
+    semesterPool.addEventListener('drop', handleDrop);
 }
 
 function handleDragStart(event) {
@@ -81,8 +79,7 @@ function handleDrop(event) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    collectAllCourses();
+document.addEventListener('DOMContentLoaded', function () {
     initializeCoursePool();
     initializeSemesters();
 });

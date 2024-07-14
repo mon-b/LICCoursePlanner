@@ -50,5 +50,17 @@ body {
 }
 
 .fmat {
-    background: brown;
+    background: lightcoral;
+}
+
+.ofg {
+    background: orange;
+}
+
+.opt {
+    background: mediumpurple;
+}
+
+.null{
+    background: aquamarine;
 }
