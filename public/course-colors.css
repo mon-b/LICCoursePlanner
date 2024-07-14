@@ -50,11 +50,11 @@
 }
 
 .opt-mat {
-    background: #943D73;
+    background: #DA62AC;
 }
 
 .opt-mat:hover {
-    background: #AE4787;
+    background: #E774BB;
 }
 
 .optcom {
@@ -74,7 +74,7 @@
 }
 
 .econ {
-    background: #AE2E24;
+    background: #9543c5;
 }
 
 .econ:hover {

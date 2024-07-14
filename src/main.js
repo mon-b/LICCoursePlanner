@@ -126,11 +126,11 @@ function toggleCoursePool() {
     if (coursePool.classList.contains('open')) {
         coursePool.style.display = 'flex';
         toggleText.textContent = 'Ocultar Cursos Disponibles';
-        imgIcon.src = 'less.png';
+        imgIcon.src = 'icons/less.png';
     } else {
         coursePool.style.display = 'none';
         toggleText.textContent = 'Mostrar Cursos Disponibles';
-        imgIcon.src = 'more.png';
+        imgIcon.src = 'icons/more.png';
     }
 }
 

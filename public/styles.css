@@ -31,11 +31,22 @@ body {
     height: 70px;
     font-size: 10px;
     border-radius: 4px;
-    border: 1px dashed rgba(255, 255, 255, 0.4);;
 }
 
 .hidden {
     display: none;
+}
+#add-semester-btn {
+    display: flex;
+    align-items: center;
+    background: #2C333A;
+    padding-right: 6px;
+    border-radius: 4px;
+}
+
+#add-semester-btn:hover {
+    background: #373f47;
+    cursor: pointer;
 }
 
 .course-pool {
@@ -63,18 +74,6 @@ body {
     border-radius: 10px;
 }
 
-.add-semester{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: #c3c3c3;
-}
-
-.add-semester:hover {
-    background-color: #e0e0e0;
-}
-
 .header {
     background: #2C333A;
     padding: 10px;
@@ -85,6 +84,7 @@ body {
 
 .header:hover {
     background: #373f47;
+    cursor: pointer;
 }
 
 ::-webkit-scrollbar {
