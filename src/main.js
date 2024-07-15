@@ -50,6 +50,9 @@ function initializeSemesters() {
         semesterPool.appendChild(semesterDiv);
     });
 
+    const addSemesterBtn = document.getElementById('add-semester-btn');
+    semesterPool.appendChild(addSemesterBtn);
+
     semesterPool.addEventListener('dragover', allowDrop);
     semesterPool.addEventListener('drop', handleDrop);
 }
@@ -97,10 +100,13 @@ function handleDrop(event) {
 
 function newSemester() {
     const semesterPool = document.getElementById('semester-pool');
-    const newSemesterNumber = semesterPool.children.length + 1;
+    const newSemesterNumber = semesterPool.children.length;
 
     const semesterDiv = createSemester(newSemesterNumber);
     semesterPool.appendChild(semesterDiv);
+
+    const addSemesterBtn = document.getElementById('add-semester-btn');
+    semesterPool.appendChild(addSemesterBtn);
 }
 
 
