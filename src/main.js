@@ -77,6 +77,15 @@ function handleDrop(event) {
 
     if (targetSemester && courseElement) {
         targetSemester.appendChild(courseElement);
+
+        const semesterText = targetSemester.textContent || targetSemester.innerText;
+        const semesterNumberMatch = semesterText.match(/\d+/);
+        const semesterNumber = semesterNumberMatch ? parseInt(semesterNumberMatch[0], 10) : null;
+        if (semesterNumber >= 9) {
+            updateCoursePoolWidth();
+        }
+
+
     } else if (courseElement) {
         const coursePool = document.getElementById('course-pool');
         if (event.target === coursePool || coursePool.contains(event.target)) {
@@ -100,7 +109,10 @@ function handleAddSemesterClick() {
 
     if (confirmed) {
         newSemester();
+        // So I added this piece of code because I want the course-pool to have the same width as the semester-pool
+        updateCoursePoolWidth();
     }
+
 }
 
 function addOptCourses() {
@@ -134,6 +146,12 @@ function toggleCoursePool() {
     }
 }
 
+function updateCoursePoolWidth() {
+    const semesterPoolWidth = document.getElementById('semester-pool').offsetWidth;
+    document.querySelector('.collapsible-course-pool').style.width = semesterPoolWidth + 'px';
+}
+
+
 
 document.addEventListener('DOMContentLoaded', function () {
     initializeCoursePool();
@@ -145,5 +163,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const header = document.getElementById('header');
     header.addEventListener('click', toggleCoursePool);
+
+    updateCoursePoolWidth();
 
 });
