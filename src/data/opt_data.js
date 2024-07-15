@@ -8,7 +8,8 @@ const optData = [{
             "hide": false,
             "parity": null,
             "type": "optcom",
-            "name_stylized": "Periodismo de Datos"
+            "name_stylized": "Periodismo de Datos",
+            "number": 44
         },
         {
             "id": "COM117",
@@ -18,18 +19,8 @@ const optData = [{
             "hide": false,
             "parity": null,
             "type": "optcom",
-            "name_stylized": "Narración Interactiva"
-        },
-
-        {
-            "id": "COM819",
-            "name": "Taller de Prototipos Mediales",
-            "prereq": null,
-            "cred": "10",
-            "hide": false,
-            "parity": null,
-            "type": "optcom",
-            "name_stylized": "Taller de Prototipos Mediales"
+            "name_stylized": "Narración Interactiva",
+            "number": 45
         },
         {
             "id": "COM819",
@@ -39,7 +30,8 @@ const optData = [{
             "hide": false,
             "parity": null,
             "type": "optcom",
-            "name_stylized": "Taller de Prototipos Mediales"
+            "name_stylized": "Taller de Prototipos Mediales",
+            "number": 46
         },
         {
             "id": "COM819",
@@ -49,7 +41,19 @@ const optData = [{
             "hide": false,
             "parity": null,
             "type": "optcom",
-            "name_stylized": "Taller de Prototipos Mediales"
+            "name_stylized": "Taller de Prototipos Mediales",
+            "number": 47
+        },
+        {
+            "id": "COM819",
+            "name": "Taller de Prototipos Mediales",
+            "prereq": null,
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "optcom",
+            "name_stylized": "Taller de Prototipos Mediales",
+            "number": 48
         },
         {
             "id": "COM813",
@@ -59,7 +63,8 @@ const optData = [{
             "hide": false,
             "parity": null,
             "type": "optcom",
-            "name_stylized": "Taller de Narracion e Industria de Esports"
+            "name_stylized": "Taller de Narracion e Industria de Esports",
+            "number": 49
         },
         {
             "id": "IMT2117",
@@ -69,7 +74,8 @@ const optData = [{
             "hide": false,
             "parity": null,
             "type": "opt-mat",
-            "name_stylized": "Probabilidades y Algoritmos"
+            "name_stylized": "Probabilidades y Algoritmos",
+            "number": 50
         },
         {
             "id": "MAT2225",
@@ -79,7 +85,8 @@ const optData = [{
             "hide": false,
             "parity": null,
             "type": "opt-mat",
-            "name_stylized": "Teoria de Numeros"
+            "name_stylized": "Teoria de Numeros",
+            "number": 51
         },
         {
             "id": "MAT2605",
@@ -89,7 +96,8 @@ const optData = [{
             "hide": false,
             "parity": null,
             "type": "opt-mat",
-            "name_stylized": "Calculo Cientifico I"
+            "name_stylized": "Calculo Cientifico I",
+            "number": 52
         },
         {
             "id": "MAT2205",
@@ -99,7 +107,8 @@ const optData = [{
             "hide": false,
             "parity": null,
             "type": "opt-mat",
-            "name_stylized": "Algebra Abstracta I"
+            "name_stylized": "Algebra Abstracta I",
+            "number": 53
         },
         {
             "id": "LET0121",
@@ -109,7 +118,8 @@ const optData = [{
             "hide": false,
             "parity": null,
             "type": "optlet",
-            "name_stylized": "Grandes Preguntas sobre el Lenguaje"
+            "name_stylized": "Grandes Preguntas sobre el Lenguaje",
+            "number": 54
         },
         {
             "id": "LET0131",
@@ -119,7 +129,8 @@ const optData = [{
             "hide": false,
             "parity": null,
             "type": "optlet",
-            "name_stylized": "Gramatica Española I"
+            "name_stylized": "Gramatica Española I",
+            "number": 55
         },
         {
             "id": "LET116E",
@@ -129,7 +140,8 @@ const optData = [{
             "hide": false,
             "parity": null,
             "type": "optlet",
-            "name_stylized": "Herramientas Informaticas para Analisis Linguisticos"
+            "name_stylized": "Herramientas Informaticas para Analisis Linguisticos",
+            "number": 56
         },
         {
             "id": "LET0129",
@@ -139,7 +151,8 @@ const optData = [{
             "hide": false,
             "parity": null,
             "type": "optlet",
-            "name_stylized": "Linguistica de Corpus y Computacional"
+            "name_stylized": "Linguistica de Corpus y Computacional",
+            "number": 57
         },
         {
             "id": "EAE1210",
@@ -149,7 +162,8 @@ const optData = [{
             "hide": false,
             "parity": null,
             "type": "econ",
-            "name_stylized": "Introduccion a la Macroeconomia"
+            "name_stylized": "Introduccion a la Macroeconomia",
+            "number": 58
         },
         {
             "id": "EAE1110",
@@ -159,7 +173,8 @@ const optData = [{
             "hide": false,
             "parity": null,
             "type": "econ",
-            "name_stylized": "Introduccion a la Microeconomia"
+            "name_stylized": "Introduccion a la Microeconomia",
+            "number": 59
         },
         {
             "id": "EAE2510",
@@ -169,7 +184,8 @@ const optData = [{
             "hide": false,
             "parity": null,
             "type": "econ",
-            "name_stylized": "Econometria"
+            "name_stylized": "Econometria",
+            "number": 60
         },
         {
             "id": "EAE1220",
@@ -179,7 +195,8 @@ const optData = [{
             "hide": false,
             "parity": null,
             "type": "econ",
-            "name_stylized": "Analisis Economico: la Experiencia Chilena"
+            "name_stylized": "Analisis Economico: la Experiencia Chilena",
+            "number": 61
         },
         {
             "id": "AST0212",
@@ -189,7 +206,8 @@ const optData = [{
             "hide": false,
             "parity": null,
             "type": "opt-cien",
-            "name_stylized": "Introduccion al Analisis de Datos"
+            "name_stylized": "Introduccion al Analisis de Datos",
+            "number": 62
         },
         {
             "id": "AST0222",
@@ -199,7 +217,8 @@ const optData = [{
             "hide": false,
             "parity": null,
             "type": "opt-cien",
-            "name_stylized": "Taller de Astronomia"
+            "name_stylized": "Taller de Astronomia",
+            "number": 63
         },
         {
             "id": "AST0111",
@@ -209,7 +228,8 @@ const optData = [{
             "hide": false,
             "parity": null,
             "type": "opt-cien",
-            "name_stylized": "Astronomia"
+            "name_stylized": "Astronomia",
+            "number": 64
         },
         {
             "id": "BIO242C",
@@ -219,7 +239,8 @@ const optData = [{
             "hide": false,
             "parity": null,
             "type": "opt-cien",
-            "name_stylized": "Bioestadistica"
+            "name_stylized": "Bioestadistica",
+            "number": 65
         },
         {
             "id": "BIO231C",
@@ -229,7 +250,8 @@ const optData = [{
             "hide": false,
             "parity": null,
             "type": "opt-cien",
-            "name_stylized": "Ecologia"
+            "name_stylized": "Ecologia",
+            "number": 66
         },
         {
             "id": "BIO298E",
@@ -239,7 +261,8 @@ const optData = [{
             "hide": false,
             "parity": null,
             "type": "optbio",
-            "name_stylized": "Trabajo Experimental en Ecologia"
+            "name_stylized": "Trabajo Experimental en Ecologia",
+            "number": 67
         },
         {
             "id": "BIO299L",
@@ -248,13 +271,11 @@ const optData = [{
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "optbio" +
-                "",
-            "name_stylized": "Laboratorio Fisiologia"
+            "type": "optbio",
+            "name_stylized": "Laboratorio Fisiologia",
+            "number": 68
         }
     ]
-
-
 }
 ]
 

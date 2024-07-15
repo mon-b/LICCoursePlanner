@@ -7,8 +7,9 @@
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt",
-            "name_stylized": "Periodismo de Datos"
+            "type": "optcom",
+            "name_stylized": "Periodismo de Datos",
+            "number": 44
         },
         {
             "id": "COM117",
@@ -17,19 +18,9 @@
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt",
-            "name_stylized": "Narración Interactiva"
-        },
-
-        {
-            "id": "COM819",
-            "name": "Taller de Prototipos Mediales",
-            "prereq": null,
-            "cred": "10",
-            "hide": false,
-            "parity": null,
-            "type": "opt",
-            "name_stylized": "Taller de Prototipos Mediales"
+            "type": "optcom",
+            "name_stylized": "Narración Interactiva",
+            "number": 45
         },
         {
             "id": "COM819",
@@ -38,8 +29,9 @@
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt",
-            "name_stylized": "Taller de Prototipos Mediales"
+            "type": "optcom",
+            "name_stylized": "Taller de Prototipos Mediales",
+            "number": 46
         },
         {
             "id": "COM819",
@@ -48,18 +40,31 @@
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt",
-            "name_stylized": "Taller de Prototipos Mediales"
+            "type": "optcom",
+            "name_stylized": "Taller de Prototipos Mediales",
+            "number": 47
+        },
+        {
+            "id": "COM819",
+            "name": "Taller de Prototipos Mediales",
+            "prereq": null,
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "optcom",
+            "name_stylized": "Taller de Prototipos Mediales",
+            "number": 48
         },
         {
             "id": "COM813",
-            "name": "Taller de Narracion e Industria de Esports o Deportes Electronicos",
+            "name": "Taller de Narracion e Industria de Esports",
             "prereq": null,
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt",
-            "name_stylized": "Taller de Narracion e Industria de Esports o Deportes Electronicos"
+            "type": "optcom",
+            "name_stylized": "Taller de Narracion e Industria de Esports",
+            "number": 49
         },
         {
             "id": "IMT2117",
@@ -68,18 +73,20 @@
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt",
-            "name_stylized": "Probabilidades y Algoritmos"
+            "type": "opt-mat",
+            "name_stylized": "Probabilidades y Algoritmos",
+            "number": 50
         },
         {
-            "id": "IMT2117",
+            "id": "MAT2225",
             "name": "Teoria de Numeros",
             "prereq": null,
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt",
-            "name_stylized": "Teoria de Numeros"
+            "type": "opt-mat",
+            "name_stylized": "Teoria de Numeros",
+            "number": 51
         },
         {
             "id": "MAT2605",
@@ -88,8 +95,9 @@
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt",
-            "name_stylized": "Calculo Cientifico I"
+            "type": "opt-mat",
+            "name_stylized": "Calculo Cientifico I",
+            "number": 52
         },
         {
             "id": "MAT2205",
@@ -98,8 +106,9 @@
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt",
-            "name_stylized": "Algebra Abstracta I"
+            "type": "opt-mat",
+            "name_stylized": "Algebra Abstracta I",
+            "number": 53
         },
         {
             "id": "LET0121",
@@ -108,8 +117,9 @@
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt",
-            "name_stylized": "Grandes Preguntas sobre el Lenguaje"
+            "type": "optlet",
+            "name_stylized": "Grandes Preguntas sobre el Lenguaje",
+            "number": 54
         },
         {
             "id": "LET0131",
@@ -118,8 +128,9 @@
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt",
-            "name_stylized": "Gramatica Española I"
+            "type": "optlet",
+            "name_stylized": "Gramatica Española I",
+            "number": 55
         },
         {
             "id": "LET116E",
@@ -128,8 +139,9 @@
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt",
-            "name_stylized": "Herramientas Informaticas para Analisis Linguisticos"
+            "type": "optlet",
+            "name_stylized": "Herramientas Informaticas para Analisis Linguisticos",
+            "number": 56
         },
         {
             "id": "LET0129",
@@ -138,8 +150,9 @@
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt",
-            "name_stylized": "Linguistica de Corpus y Computacional"
+            "type": "optlet",
+            "name_stylized": "Linguistica de Corpus y Computacional",
+            "number": 57
         },
         {
             "id": "EAE1210",
@@ -148,8 +161,9 @@
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt",
-            "name_stylized": "Introduccion a la Macroeconomia"
+            "type": "econ",
+            "name_stylized": "Introduccion a la Macroeconomia",
+            "number": 58
         },
         {
             "id": "EAE1110",
@@ -158,8 +172,9 @@
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt",
-            "name_stylized": "Introduccion a la Microeconomia"
+            "type": "econ",
+            "name_stylized": "Introduccion a la Microeconomia",
+            "number": 59
         },
         {
             "id": "EAE2510",
@@ -168,8 +183,9 @@
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt",
-            "name_stylized": "Econometria"
+            "type": "econ",
+            "name_stylized": "Econometria",
+            "number": 60
         },
         {
             "id": "EAE1220",
@@ -178,8 +194,9 @@
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt",
-            "name_stylized": "Analisis Economico: la Experiencia Chilena"
+            "type": "econ",
+            "name_stylized": "Analisis Economico: la Experiencia Chilena",
+            "number": 61
         },
         {
             "id": "AST0212",
@@ -188,8 +205,9 @@
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt",
-            "name_stylized": "Introduccion al Analisis de Datos"
+            "type": "opt-cien",
+            "name_stylized": "Introduccion al Analisis de Datos",
+            "number": 62
         },
         {
             "id": "AST0222",
@@ -198,8 +216,9 @@
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt",
-            "name_stylized": "Taller de Astronomia"
+            "type": "opt-cien",
+            "name_stylized": "Taller de Astronomia",
+            "number": 63
         },
         {
             "id": "AST0111",
@@ -208,8 +227,9 @@
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt",
-            "name_stylized": "Astronomia"
+            "type": "opt-cien",
+            "name_stylized": "Astronomia",
+            "number": 64
         },
         {
             "id": "BIO242C",
@@ -218,8 +238,9 @@
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt",
-            "name_stylized": "Bioestadistica"
+            "type": "opt-cien",
+            "name_stylized": "Bioestadistica",
+            "number": 65
         },
         {
             "id": "BIO231C",
@@ -228,8 +249,9 @@
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt",
-            "name_stylized": "Ecologia"
+            "type": "opt-cien",
+            "name_stylized": "Ecologia",
+            "number": 66
         },
         {
             "id": "BIO298E",
@@ -238,8 +260,9 @@
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt",
-            "name_stylized": "Trabajo Experimental en Ecologia"
+            "type": "optbio",
+            "name_stylized": "Trabajo Experimental en Ecologia",
+            "number": 67
         },
         {
             "id": "BIO299L",
@@ -248,11 +271,9 @@
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt",
-            "name_stylized": "Laboratorio Fisiologia"
+            "type": "optbio",
+            "name_stylized": "Laboratorio Fisiologia",
+            "number": 68
         }
     ]
-
-
-  }
-
+}
