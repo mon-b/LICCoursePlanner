@@ -144,3 +144,51 @@ body {
     background: #373f47;
     cursor: pointer;
 }
+
+.clickable-h2 {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.clickable-h2:visited {
+    color: inherit;
+}
+
+.btn-container {
+    background-color: #2C333A;
+    padding: 16px;
+    border-radius: 8px;
+}
+
+.btn-container:hover {
+    background-color: #373f47;
+}
+
+.btn-create {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-create:visited {
+    color: inherit;
+}
+
+.about {
+    margin-left: 20%;
+    margin-right: 20%;
+    text-align: justify;
+    font-size: 18px;
+}
+
+.features {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+}
+
+.feature {
+    background: #ae2482;
+    padding: 16px;
+    border-radius: 8px;
+}
