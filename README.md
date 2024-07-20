@@ -1,5 +1,7 @@
 # LICCoursePlanner
 
+![Preview](https://github.com/mon-b/LICCoursePlanner/blob/main/previewRM.png?raw=true)
+
 Mi pequeño proyecto para aprender Javascript 🥳🥳 Es un planificador ultra sencillo de la malla curricular de la [Licenciatura en Ingeniería en Ciencia de la Computación (LICC)](https://admision.uc.cl/carreras/licenciatura-en-ingenieria-en-ciencia-de-la-computacion/).
 
 ### Alcance
