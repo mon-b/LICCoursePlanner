@@ -1,20 +1,29 @@
 import jsonData from './data/default_data.js';
 import optData from './data/opt_data.js';
 
+
 function createCourse(course) {
     const courseDiv = document.createElement('div');
     courseDiv.className = 'course ' + course.type;
     courseDiv.draggable = true;
     courseDiv.innerHTML = `
-        <b>${course.name_stylized}</b>
-        [${course.id}]
-        <small>${course.cred} créditos</small>
+        <div class="course-content">
+            <b class="course-name">${course.name_stylized}</b>
+            [${course.id}]
+            <small>${course.cred} créditos</small>
+        </div>
     `;
     courseDiv.id = course.id;
 
     courseDiv.addEventListener('dragstart', handleDragStart);
+    courseDiv.addEventListener('click', handleStrikeDivClick);
 
     return courseDiv;
+}
+
+function handleStrikeDivClick(event) {
+    const courseDiv = event.currentTarget;
+    courseDiv.classList.toggle('striked');
 }
 
 function initializeCoursePool() {
@@ -34,7 +43,6 @@ function createSemester(number) {
 
     return semesterDiv;
 }
-
 
 function initializeSemesters() {
     const semesterPool = document.getElementById('semester-pool');
@@ -65,7 +73,6 @@ function allowDrop(event) {
     event.preventDefault();
 }
 
-
 function handleDrop(event) {
     event.preventDefault();
     const courseId = event.dataTransfer.getData('text/plain');
@@ -87,8 +94,6 @@ function handleDrop(event) {
         if (semesterNumber >= 9) {
             updateCoursePoolWidth();
         }
-
-
     } else if (courseElement) {
         const coursePool = document.getElementById('course-pool');
         if (event.target === coursePool || coursePool.contains(event.target)) {
@@ -96,7 +101,6 @@ function handleDrop(event) {
         }
     }
 }
-
 
 function newSemester() {
     const semesterPool = document.getElementById('semester-pool');
@@ -109,16 +113,13 @@ function newSemester() {
     semesterPool.appendChild(addSemesterBtn);
 }
 
-
 function handleAddSemesterClick() {
     const confirmed = window.confirm('Are you sure you want to add a new semester?');
 
     if (confirmed) {
         newSemester();
-        // So I added this piece of code because I want the course-pool to have the same width as the semester-pool
         updateCoursePoolWidth();
     }
-
 }
 
 function addOptCourses() {
@@ -157,8 +158,6 @@ function updateCoursePoolWidth() {
     document.querySelector('.collapsible-course-pool').style.width = semesterPoolWidth + 'px';
 }
 
-
-
 document.addEventListener('DOMContentLoaded', function () {
     initializeCoursePool();
     initializeSemesters();
@@ -171,5 +170,4 @@ document.addEventListener('DOMContentLoaded', function () {
     header.addEventListener('click', toggleCoursePool);
 
     updateCoursePoolWidth();
-
 });
