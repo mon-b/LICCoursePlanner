@@ -28,7 +28,7 @@ body {
     margin: 6px;
     padding: 2px;
     cursor: grab;
-    width: 85px;
+    width: 90px;
     height: 70px;
     font-size: 10px;
     border-radius: 4px;
@@ -191,4 +191,28 @@ body {
     background: #ae2482;
     padding: 16px;
     border-radius: 8px;
+}
+
+.course.striked {
+    position: relative;
+}
+
+.course.striked::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 122%;
+    height: 4px;
+    background-color: darkred;
+    transform: rotate(-37deg) translate(-50%, -50%);
+    transform-origin: 0% 0%;
+    pointer-events: none;
+}
+
+.strike-button {
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    background: #8590A2;
 }
