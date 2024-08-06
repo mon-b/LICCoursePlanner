@@ -1,0 +1,70 @@
+{
+    "courses": [
+        {
+            "id": "IIC2026",
+            "name": "Visualización de Información",
+            "prereq": "IIC1103",
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "optcomp",
+            "name_stylized": "Visualización de Información",
+            "number": 82
+        },
+        {
+            "id": "IIC2433",
+            "name": "Minería de Datos",
+            "prereq": "EYP1025 y IIC1103 y MAT1203",
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "optcomp",
+            "name_stylized": "Minería de Datos",
+            "number": 83
+        },
+        {
+            "id": "IIC2113",
+            "name": "Diseño Detallado de Software",
+            "prereq": "IIC2143",
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "optcomp",
+            "name_stylized": "Diseño Detallado de Software",
+            "number": 84
+        },
+        {
+            "id": "IIC2173",
+            "name": "Arquitectura de Sistemas de Software",
+            "prereq": "IIC2143",
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "optcomp",
+            "name_stylized": "Arquitectura de Sistemas de Software",
+            "number": 85
+        },
+        {
+            "id": "IIC2293",
+            "name": "Algoritmos Avanzados",
+            "prereq": "IIC2283",
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "optcomp",
+            "name_stylized": "Algoritmos Avanzados",
+            "number": 86
+        },
+        {
+            "id": "IIC2714",
+            "name": "Fundamentos de Procesamiento de Imagenes",
+            "prereq": "créditos >= 200",
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "optcomp",
+            "name_stylized": "Fundamentos de Procesamiento de Imagenes",
+            "number": 87
+        }
+    ]
+}

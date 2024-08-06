@@ -13,7 +13,7 @@ def add_course_numbers_default(input_file, output_file, start_number):
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
     
-    return current_number  # Return the last number used
+    return current_number
 
 def add_course_numbers_opt(input_file, output_file, start_number):
     with open(input_file, 'r', encoding='utf-8') as f:
@@ -26,6 +26,11 @@ def add_course_numbers_opt(input_file, output_file, start_number):
     
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
+    
+    return current_number
 
+# Process files
 last_number = add_course_numbers_default('src/data/default_data.json', 'src/data/default_data.json', 1)
-add_course_numbers_opt('src/data/opt_data.json', 'src/data/opt_data.json', last_number)
+last_number = add_course_numbers_opt('src/data/opt_data.json', 'src/data/opt_data.json', last_number)
+last_number = add_course_numbers_opt('src/data/opt_sc.json', 'src/data/opt_sc.json', last_number)
+last_number = add_course_numbers_opt('src/data/opt_comp.json', 'src/data/opt_comp.json', last_number)
