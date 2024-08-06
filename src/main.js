@@ -8,8 +8,8 @@ function createCourse(course) {
     courseDiv.draggable = true;
     courseDiv.innerHTML = `
         <div class="course-content">
-            <b class="course-name">${course.name_stylized}</b>
-            [${course.id}]
+            <b class="course-name">${course.name_stylized}</b> <br>
+            [${course.id}] <br>
             <small>${course.cred} créditos</small>
         </div>
     `;

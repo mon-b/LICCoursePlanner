@@ -274,6 +274,149 @@
             "type": "optbio",
             "name_stylized": "Laboratorio Fisiologia",
             "number": 68
+        },
+        {
+            "id": "FIS0154",
+            "name": "Dinámica",
+            "prereq": null,
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "optsci",
+            "name_stylized": "Dinámica",
+            "number": 69
+        },
+        {
+            "id": "ICE1514",
+            "name": "Dinámica",
+            "prereq": null,
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "optsci",
+            "name_stylized": "Dinámica",
+            "number": 70
+        },
+        {
+            "id": "FIS1523",
+            "name": "Termodinámica",
+            "prereq": null,
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "optsci",
+            "name_stylized": "Termodinámica",
+            "number": 71
+        },
+        {
+            "id": "ICM1003",
+            "name": "Termodinámica",
+            "prereq": null,
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "optsci",
+            "name_stylized": "Termodinámica",
+            "number": 72
+        },
+        {
+            "id": "IIQ1003",
+            "name": "Termodinámica",
+            "prereq": null,
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "optsci",
+            "name_stylized": "Termodinámica",
+            "number": 73
+        },
+        {
+            "id": "FIS1533",
+            "name": "Electricidad y Magnetismo",
+            "prereq": null,
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "optsci",
+            "name_stylized": "Electricidad y Magnetismo",
+            "number": 74
+        },
+        {
+            "id": "IEE1533",
+            "name": "Electricidad y Magnetismo",
+            "prereq": null,
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "optsci",
+            "name_stylized": "Electricidad y Magnetismo",
+            "number": 75
+        },
+        {
+            "id": "AST0111",
+            "name": "Astronomía",
+            "prereq": null,
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "optsci",
+            "name_stylized": "Astronomía",
+            "number": 76
+        },
+        {
+            "id": "AST0212",
+            "name": "Introducción al Análisis de Datos",
+            "prereq": null,
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "optsci",
+            "name_stylized": "Introducción al Análisis de Datos",
+            "number": 77
+        },
+        {
+            "id": "AST0222",
+            "name": "Taller de Astronomía",
+            "prereq": null,
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "optsci",
+            "name_stylized": "Taller de Astronomía",
+            "number": 78
+        },
+        {
+            "id": "BIO242C",
+            "name": "Bioestadística",
+            "prereq": null,
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "optsci",
+            "name_stylized": "Bioestadística",
+            "number": 79
+        },
+        {
+            "id": "BIO231C",
+            "name": "Ecología",
+            "prereq": null,
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "optsci",
+            "name_stylized": "Ecología",
+            "number": 80
+        },
+        {
+            "id": "QIM100E",
+            "name": "Química para Ingeniería",
+            "prereq": null,
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "optsci",
+            "name_stylized": "Química para Ingeniería",
+            "number": 81
         }
     ]
 }

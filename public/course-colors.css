@@ -97,6 +97,21 @@
     background: #216E4E;
 }
 
+.opt-ast {
+    background-color: #130947;
+}
+.opt-ast:hover {
+    background-color: #201268;
+}
+
+.optcomp {
+    background-color: #1686d6;
+}
+
+.optcomp:hover {
+    background-color: #2a97e4;
+}
+
 .major {
     background: #0055CC;
 }
@@ -105,3 +120,4 @@
     background: #1D7AFC;
 
 }
+

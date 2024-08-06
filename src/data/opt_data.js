@@ -205,7 +205,7 @@ const optData = [{
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt-cien",
+            "type": "opt-ast",
             "name_stylized": "Introduccion al Analisis de Datos",
             "number": 62
         },
@@ -216,7 +216,7 @@ const optData = [{
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt-cien",
+            "type": "opt-ast",
             "name_stylized": "Taller de Astronomia",
             "number": 63
         },
@@ -227,7 +227,7 @@ const optData = [{
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt-cien",
+            "type": "opt-ast",
             "name_stylized": "Astronomia",
             "number": 64
         },
@@ -238,7 +238,7 @@ const optData = [{
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt-cien",
+            "type": "optbio",
             "name_stylized": "Bioestadistica",
             "number": 65
         },
@@ -249,7 +249,7 @@ const optData = [{
             "cred": "10",
             "hide": false,
             "parity": null,
-            "type": "opt-cien",
+            "type": "optbio",
             "name_stylized": "Ecologia",
             "number": 66
         },
@@ -274,6 +274,215 @@ const optData = [{
             "type": "optbio",
             "name_stylized": "Laboratorio Fisiologia",
             "number": 68
+        },
+        {
+            "id": "FIS0154",
+            "name": "Dinámica",
+            "prereq": null,
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "opt-cien",
+            "name_stylized": "Dinámica",
+            "number": 69
+        },
+        {
+            "id": "ICE1514",
+            "name": "Dinámica",
+            "prereq": null,
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "opt-cien",
+            "name_stylized": "Dinámica",
+            "number": 70
+        },
+        {
+            "id": "FIS1523",
+            "name": "Termodinámica",
+            "prereq": null,
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "opt-cien",
+            "name_stylized": "Termodinámica",
+            "number": 71
+        },
+        {
+            "id": "ICM1003",
+            "name": "Termodinámica",
+            "prereq": null,
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "opt-cien",
+            "name_stylized": "Termodinámica",
+            "number": 72
+        },
+        {
+            "id": "IIQ1003",
+            "name": "Termodinámica",
+            "prereq": null,
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "opt-cien",
+            "name_stylized": "Termodinámica",
+            "number": 73
+        },
+        {
+            "id": "FIS1533",
+            "name": "Electricidad y Magnetismo",
+            "prereq": null,
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "opt-cien",
+            "name_stylized": "Electricidad y Magnetismo",
+            "number": 74
+        },
+        {
+            "id": "IEE1533",
+            "name": "Electricidad y Magnetismo",
+            "prereq": null,
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "opt-cien",
+            "name_stylized": "Electricidad y Magnetismo",
+            "number": 75
+        },
+        {
+            "id": "AST0111",
+            "name": "Astronomía",
+            "prereq": null,
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "opt-cien",
+            "name_stylized": "Astronomía",
+            "number": 76
+        },
+        {
+            "id": "AST0212",
+            "name": "Introducción al Análisis de Datos",
+            "prereq": null,
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "opt-cien",
+            "name_stylized": "Introducción al Análisis de Datos",
+            "number": 77
+        },
+        {
+            "id": "AST0222",
+            "name": "Taller de Astronomía",
+            "prereq": null,
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "opt-cien",
+            "name_stylized": "Taller de Astronomía",
+            "number": 78
+        },
+        {
+            "id": "BIO242C",
+            "name": "Bioestadística",
+            "prereq": null,
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "opt-cien",
+            "name_stylized": "Bioestadística",
+            "number": 79
+        },
+        {
+            "id": "BIO231C",
+            "name": "Ecología",
+            "prereq": null,
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "opt-cien",
+            "name_stylized": "Ecología",
+            "number": 80
+        },
+        {
+            "id": "QIM100E",
+            "name": "Química para Ingeniería",
+            "prereq": null,
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "opt-cien",
+            "name_stylized": "Química para Ingeniería",
+            "number": 81
+        },
+        {
+            "id": "IIC2026",
+            "name": "Visualización de Información",
+            "prereq": "IIC1103",
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "optcomp",
+            "name_stylized": "Visualización de Información",
+            "number": 82
+        },
+        {
+            "id": "IIC2433",
+            "name": "Minería de Datos",
+            "prereq": "EYP1025 y IIC1103 y MAT1203",
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "optcomp",
+            "name_stylized": "Minería de Datos",
+            "number": 83
+        },
+        {
+            "id": "IIC2113",
+            "name": "Diseño Detallado de Software",
+            "prereq": "IIC2143",
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "optcomp",
+            "name_stylized": "Diseño Detallado de Software",
+            "number": 84
+        },
+        {
+            "id": "IIC2173",
+            "name": "Arquitectura de Sistemas de Software",
+            "prereq": "IIC2143",
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "optcomp",
+            "name_stylized": "Arquitectura de Sistemas de Software",
+            "number": 85
+        },
+        {
+            "id": "IIC2293",
+            "name": "Algoritmos Avanzados",
+            "prereq": "IIC2283",
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "optcomp",
+            "name_stylized": "Algoritmos Avanzados",
+            "number": 86
+        },
+        {
+            "id": "IIC2714",
+            "name": "Fundamentos de Procesamiento de Imagenes",
+            "prereq": "créditos >= 200",
+            "cred": "10",
+            "hide": false,
+            "parity": null,
+            "type": "optcomp",
+            "name_stylized": "Fundamentos de Procesamiento de Imagenes",
+            "number": 87
         }
     ]
 }
