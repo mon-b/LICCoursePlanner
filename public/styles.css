@@ -216,3 +216,22 @@ body {
     border-radius: 50%;
     background: #8590A2;
 }
+
+.prereq-tooltip {
+    position: absolute;
+    z-index: 10000; /* Ensure it's high enough */
+    visibility: hidden;
+    opacity: 0;
+    background-color: rgb(14, 14, 14);
+    text-align: center;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.prereq-tooltip.visible {
+    visibility: visible;
+    opacity: 1;
+}
+.course:hover .prereq-tooltip {
+    transition-delay: 1s; /* Delay for showing */
+}

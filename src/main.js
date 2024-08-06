@@ -11,7 +11,9 @@ function createCourse(course) {
             <b class="course-name">${course.name_stylized}</b> <br>
             [${course.id}] <br>
             <small>${course.cred} créditos</small>
+            
         </div>
+        <span class="prereq-tooltip">${course.prereq}</span>
     `;
     courseDiv.id = course.id;
 
@@ -158,6 +160,50 @@ function updateCoursePoolWidth() {
     document.querySelector('.collapsible-course-pool').style.width = semesterPoolWidth + 'px';
 }
 
+let tooltipTimeout;
+
+function showTooltip(event) {
+    const tooltip = event.currentTarget.querySelector('.prereq-tooltip');
+    if (tooltip) {
+        tooltip.classList.add('visible');
+
+        function positionTooltip() {
+            const rect = event.currentTarget.getBoundingClientRect();
+            const tooltipWidth = tooltip.offsetWidth;
+            const tooltipHeight = tooltip.offsetHeight;
+
+            tooltip.style.top = `${rect.top + window.scrollY + (rect.height / 2) - (tooltipHeight / 2)}px`;
+            tooltip.style.left = `${rect.left + window.scrollX + (rect.width / 2) - (tooltipWidth / 2)}px`;
+        }
+
+        positionTooltip();
+
+        const mouseMoveHandler = (e) => {
+            positionTooltip();
+        };
+
+        document.addEventListener('mousemove', mouseMoveHandler);
+
+        event.currentTarget.addEventListener('mouseleave', () => {
+            tooltip.classList.remove('visible');
+            document.removeEventListener('mousemove', mouseMoveHandler);
+        }, { once: true });
+    }
+}
+
+
+function hideTooltip(event) {
+    clearTimeout(tooltipTimeout);
+
+    const targetElement = event.currentTarget;
+    if (targetElement && targetElement.querySelector) {
+        const tooltip = targetElement.querySelector('.prereq-tooltip');
+        if (tooltip) {
+            tooltip.classList.remove('visible');
+        }
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     initializeCoursePool();
     initializeSemesters();
@@ -168,6 +214,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const header = document.getElementById('header');
     header.addEventListener('click', toggleCoursePool);
+
+    document.querySelectorAll('.course').forEach(course => {
+        course.addEventListener('mouseover', showTooltip);
+        course.addEventListener('mouseout', hideTooltip);
+    });
 
     updateCoursePoolWidth();
 });
