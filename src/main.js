@@ -68,7 +68,17 @@ function initializeSemesters() {
 }
 
 function handleDragStart(event) {
+    const tooltip = event.currentTarget.querySelector('.prereq-tooltip');
+    if (tooltip) {
+        tooltip.style.display = 'none';
+    }
     event.dataTransfer.setData('text/plain', event.target.id);
+
+    event.currentTarget.addEventListener('dragend', () => {
+        if (tooltip) {
+            tooltip.style.display = '';
+        }
+    }, { once: true });
 }
 
 function allowDrop(event) {
