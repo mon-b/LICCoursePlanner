@@ -80,7 +80,7 @@ function handleDrop(event) {
     let target = event.target;
 
     if (target.classList.contains('course')) {
-        target = target.closest('.semester');
+        target = target.closest('.semester') || target.closest('#course-pool');
     }
 
     const targetSemester = target.closest('.semester');
