@@ -13,7 +13,7 @@ function createCourse(course) {
             <small>${course.cred} créditos</small>
             
         </div>
-        <span class="prereq-tooltip">${course.prereq}</span>
+        <span class="prereq-tooltip">Prereq: ${course.prereq}</span>
     `;
     courseDiv.id = course.id;
 
@@ -168,12 +168,19 @@ function showTooltip(event) {
         tooltip.classList.add('visible');
 
         function positionTooltip() {
-            const rect = event.currentTarget.getBoundingClientRect();
-            const tooltipWidth = tooltip.offsetWidth;
-            const tooltipHeight = tooltip.offsetHeight;
 
-            tooltip.style.top = `${rect.top + window.scrollY + (rect.height / 2) - (tooltipHeight / 2)}px`;
-            tooltip.style.left = `${rect.left + window.scrollX + (rect.width / 2) - (tooltipWidth / 2)}px`;
+            if (event.currentTarget) {
+                const rect = event.currentTarget.getBoundingClientRect();
+                const tooltipWidth = tooltip.offsetWidth;
+                const tooltipHeight = tooltip.offsetHeight;
+
+                const verticalCenter = rect.top + window.scrollY + (rect.height / 2);
+
+                const offset = Math.max(tooltipHeight / 2, 48);
+
+                tooltip.style.top = `${verticalCenter - (tooltipHeight / 2) - offset}px`;
+                tooltip.style.left = `${rect.left + window.scrollX + (rect.width / 2) - (tooltipWidth / 2)}px`;
+            }
         }
 
         positionTooltip();

@@ -224,14 +224,29 @@ body {
     opacity: 0;
     background-color: rgb(14, 14, 14);
     text-align: center;
+    text-wrap: wrap;
+    max-width: 140px;
     padding: 5px;
     border-radius: 4px;
+    font-size: 12px;
 }
+
+.prereq-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%; /* Position the arrow at the bottom of the tooltip */
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px;
+    border-style: solid;
+    border-color: rgb(14, 14, 14) transparent transparent transparent; /* Arrow color matches tooltip */
+}
+
 
 .prereq-tooltip.visible {
     visibility: visible;
-    opacity: 1;
+    opacity: 100;
 }
 .course:hover .prereq-tooltip {
-    transition-delay: 1s; /* Delay for showing */
+    transition-delay: 1.5s;
 }

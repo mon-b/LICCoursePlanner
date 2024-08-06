@@ -205,7 +205,7 @@ const jsonData = [
         "sem": 4,
         "courses": [
             {
-                "id": "EYP1050",
+                "id": "EYP1025",
                 "name": "MODELOS PROBABILÍSTICOS",
                 "prereq": null,
                 "cred": "10",
@@ -338,7 +338,7 @@ const jsonData = [
             {
                 "id": "IIC2613",
                 "name": "INTELIGENCIA ARTIFICIAL",
-                "prereq": "(EYP1113 y IIC2233) o (EYP1025 y IIC2233) o (AST0212 y IIC2233)",
+                "prereq": "(EYP1025 y IIC2233) o (AST0212 y IIC2233)",
                 "cred": "10",
                 "hide": false,
                 "type": "major",
