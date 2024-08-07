@@ -47,10 +47,9 @@ function createSemester(number) {
     semesterHead.appendChild(semText);
 
     if (number > 8) {
-        console.log("theres deleting here")
         const deleteButton = document.createElement('div');
         deleteButton.className = 'delete-semester-btn';
-        deleteButton.innerHTML = `<img src="icons/cross.png" alt="x" style="width:12px"> `
+        deleteButton.innerHTML = `&nbsp<img src="icons/cross.png" alt="x" style="width:12px"> `
 
         deleteButton.setAttribute('data-semester-id', semesterDiv.id);
 
@@ -96,32 +95,41 @@ function handleDragStart(event) {
         tooltip.style.display = 'none';
     }
     event.dataTransfer.setData('text/plain', event.target.id);
-
-    event.currentTarget.addEventListener('dragend', () => {
-        if (tooltip) {
-            tooltip.style.display = '';
-        }
-    }, { once: true });
 }
-
-function allowDrop(event) {
-    event.preventDefault();
-}
-
 function handleDrop(event) {
     event.preventDefault();
     const courseId = event.dataTransfer.getData('text/plain');
     const courseElement = document.getElementById(courseId);
     let target = event.target;
 
-    if (target.classList.contains('course')) {
-        target = target.closest('.semester') || target.closest('#course-pool');
+    // Ensure target is a valid drop area within a semester or the course pool
+    if (!target.classList.contains('course') && !target.closest('.semester') && !target.closest('#course-pool')) {
+        return;
     }
 
     const targetSemester = target.closest('.semester');
+    const coursePool = document.getElementById('course-pool');
 
     if (targetSemester && courseElement) {
-        targetSemester.appendChild(courseElement);
+        const semesterCourses = Array.from(targetSemester.querySelectorAll('.course'));
+        const mouseY = event.clientY;
+
+        let insertBeforeElement = null;
+        for (let i = 0; i < semesterCourses.length; i++) {
+            const course = semesterCourses[i];
+            const courseRect = course.getBoundingClientRect();
+
+            if (mouseY < courseRect.top + courseRect.height / 2) {
+                insertBeforeElement = course;
+                break;
+            }
+        }
+
+        if (insertBeforeElement) {
+            targetSemester.insertBefore(courseElement, insertBeforeElement);
+        } else {
+            targetSemester.appendChild(courseElement);
+        }
 
         const semesterText = targetSemester.textContent || targetSemester.innerText;
         const semesterNumberMatch = semesterText.match(/\d+/);
@@ -130,12 +138,16 @@ function handleDrop(event) {
             updateCoursePoolWidth();
         }
     } else if (courseElement) {
-        const coursePool = document.getElementById('course-pool');
         if (event.target === coursePool || coursePool.contains(event.target)) {
             coursePool.appendChild(courseElement);
         }
     }
 }
+
+function allowDrop(event) {
+    event.preventDefault();
+}
+
 
 function newSemester() {
     const semesterPool = document.getElementById('semester-pool');

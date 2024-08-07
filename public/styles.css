@@ -30,7 +30,7 @@ body {
     margin-bottom: 6px;
     padding: 2px;
     cursor: grab;
-    width: 95px;
+    width: 100px;
     height: 70px;
     font-size: 10px;
     border-radius: 4px;
@@ -265,8 +265,7 @@ a:hover {
     align-items: center;
     justify-content: center;
     background-color: rgba(255, 255, 255, 0.2);
-    padding: 6px;
+    padding: 3px;
 }
-
 
 
