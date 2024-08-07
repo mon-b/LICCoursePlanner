@@ -25,10 +25,11 @@ body {
     flex-direction: column;
     justify-content: center;
     text-align: center;
-    margin: 6px;
+    margin-top: 6px;
+    margin-bottom: 6px;
     padding: 2px;
     cursor: grab;
-    width: 90px;
+    width: 95px;
     height: 70px;
     font-size: 10px;
     border-radius: 4px;
@@ -106,6 +107,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-left: 6px;
     background: #2C333A;
     overflow: visible;
 }
