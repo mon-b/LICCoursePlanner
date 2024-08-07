@@ -18,14 +18,14 @@ function createCourse(course) {
     courseDiv.id = course.id;
 
     courseDiv.addEventListener('dragstart', handleDragStart);
-    courseDiv.addEventListener('click', handleStrikeDivClick);
+    courseDiv.addEventListener('click', handleTakenCourse);
 
     return courseDiv;
 }
 
-function handleStrikeDivClick(event) {
+function handleTakenCourse(event) {
     const courseDiv = event.currentTarget;
-    courseDiv.classList.toggle('striked');
+    courseDiv.classList.toggle('taken');
 }
 
 function initializeCoursePool() {

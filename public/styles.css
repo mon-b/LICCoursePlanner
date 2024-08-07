@@ -193,30 +193,6 @@ body {
     border-radius: 8px;
 }
 
-.course.striked {
-    position: relative;
-}
-
-.course.striked::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 122%;
-    height: 4px;
-    background-color: darkred;
-    transform: rotate(-37deg) translate(-50%, -50%);
-    transform-origin: 0% 0%;
-    pointer-events: none;
-}
-
-.strike-button {
-    height: 10px;
-    width: 10px;
-    border-radius: 50%;
-    background: #8590A2;
-}
-
 .prereq-tooltip {
     position: absolute;
     z-index: 10000; /* Ensure it's high enough */
@@ -250,3 +226,4 @@ body {
 .course:hover .prereq-tooltip {
     transition-delay: 1.5s;
 }
+

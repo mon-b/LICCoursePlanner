@@ -121,3 +121,15 @@
 
 }
 
+.taken {
+    background-color: #7e7e7e;
+}
+
+.taken .course-content {
+
+    color: #161A1D;
+}
+
+.taken:hover {
+    background: #919191;
+}
