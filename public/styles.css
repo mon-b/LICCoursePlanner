@@ -35,6 +35,10 @@ body {
     border-radius: 4px;
 }
 
+.collapsible-course-pool .course {
+    margin-left: 10px;
+}
+
 .hidden {
     display: none;
 }

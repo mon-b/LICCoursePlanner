@@ -353,7 +353,7 @@ const optData = [{
             "number": 75
         },
         {
-            "id": "AST0111",
+            "id": "*AST0111",
             "name": "Astronomía",
             "prereq": null,
             "cred": "10",
@@ -364,7 +364,7 @@ const optData = [{
             "number": 76
         },
         {
-            "id": "AST0212",
+            "id": "*AST0212",
             "name": "Introducción al Análisis de Datos",
             "prereq": null,
             "cred": "10",
@@ -375,7 +375,7 @@ const optData = [{
             "number": 77
         },
         {
-            "id": "AST0222",
+            "id": "*AST0222",
             "name": "Taller de Astronomía",
             "prereq": null,
             "cred": "10",
@@ -386,7 +386,7 @@ const optData = [{
             "number": 78
         },
         {
-            "id": "BIO242C",
+            "id": "*BIO242C",
             "name": "Bioestadística",
             "prereq": null,
             "cred": "10",
@@ -397,7 +397,7 @@ const optData = [{
             "number": 79
         },
         {
-            "id": "BIO231C",
+            "id": "*BIO231C",
             "name": "Ecología",
             "prereq": null,
             "cred": "10",
