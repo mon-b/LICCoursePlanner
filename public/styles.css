@@ -3,7 +3,7 @@ body {
     background-color: #161A1D;
     color: #ededed;
     overflow-y: scroll;
-    margin: 0px;
+    margin: 0;
 }
 .container {
     display: flex;
@@ -17,7 +17,8 @@ body {
     background: #22272B;
     padding-left: 4px;
     padding-right: 4px;
-    padding-top: 10px
+    padding-top: 10px;
+    font-size: 14px;
 }
 
 .course {
@@ -258,5 +259,14 @@ a:hover {
     color: #5da1ff;
     text-decoration: underline;
 }
+
+.semesterHead {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 6px;
+}
+
 
 

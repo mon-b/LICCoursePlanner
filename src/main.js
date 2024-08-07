@@ -37,8 +37,31 @@ function initializeCoursePool() {
 
 function createSemester(number) {
     const semesterDiv = document.createElement('div');
+    semesterDiv.id = 'sem' + number;
     semesterDiv.className = 'semester';
-    semesterDiv.textContent = 'Semestre ' + number;
+
+    const semesterHead = document.createElement('div');
+    semesterHead.className = 'semesterHead';
+
+    const semText = document.createTextNode('Semestre ' + number);
+    semesterHead.appendChild(semText);
+
+    if (number > 8) {
+        console.log("theres deleting here")
+        const deleteButton = document.createElement('div');
+        deleteButton.className = 'delete-semester-btn';
+        deleteButton.innerHTML = `<img src="icons/cross.png" alt="x" style="width:12px"> `
+
+        deleteButton.setAttribute('data-semester-id', semesterDiv.id);
+
+        deleteButton.addEventListener('click', function () {
+            const semesterID = this.getAttribute('data-semester-id');
+            deleteSemester(semesterID);
+        });
+
+        semesterHead.appendChild(deleteButton);
+    }
+    semesterDiv.appendChild(semesterHead);
 
     semesterDiv.addEventListener('dragover', allowDrop);
     semesterDiv.addEventListener('drop', handleDrop);
@@ -125,8 +148,23 @@ function newSemester() {
     semesterPool.appendChild(addSemesterBtn);
 }
 
+function deleteSemester(semesterID) {
+    const confirmed = window.confirm('¿Quieres eliminar este semestre?');
+    if (confirmed) {
+        const semester = document.getElementById(semesterID)
+        const coursePool = document.getElementById('course-pool');
+
+        while (semester.firstChild) {
+            coursePool.appendChild(semester.firstChild);
+        }
+        semester.parentNode.removeChild(semester);
+        updateCoursePoolWidth()
+    }
+
+}
+
 function handleAddSemesterClick() {
-    const confirmed = window.confirm('Are you sure you want to add a new semester?');
+    const confirmed = window.confirm('¿Quieres añadir un nuevo semestre?');
 
     if (confirmed) {
         newSemester();
