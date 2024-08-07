@@ -3,7 +3,7 @@ body {
     background-color: #161A1D;
     color: #ededed;
     overflow-y: scroll;
-    margin-bottom: 20px;
+    margin: 0px;
 }
 .container {
     display: flex;
@@ -232,4 +232,31 @@ body {
 .course:hover .prereq-tooltip {
     transition-delay: 1.5s;
 }
+
+.footer {
+    text-align: center;
+    margin-top: 4vh;
+    background-color: #25292c;
+    padding: 40px;
+}
+
+a:link {
+    color: #5da1ff;
+    text-decoration: none;
+}
+
+a:visited {
+    color: #5da1ff;
+}
+
+
+a:active {
+    color: #5da1ff;
+}
+
+a:hover {
+    color: #5da1ff;
+    text-decoration: underline;
+}
+
 
