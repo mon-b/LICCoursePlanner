@@ -96,6 +96,14 @@ function handleDragStart(event) {
     }
     event.dataTransfer.setData('text/plain', event.target.id);
 }
+
+function handleDragEnd(event) {
+    const tooltip = event.currentTarget.querySelector('.prereq-tooltip');
+    if (tooltip) {
+        tooltip.style.display = 'block'; // Show the tooltip again
+    }
+}
+
 function handleDrop(event) {
     event.preventDefault();
     const courseId = event.dataTransfer.getData('text/plain');
@@ -285,6 +293,8 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.course').forEach(course => {
         course.addEventListener('mouseover', showTooltip);
         course.addEventListener('mouseout', hideTooltip);
+        course.addEventListener('dragstart', handleDragStart);
+        course.addEventListener('dragend', handleDragEnd);
     });
 
     updateCoursePoolWidth();
