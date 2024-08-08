@@ -34,28 +34,6 @@
             "number": 46
         },
         {
-            "id": "COM819",
-            "name": "Taller de Prototipos Mediales",
-            "prereq": null,
-            "cred": "10",
-            "hide": false,
-            "parity": null,
-            "type": "optcom",
-            "name_stylized": "Taller de Prototipos Mediales",
-            "number": 47
-        },
-        {
-            "id": "COM819",
-            "name": "Taller de Prototipos Mediales",
-            "prereq": null,
-            "cred": "10",
-            "hide": false,
-            "parity": null,
-            "type": "optcom",
-            "name_stylized": "Taller de Prototipos Mediales",
-            "number": 48
-        },
-        {
             "id": "COM813",
             "name": "Taller de Narracion e Industria de Esports",
             "prereq": null,
