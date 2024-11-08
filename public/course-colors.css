@@ -122,14 +122,7 @@
 }
 
 .taken {
-    background-color: #7e7e7e;
+    opacity: 0.55;
 }
 
-.taken .course-content {
 
-    color: #161A1D;
-}
-
-.taken:hover {
-    background: #919191;
-}

@@ -3,7 +3,7 @@ body {
     background-color: #161A1D;
     color: #ededed;
     overflow-y: scroll;
-    margin-bottom: 20px;
+    margin: 0;
 }
 .container {
     display: flex;
@@ -17,7 +17,8 @@ body {
     background: #22272B;
     padding-left: 4px;
     padding-right: 4px;
-    padding-top: 10px
+    padding-top: 10px;
+    font-size: 14px;
 }
 
 .course {
@@ -25,13 +26,18 @@ body {
     flex-direction: column;
     justify-content: center;
     text-align: center;
-    margin: 6px;
+    margin-top: 6px;
+    margin-bottom: 6px;
     padding: 2px;
     cursor: grab;
-    width: 90px;
+    width: 100px;
     height: 70px;
     font-size: 10px;
     border-radius: 4px;
+}
+
+.collapsible-course-pool .course {
+    margin-left: 10px;
 }
 
 .hidden {
@@ -106,6 +112,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-left: 6px;
     background: #2C333A;
     overflow: visible;
 }
@@ -227,3 +234,40 @@ body {
     transition-delay: 1.5s;
 }
 
+.footer {
+    text-align: center;
+    margin-top: 4vh;
+    background-color: #25292c;
+    padding: 40px;
+}
+
+a:link {
+    color: #5da1ff;
+    text-decoration: none;
+}
+
+a:visited {
+    color: #5da1ff;
+}
+
+
+a:active {
+    color: #5da1ff;
+}
+
+a:hover {
+    color: #5da1ff;
+    text-decoration: underline;
+}
+
+.semesterHead {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 3px;
+}
+
+.delete-semester-btn:hover img{
+    filter: brightness(1.6);
+}

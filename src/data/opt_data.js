@@ -3,6 +3,7 @@ const optData = [{
         {
             "id": "COM043",
             "name": "Periodismo de Datos",
+            "name_english": "Data Journalism",
             "prereq": "COM117",
             "cred": "10",
             "hide": false,
@@ -14,6 +15,7 @@ const optData = [{
         {
             "id": "COM117",
             "name": "Narración Interactiva",
+            "name_english": "Interactive Storytelling",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -25,6 +27,7 @@ const optData = [{
         {
             "id": "COM819",
             "name": "Taller de Prototipos Mediales",
+            "name_english": "Media Prototypes Workshop",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -36,6 +39,7 @@ const optData = [{
         {
             "id": "COM819",
             "name": "Taller de Prototipos Mediales",
+            "name_english": "Media Prototypes Workshop",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -47,6 +51,7 @@ const optData = [{
         {
             "id": "COM819",
             "name": "Taller de Prototipos Mediales",
+            "name_english": "Media Prototypes Workshop",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -58,6 +63,7 @@ const optData = [{
         {
             "id": "COM813",
             "name": "Taller de Narracion e Industria de Esports",
+            "name_english": "Esports Industry and Narration Workshop",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -69,6 +75,7 @@ const optData = [{
         {
             "id": "IMT2117",
             "name": "Probabilidades y Algoritmos",
+            "name_english": "Probabilities and Algorithms",
             "prereq": "IIC1253",
             "cred": "10",
             "hide": false,
@@ -80,6 +87,7 @@ const optData = [{
         {
             "id": "MAT2225",
             "name": "Teoria de Numeros",
+            "name_english": "Number Theory",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -91,6 +99,7 @@ const optData = [{
         {
             "id": "MAT2605",
             "name": "Calculo Cientifico I",
+            "name_english": "Scientific Computing I",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -102,6 +111,7 @@ const optData = [{
         {
             "id": "MAT2205",
             "name": "Algebra Abstracta I",
+            "name_english": "Abstract Algebra I",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -113,6 +123,7 @@ const optData = [{
         {
             "id": "LET0121",
             "name": "Grandes Preguntas sobre el Lenguaje",
+            "name_english": "Big Questions About Language",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -124,6 +135,7 @@ const optData = [{
         {
             "id": "LET0131",
             "name": "Gramatica Española I",
+            "name_english": "Spanish Grammar I",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -135,6 +147,7 @@ const optData = [{
         {
             "id": "LET116E",
             "name": "Herramientas Informaticas para Analisis Linguisticos",
+            "name_english": "Computer Tools for Linguistic Analysis",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -146,6 +159,7 @@ const optData = [{
         {
             "id": "LET0129",
             "name": "Linguistica de Corpus y Computacional",
+            "name_english": "Corpus and Computational Linguistics",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -157,6 +171,7 @@ const optData = [{
         {
             "id": "EAE1210",
             "name": "Introduccion a la Macroeconomia",
+            "name_english": "Introduction to Macroeconomics",
             "prereq": "EAE1110",
             "cred": "10",
             "hide": false,
@@ -168,6 +183,7 @@ const optData = [{
         {
             "id": "EAE1110",
             "name": "Introduccion a la Microeconomia",
+            "name_english": "Introduction to Microeconomics",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -179,6 +195,7 @@ const optData = [{
         {
             "id": "EAE2510",
             "name": "Econometria",
+            "name_english": "Econometrics",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -190,6 +207,7 @@ const optData = [{
         {
             "id": "EAE1220",
             "name": "Analisis Economico: la Experiencia Chilena",
+            "name_english": "Economic Analysis: The Chilean Experience",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -201,6 +219,7 @@ const optData = [{
         {
             "id": "AST0212",
             "name": "Introduccion al Analisis de Datos",
+            "name_english": "Introduction to Data Analysis",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -212,6 +231,7 @@ const optData = [{
         {
             "id": "AST0222",
             "name": "Taller de Astronomia",
+            "name_english": "Astronomy Workshop",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -223,6 +243,7 @@ const optData = [{
         {
             "id": "AST0111",
             "name": "Astronomia",
+            "name_english": "Astronomy",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -234,6 +255,7 @@ const optData = [{
         {
             "id": "BIO242C",
             "name": "Bioestadistica",
+            "name_english": "Biostatistics",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -245,6 +267,7 @@ const optData = [{
         {
             "id": "BIO231C",
             "name": "Ecologia",
+            "name_english": "Ecology",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -256,6 +279,7 @@ const optData = [{
         {
             "id": "BIO298E",
             "name": "Trabajo Experimental en Ecologia",
+            "name_english": "Experimental Work in Ecology",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -267,6 +291,7 @@ const optData = [{
         {
             "id": "BIO299L",
             "name": "Laboratorio Fisiologia",
+            "name_english": "Physiology Laboratory",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -278,6 +303,7 @@ const optData = [{
         {
             "id": "FIS0154",
             "name": "Dinámica",
+            "name_english": "Dynamics",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -289,6 +315,7 @@ const optData = [{
         {
             "id": "ICE1514",
             "name": "Dinámica",
+            "name_english": "Dynamics",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -300,6 +327,7 @@ const optData = [{
         {
             "id": "FIS1523",
             "name": "Termodinámica",
+            "name_english": "Thermodynamics",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -311,6 +339,7 @@ const optData = [{
         {
             "id": "ICM1003",
             "name": "Termodinámica",
+            "name_english": "Thermodynamics",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -322,6 +351,7 @@ const optData = [{
         {
             "id": "IIQ1003",
             "name": "Termodinámica",
+            "name_english": "Thermodynamics",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -333,6 +363,7 @@ const optData = [{
         {
             "id": "FIS1533",
             "name": "Electricidad y Magnetismo",
+            "name_english": "Electricity and Magnetism",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -344,6 +375,7 @@ const optData = [{
         {
             "id": "IEE1533",
             "name": "Electricidad y Magnetismo",
+            "name_english": "Electricity and Magnetism",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -353,8 +385,9 @@ const optData = [{
             "number": 75
         },
         {
-            "id": "AST0111",
+            "id": "*AST0111",
             "name": "Astronomía",
+            "name_english": "Astronomy",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -364,8 +397,9 @@ const optData = [{
             "number": 76
         },
         {
-            "id": "AST0212",
+            "id": "*AST0212",
             "name": "Introducción al Análisis de Datos",
+            "name_english": "Introduction to Data Analysis",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -375,8 +409,9 @@ const optData = [{
             "number": 77
         },
         {
-            "id": "AST0222",
+            "id": "*AST0222",
             "name": "Taller de Astronomía",
+            "name_english": "Astronomy Workshop",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -386,8 +421,9 @@ const optData = [{
             "number": 78
         },
         {
-            "id": "BIO242C",
+            "id": "*BIO242C",
             "name": "Bioestadística",
+            "name_english": "Biostatistics",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -397,8 +433,9 @@ const optData = [{
             "number": 79
         },
         {
-            "id": "BIO231C",
+            "id": "*BIO231C",
             "name": "Ecología",
+            "name_english": "Ecology",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -410,6 +447,7 @@ const optData = [{
         {
             "id": "QIM100E",
             "name": "Química para Ingeniería",
+            "name_english": "Chemistry for Engineering",
             "prereq": null,
             "cred": "10",
             "hide": false,
@@ -421,6 +459,7 @@ const optData = [{
         {
             "id": "IIC2026",
             "name": "Visualización de Información",
+            "name_english": "Information Visualization",
             "prereq": "IIC1103",
             "cred": "10",
             "hide": false,
@@ -432,6 +471,7 @@ const optData = [{
         {
             "id": "IIC2433",
             "name": "Minería de Datos",
+            "name_english": "Data Mining",
             "prereq": "EYP1025 y IIC1103 y MAT1203",
             "cred": "10",
             "hide": false,
@@ -443,6 +483,7 @@ const optData = [{
         {
             "id": "IIC2113",
             "name": "Diseño Detallado de Software",
+            "name_english": "Detailed Software Design",
             "prereq": "IIC2143",
             "cred": "10",
             "hide": false,
@@ -454,6 +495,7 @@ const optData = [{
         {
             "id": "IIC2173",
             "name": "Arquitectura de Sistemas de Software",
+            "name_english": "Software Systems Architecture",
             "prereq": "IIC2143",
             "cred": "10",
             "hide": false,
@@ -465,6 +507,7 @@ const optData = [{
         {
             "id": "IIC2293",
             "name": "Algoritmos Avanzados",
+            "name_english": "Advanced Algorithms",
             "prereq": "IIC2283",
             "cred": "10",
             "hide": false,
@@ -476,16 +519,16 @@ const optData = [{
         {
             "id": "IIC2714",
             "name": "Fundamentos de Procesamiento de Imagenes",
+            "name_english": "Fundamentals of Image Processing",
             "prereq": "créditos >= 200",
             "cred": "10",
             "hide": false,
             "parity": null,
             "type": "optcomp",
-            "name_stylized": "Fundamentos de Procesamiento de Imagenes",
-            "number": 87
+                "name_stylized": "Fundamentos de Procesamiento de Imagenes",
+                "number": 87
         }
     ]
-}
-]
+}]
 
 export default optData

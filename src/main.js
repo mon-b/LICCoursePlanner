@@ -37,13 +37,54 @@ function initializeCoursePool() {
 
 function createSemester(number) {
     const semesterDiv = document.createElement('div');
+    semesterDiv.id = 'sem' + number;
     semesterDiv.className = 'semester';
-    semesterDiv.textContent = 'Semestre ' + number;
+
+    const semesterHead = document.createElement('div');
+    semesterHead.className = 'semesterHead';
+
+    const semText = document.createTextNode('Semestre ' + number);
+    semesterHead.appendChild(semText);
+
+    if (number > 8) {
+        const deleteButton = document.createElement('div');
+        deleteButton.className = 'delete-semester-btn';
+        deleteButton.innerHTML = `&nbsp<img src="icons/cross.png" alt="x" style="width:12px"> `
+
+        deleteButton.setAttribute('data-semester-id', semesterDiv.id);
+
+        deleteButton.addEventListener('click', function () {
+            const semesterID = this.getAttribute('data-semester-id');
+            deleteSemester(semesterID);
+        });
+
+        semesterHead.appendChild(deleteButton);
+    }
+
+    semesterDiv.appendChild(semesterHead);
 
     semesterDiv.addEventListener('dragover', allowDrop);
     semesterDiv.addEventListener('drop', handleDrop);
 
     return semesterDiv;
+}
+
+function deleteSemester(semesterID) {
+    const confirmed = window.confirm('¿Quieres eliminar este semestre?');
+    if (confirmed) {
+        const semester = document.getElementById(semesterID)
+        const coursePool = document.getElementById('course-pool');
+
+        const semesterHead = semester.firstChild;
+        semester.removeChild(semesterHead); // so the head isnt returned to the course pool
+
+        while (semester.firstChild) {
+            coursePool.appendChild(semester.firstChild);
+        }
+        semester.parentNode.removeChild(semester);
+        updateCoursePoolWidth()
+    }
+
 }
 
 function initializeSemesters() {
