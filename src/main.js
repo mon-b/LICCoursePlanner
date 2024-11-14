@@ -1,6 +1,13 @@
 import jsonData from './data/default_data.js';
 import optData from './data/opt_data.js';
+import translations from './data/eng_esp.js';
+import legend from "./data/legend.js";
 
+const semester = translations.semester;
+const show = translations.show;
+const credits = translations.credits;
+
+let eng = true;
 
 function createCourse(course) {
     const courseDiv = document.createElement('div');
@@ -8,9 +15,9 @@ function createCourse(course) {
     courseDiv.draggable = true;
     courseDiv.innerHTML = `
         <div class="course-content">
-            <b class="course-name">${course.name_stylized}</b> <br>
+            <b class="course-name">${course.name_english}</b> <br>
             [${course.id}] <br>
-            <small>${course.cred} créditos</small>
+            <small>${course.cred} ${credits.english}</small>
             
         </div>
         <span class="prereq-tooltip">Prereq: ${course.prereq}</span>
@@ -43,7 +50,7 @@ function createSemester(number) {
     const semesterHead = document.createElement('div');
     semesterHead.className = 'semesterHead';
 
-    const semText = document.createTextNode('Semestre ' + number);
+    const semText = document.createTextNode(semester.english + " " + number);
     semesterHead.appendChild(semText);
 
     if (number > 8) {
@@ -201,7 +208,7 @@ function toggleCoursePool() {
         imgIcon.src = 'icons/less.png';
     } else {
         coursePool.style.display = 'none';
-        toggleText.textContent = 'Mostrar Cursos Disponibles';
+        toggleText.textContent = show.english;
         imgIcon.src = 'icons/more.png';
     }
 }

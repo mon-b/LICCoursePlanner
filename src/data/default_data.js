@@ -61,18 +61,6 @@ const jsonData = [
                 "type": "ofg",
                 "name_stylized": "Filosofía: ¿Para Qué?",
                 "number": 5
-            },
-            {
-                "id": "VRA100C",
-                "name": "EXAMEN DE COMUNICACIÓN ESCRITA",
-                "name_english": "Written Communication Exam",
-                "prereq": null,
-                "cred": "0",
-                "hide": true,
-                "parity": "both",
-                "type": "general",
-                "name_stylized": "Examen de Comunicación Escrita",
-                "number": 6
             }
         ]
     },
@@ -138,18 +126,6 @@ const jsonData = [
                 "type": "ofg",
                 "name_stylized": "Formación Teológica",
                 "number": 11
-            },
-            {
-                "id": "VRA3010",
-                "name": "ENGLISH TEST ALTE 3",
-                "name_english": "English Test ALTE 3",
-                "prereq": null,
-                "cred": "0",
-                "hide": true,
-                "parity": "both",
-                "type": "general",
-                "name_stylized": "English Test ALTE 3",
-                "number": 12
             }
         ]
     },
@@ -345,18 +321,6 @@ const jsonData = [
                 "type": "ofg",
                 "name_stylized": "OFG",
                 "number": 27
-            },
-            {
-                "id": "IIC2001",
-                "name": "PRÁCTICA DE CIENCIA DE LA COMPUTACIÓN",
-                "name_english": "Computer Science Internship",
-                "prereq": "IIC2143 o IIC2142",
-                "cred": "5",
-                "hide": false,
-                "parity": null,
-                "type": "dcc",
-                "name_stylized": "Práctica de Ciencia de la Computación",
-                "number": 28
             }
         ]
     },
@@ -486,6 +450,18 @@ const jsonData = [
                 "type": "ofg",
                 "name_stylized": "OFG",
                 "number": 38
+            },
+            {
+                "id": "IIC2001",
+                "name": "PRÁCTICA DE CIENCIA DE LA COMPUTACIÓN",
+                "name_english": "Computer Science Internship",
+                "prereq": "IIC2143 o IIC2142",
+                "cred": "5",
+                "hide": false,
+                "parity": null,
+                "type": "dcc",
+                "name_stylized": "Práctica de Ciencia de la Computación",
+                "number": 28
             }
         ]
     },
