@@ -6,8 +6,8 @@ const translations = {
         },
     show:
         {
-            "english": "Show Available Courses",
-            "spanish": "Mostrar Cursos Disponibles"
+            "english": "Show available courses",
+            "spanish": "Mostrar cursos disponibles"
         },
     credits:
         {

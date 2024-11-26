@@ -8,6 +8,13 @@ const show = translations.show;
 const credits = translations.credits;
 
 let eng = true;
+let placeholder = document.createElement('div');
+placeholder.className = 'course-placeholder';
+
+
+function initializeFilters() {
+    // 
+}
 
 function createCourse(course) {
     const courseDiv = document.createElement('div');
@@ -15,9 +22,9 @@ function createCourse(course) {
     courseDiv.draggable = true;
     courseDiv.innerHTML = `
         <div class="course-content">
-            <b class="course-name">${course.name_english}</b> <br>
+            <b class="course-name">${course.name_stylized}</b> <br>
             [${course.id}] <br>
-            <small>${course.cred} ${credits.english}</small>
+            <small>${course.cred} ${credits.spanish}</small>
             
         </div>
         <span class="prereq-tooltip">Prereq: ${course.prereq}</span>
@@ -50,7 +57,7 @@ function createSemester(number) {
     const semesterHead = document.createElement('div');
     semesterHead.className = 'semesterHead';
 
-    const semText = document.createTextNode(semester.english + " " + number);
+    const semText = document.createTextNode(semester.spanish + " " + number);
     semesterHead.appendChild(semText);
 
     if (number > 8) {
@@ -120,23 +127,80 @@ function handleDragStart(event) {
     if (tooltip) {
         tooltip.style.display = 'none';
     }
+
+    // Make the dragged element invisible without deleting it
+    event.target.style.opacity = '50';
+
+    // Create a placeholder element and insert it into the target's position
+    const placeholder = document.createElement('div');
+    placeholder.classList.add('placeholder');
+    event.target.parentNode.insertBefore(placeholder, event.target.nextSibling);
+
     event.dataTransfer.setData('text/plain', event.target.id);
 
-    event.currentTarget.addEventListener('dragend', () => {
-        if (tooltip) {
-            tooltip.style.display = '';
-        }
-    }, { once: true });
+    event.currentTarget.addEventListener(
+        'dragend',
+        () => {
+            if (tooltip) {
+                tooltip.style.display = '';
+            }
+
+            // Remove the placeholder after the drag ends
+            if (placeholder.parentNode) {
+                placeholder.parentNode.removeChild(placeholder);
+            }
+
+            // Insert the dragged course into the correct position
+            if (event.target.closest('.semester')) {
+                event.target.closest('.semester').appendChild(event.target);
+            } else {
+                document.getElementById('course-pool').appendChild(event.target);
+            }
+
+            // Reset the course style (opacity and position)
+            event.target.style.opacity = '';
+        },
+        { once: true }
+    );
 }
+
+
+
 
 function allowDrop(event) {
     event.preventDefault();
+
+    const target = event.target.closest('.semester');
+    if (target && target.classList.contains('semester')) {
+        const mouseY = event.clientY;
+
+        const children = Array.from(target.children).filter(
+            child => child.classList.contains('course')
+        );
+
+        let insertBefore = null;
+        for (const child of children) {
+            const rect = child.getBoundingClientRect();
+            if (mouseY < rect.top + rect.height / 2) {
+                insertBefore = child;
+                break;
+            }
+        }
+
+        if (insertBefore) {
+            insertBefore.parentNode.insertBefore(placeholder, insertBefore);
+        } else if (!target.contains(placeholder)) {
+            target.appendChild(placeholder);
+        }
+    }
 }
 
 function handleDrop(event) {
     event.preventDefault();
+
     const courseId = event.dataTransfer.getData('text/plain');
     const courseElement = document.getElementById(courseId);
+
     let target = event.target;
 
     if (target.classList.contains('course')) {
@@ -146,11 +210,16 @@ function handleDrop(event) {
     const targetSemester = target.closest('.semester');
 
     if (targetSemester && courseElement) {
-        targetSemester.appendChild(courseElement);
+        if (placeholder.parentNode === targetSemester) {
+            targetSemester.insertBefore(courseElement, placeholder);
+        } else {
+            targetSemester.appendChild(courseElement);
+        }
 
         const semesterText = targetSemester.textContent || targetSemester.innerText;
         const semesterNumberMatch = semesterText.match(/\d+/);
         const semesterNumber = semesterNumberMatch ? parseInt(semesterNumberMatch[0], 10) : null;
+
         if (semesterNumber >= 9) {
             updateCoursePoolWidth();
         }
@@ -160,7 +229,14 @@ function handleDrop(event) {
             coursePool.appendChild(courseElement);
         }
     }
+
+    // Remove the placeholder
+    if (placeholder.parentNode) {
+        placeholder.parentNode.removeChild(placeholder);
+    }
 }
+
+
 
 function newSemester() {
     const semesterPool = document.getElementById('semester-pool');
@@ -208,7 +284,7 @@ function toggleCoursePool() {
         imgIcon.src = 'icons/less.png';
     } else {
         coursePool.style.display = 'none';
-        toggleText.textContent = show.english;
+        toggleText.textContent = show.spanish;
         imgIcon.src = 'icons/more.png';
     }
 }
@@ -255,7 +331,6 @@ function showTooltip(event) {
         }, { once: true });
     }
 }
-
 
 function hideTooltip(event) {
     clearTimeout(tooltipTimeout);

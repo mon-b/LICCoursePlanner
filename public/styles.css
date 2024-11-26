@@ -36,6 +36,14 @@ body {
     border-radius: 4px;
 }
 
+.course-placeholder {
+    height: 70px;
+    border: 2px dashed #007bff; /* A dashed border for visual clarity */
+    background-color: rgba(0, 123, 255, 0.1); /* Light blue background */
+    margin: 4px 0; /* Space around the placeholder */
+}
+
+
 .collapsible-course-pool .course {
     margin-left: 10px;
 }
@@ -85,6 +93,12 @@ body {
     flex-wrap: wrap;
     align-items: center;
     align-content: center;
+}
+
+.legend-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .legend-circle {
