@@ -21,13 +21,19 @@ body {
     font-size: 14px;
 }
 
+.dragging {
+    position: fixed;
+    opacity: 0;
+    pointer-events: none;
+}
+
 .course {
     display: flex;
     flex-direction: column;
     justify-content: center;
     text-align: center;
-    margin-top: 6px;
-    margin-bottom: 6px;
+    margin-top: 10px;
+    margin-bottom: 4px;
     padding: 2px;
     cursor: grab;
     width: 100px;
@@ -37,10 +43,13 @@ body {
 }
 
 .course-placeholder {
-    height: 70px;
+    height: 68px;
+    width: 96px;
     border: 2px dashed #007bff; /* A dashed border for visual clarity */
     background-color: rgba(0, 123, 255, 0.1); /* Light blue background */
-    margin: 4px 0; /* Space around the placeholder */
+    margin-top: 10px;
+    margin-bottom: 4px;
+    padding: 2px;
 }
 
 

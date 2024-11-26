@@ -122,62 +122,34 @@ function initializeSemesters() {
     semesterPool.addEventListener('drop', handleDrop);
 }
 
-function handleDragStart(event) {
-    const tooltip = event.currentTarget.querySelector('.prereq-tooltip');
-    if (tooltip) {
-        tooltip.style.display = 'none';
-    }
-
-    // Make the dragged element invisible without deleting it
-    event.target.style.opacity = '50';
-
-    // Create a placeholder element and insert it into the target's position
-    const placeholder = document.createElement('div');
-    placeholder.classList.add('placeholder');
-    event.target.parentNode.insertBefore(placeholder, event.target.nextSibling);
-
-    event.dataTransfer.setData('text/plain', event.target.id);
-
-    event.currentTarget.addEventListener(
-        'dragend',
-        () => {
-            if (tooltip) {
-                tooltip.style.display = '';
-            }
-
-            // Remove the placeholder after the drag ends
-            if (placeholder.parentNode) {
-                placeholder.parentNode.removeChild(placeholder);
-            }
-
-            // Insert the dragged course into the correct position
-            if (event.target.closest('.semester')) {
-                event.target.closest('.semester').appendChild(event.target);
-            } else {
-                document.getElementById('course-pool').appendChild(event.target);
-            }
-
-            // Reset the course style (opacity and position)
-            event.target.style.opacity = '';
-        },
-        { once: true }
-    );
-}
-
-
-
-
 function allowDrop(event) {
     event.preventDefault();
 
-    const target = event.target.closest('.semester');
-    if (target && target.classList.contains('semester')) {
-        const mouseY = event.clientY;
+    const target = event.target.closest('.semester, #course-pool');
+    if (!target) return;
 
+    const mouseY = event.clientY;
+    const draggedCourse = document.querySelector('.course[style*="opacity: 0.5"]');
+    if (!draggedCourse) return;
+
+    // Handle differently based on target type
+    if (target.id === 'course-pool') {
+        // For course pool, just append placeholder at the end if not already there
+        if (placeholder.parentNode !== target) {
+            if (placeholder.parentNode) {
+                placeholder.parentNode.removeChild(placeholder);
+            }
+            target.appendChild(placeholder);
+        }
+    } else if (target.classList.contains('semester')) {
+        // Get all courses in this semester except the dragged one
         const children = Array.from(target.children).filter(
-            child => child.classList.contains('course')
+            child => child.classList.contains('course') &&
+                child !== draggedCourse &&
+                child !== placeholder
         );
 
+        // Find where to insert based on mouse position
         let insertBefore = null;
         for (const child of children) {
             const rect = child.getBoundingClientRect();
@@ -187,10 +159,23 @@ function allowDrop(event) {
             }
         }
 
-        if (insertBefore) {
-            insertBefore.parentNode.insertBefore(placeholder, insertBefore);
-        } else if (!target.contains(placeholder)) {
-            target.appendChild(placeholder);
+        // Remove placeholder from its current position
+        if (placeholder.parentNode) {
+            placeholder.parentNode.removeChild(placeholder);
+        }
+
+        // Check if we would be placing right after the dragged course
+        const wouldBePlacedAfterDraggedCourse =
+            (draggedCourse.nextElementSibling === insertBefore) ||
+            (draggedCourse.nextElementSibling === placeholder && !insertBefore);
+
+        // Only show placeholder if it wouldn't be placed right after the dragged course
+        if (!wouldBePlacedAfterDraggedCourse) {
+            if (insertBefore) {
+                target.insertBefore(placeholder, insertBefore);
+            } else {
+                target.appendChild(placeholder);
+            }
         }
     }
 }
@@ -201,42 +186,59 @@ function handleDrop(event) {
     const courseId = event.dataTransfer.getData('text/plain');
     const courseElement = document.getElementById(courseId);
 
-    let target = event.target;
+    // Return early if we don't have both elements
+    if (!courseElement || !placeholder.parentNode) return;
 
-    if (target.classList.contains('course')) {
-        target = target.closest('.semester') || target.closest('#course-pool');
-    }
+    // Get the target container (either semester or course pool)
+    const targetContainer = event.target.closest('.semester, #course-pool');
+    if (!targetContainer) return;
 
-    const targetSemester = target.closest('.semester');
-
-    if (targetSemester && courseElement) {
-        if (placeholder.parentNode === targetSemester) {
-            targetSemester.insertBefore(courseElement, placeholder);
-        } else {
-            targetSemester.appendChild(courseElement);
-        }
-
-        const semesterText = targetSemester.textContent || targetSemester.innerText;
-        const semesterNumberMatch = semesterText.match(/\d+/);
-        const semesterNumber = semesterNumberMatch ? parseInt(semesterNumberMatch[0], 10) : null;
-
-        if (semesterNumber >= 9) {
-            updateCoursePoolWidth();
-        }
-    } else if (courseElement) {
-        const coursePool = document.getElementById('course-pool');
-        if (event.target === coursePool || coursePool.contains(event.target)) {
-            coursePool.appendChild(courseElement);
-        }
-    }
+    // Insert the course where the placeholder is
+    placeholder.parentNode.insertBefore(courseElement, placeholder);
 
     // Remove the placeholder
     if (placeholder.parentNode) {
         placeholder.parentNode.removeChild(placeholder);
     }
+
+    // Update width if needed (for custom semesters)
+    if (targetContainer.classList.contains('semester')) {
+        const semesterText = targetContainer.textContent || targetContainer.innerText;
+        const semesterNumber = parseInt(semesterText.match(/\d+/)?.[0] || '0', 10);
+        if (semesterNumber >= 9) {
+            updateCoursePoolWidth();
+        }
+    }
 }
 
+function handleDragStart(event) {
+    const tooltip = event.currentTarget.querySelector('.prereq-tooltip');
+    if (tooltip) {
+        tooltip.style.display = 'none';
+    }
 
+    event.target.style.opacity = '0.5';
+
+    // Clear any existing placeholder
+    if (placeholder.parentNode) {
+        placeholder.parentNode.removeChild(placeholder);
+    }
+
+    event.dataTransfer.setData('text/plain', event.target.id);
+
+    event.currentTarget.addEventListener('dragend', () => {
+        if (tooltip) {
+            tooltip.style.display = '';
+        }
+
+        // Clean up placeholder
+        if (placeholder.parentNode) {
+            placeholder.parentNode.removeChild(placeholder);
+        }
+
+        event.target.style.opacity = '';
+    }, { once: true });
+}
 
 function newSemester() {
     const semesterPool = document.getElementById('semester-pool');
