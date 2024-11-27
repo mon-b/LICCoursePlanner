@@ -14,11 +14,11 @@ body {
 
 .semester {
     text-align: center;
-    background: #22272B;
     padding-left: 4px;
     padding-right: 4px;
     padding-top: 10px;
     font-size: 14px;
+    width: 105px;
 }
 
 .dragging {
@@ -39,7 +39,7 @@ body {
     width: 100px;
     height: 70px;
     font-size: 10px;
-    border-radius: 4px;
+    border-radius: 6px;
 }
 
 .course-placeholder {
@@ -82,6 +82,10 @@ body {
     display: flex;
     justify-content: center;
     align-content: center;
+    background-color: #25292c;
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-bottom: 6px;
 }
 
 .header {
@@ -129,15 +133,20 @@ body {
     background: #8590A2;
 }
 
-
 #add-semester-btn {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-left: 6px;
-    background: #2C333A;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     overflow: visible;
+    width: 16px;
+    height: 16px;
+    padding: 8px;
+    margin-top: 10px;
+    margin-left: 4px;
+    margin-right: 4px;
 }
 
 .tooltip-text {
@@ -166,13 +175,22 @@ body {
 }
 
 
-#add-semester-btn:hover .tooltip-text {
-    visibility: visible;
-}
-
 #add-semester-btn:hover {
     background: #373f47;
     cursor: pointer;
+}
+
+#add-semester-btn:hover .tooltip-text {
+    visibility: visible;
+}
+#add-semester-btn img {
+    width: 38px;
+    height: 38px;
+    transition: transform 0.2s ease;
+}
+
+#add-semester-btn:hover img {
+    transform: rotate(90deg);
 }
 
 .clickable-h2 {
@@ -225,10 +243,10 @@ body {
 
 .prereq-tooltip {
     position: absolute;
-    z-index: 10000; /* Ensure it's high enough */
+    z-index: 10000;
     visibility: hidden;
     opacity: 0;
-    background-color: rgb(14, 14, 14);
+    background-color: rgb(14, 14, 14, 0.95);
     text-align: center;
     text-wrap: wrap;
     max-width: 140px;
@@ -287,9 +305,12 @@ a:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(255, 255, 255, 0.2);
-    padding: 3px;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 8px 0;
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
+
 
 .delete-semester-btn:hover img{
     filter: brightness(1.6);

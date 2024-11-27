@@ -132,9 +132,7 @@ function allowDrop(event) {
     const draggedCourse = document.querySelector('.course[style*="opacity: 0.5"]');
     if (!draggedCourse) return;
 
-    // Handle differently based on target type
     if (target.id === 'course-pool') {
-        // For course pool, just append placeholder at the end if not already there
         if (placeholder.parentNode !== target) {
             if (placeholder.parentNode) {
                 placeholder.parentNode.removeChild(placeholder);
@@ -142,14 +140,12 @@ function allowDrop(event) {
             target.appendChild(placeholder);
         }
     } else if (target.classList.contains('semester')) {
-        // Get all courses in this semester except the dragged one
         const children = Array.from(target.children).filter(
             child => child.classList.contains('course') &&
                 child !== draggedCourse &&
                 child !== placeholder
         );
 
-        // Find where to insert based on mouse position
         let insertBefore = null;
         for (const child of children) {
             const rect = child.getBoundingClientRect();
@@ -159,17 +155,15 @@ function allowDrop(event) {
             }
         }
 
-        // Remove placeholder from its current position
         if (placeholder.parentNode) {
             placeholder.parentNode.removeChild(placeholder);
         }
 
-        // Check if we would be placing right after the dragged course
         const wouldBePlacedAfterDraggedCourse =
-            (draggedCourse.nextElementSibling === insertBefore) ||
-            (draggedCourse.nextElementSibling === placeholder && !insertBefore);
+            draggedCourse.parentNode === target && // Same container
+            draggedCourse.nextElementSibling === insertBefore && // Would insert after dragged
+            !(draggedCourse.nextElementSibling === null && !insertBefore); // Unless it's a last-position drop
 
-        // Only show placeholder if it wouldn't be placed right after the dragged course
         if (!wouldBePlacedAfterDraggedCourse) {
             if (insertBefore) {
                 target.insertBefore(placeholder, insertBefore);
@@ -185,6 +179,7 @@ function handleDrop(event) {
 
     const courseId = event.dataTransfer.getData('text/plain');
     const courseElement = document.getElementById(courseId);
+
 
     // Return early if we don't have both elements
     if (!courseElement || !placeholder.parentNode) return;
@@ -219,7 +214,6 @@ function handleDragStart(event) {
 
     event.target.style.opacity = '0.5';
 
-    // Clear any existing placeholder
     if (placeholder.parentNode) {
         placeholder.parentNode.removeChild(placeholder);
     }
@@ -231,7 +225,6 @@ function handleDragStart(event) {
             tooltip.style.display = '';
         }
 
-        // Clean up placeholder
         if (placeholder.parentNode) {
             placeholder.parentNode.removeChild(placeholder);
         }
