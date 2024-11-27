@@ -507,14 +507,7 @@ body.modal-open {
     padding-right: 0; /* Ensure no padding compensation */
 }
 
-body.modal-open {
-    /* Don't change the body at all - leave scrollbar exactly as is */
-    overflow-y: auto !important;
-    position: relative !important;
-    width: 100% !important;
-    padding-right: 0 !important;
-    margin-right: 0 !important;
-}
+
 
 .new-course-modal {
     top: 50%;

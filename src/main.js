@@ -239,18 +239,14 @@ function createOverlay() {
     const overlay = document.createElement('div');
     overlay.classList.add('modal-overlay');
 
-    // Prevent all events from propagating through the overlay
     const events = ['click', 'mousedown', 'mouseup', 'touchstart', 'touchend', 'scroll', 'keydown'];
     events.forEach(eventType => {
         overlay.addEventListener(eventType, (e) => {
             e.preventDefault();
             e.stopPropagation();
 
-            // Only handle closing on direct overlay click
-            if (eventType === 'click' && e.target === overlay) {
-                hideModal();
-            }
-        }, true); // Use capture phase
+
+        }, true);
     });
 
     document.body.appendChild(overlay);
