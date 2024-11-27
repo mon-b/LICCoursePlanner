@@ -52,6 +52,7 @@ function createSemester(number) {
     semesterHead.className = 'semesterHead';
 
     const semText = document.createTextNode(semester.spanish + " " + number);
+
     semesterHead.appendChild(semText);
 
     if (number > 8) {
@@ -222,6 +223,7 @@ function handleDragStart(event) {
 
     event.dataTransfer.setData('text/plain', event.target.id);
 
+
     event.currentTarget.addEventListener('dragend', () => {
         if (tooltip) {
             tooltip.style.display = '';
@@ -238,6 +240,7 @@ function handleDragStart(event) {
 function createOverlay() {
     const overlay = document.createElement('div');
     overlay.classList.add('modal-overlay');
+}
 
     const events = ['click', 'mousedown', 'mouseup', 'touchstart', 'touchend', 'scroll', 'keydown'];
     events.forEach(eventType => {
@@ -377,6 +380,10 @@ function createNewCourseModal() {
 }
 
 
+function allowDrop(event) {
+    event.preventDefault();
+}
+
 
 function newSemester() {
     const semesterPool = document.getElementById('semester-pool');
@@ -389,8 +396,23 @@ function newSemester() {
     semesterPool.appendChild(addSemesterBtn);
 }
 
+function deleteSemester(semesterID) {
+    const confirmed = window.confirm('¿Quieres eliminar este semestre?');
+    if (confirmed) {
+        const semester = document.getElementById(semesterID)
+        const coursePool = document.getElementById('course-pool');
+
+        while (semester.firstChild) {
+            coursePool.appendChild(semester.firstChild);
+        }
+        semester.parentNode.removeChild(semester);
+        updateCoursePoolWidth()
+    }
+
+}
+
 function handleAddSemesterClick() {
-    const confirmed = window.confirm('Are you sure you want to add a new semester?');
+    const confirmed = window.confirm('¿Quieres añadir un nuevo semestre?');
 
     if (confirmed) {
         newSemester();
@@ -629,6 +651,8 @@ document.addEventListener('DOMContentLoaded', function ()
     document.querySelectorAll('.course').forEach(course => {
         course.addEventListener('mouseover', showTooltip);
         course.addEventListener('mouseout', hideTooltip);
+        course.addEventListener('dragstart', handleDragStart);
+        course.addEventListener('dragend', handleDragEnd);
     });
 
     updateCoursePoolWidth();

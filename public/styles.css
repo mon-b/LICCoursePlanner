@@ -25,6 +25,7 @@ body {
     position: fixed;
     opacity: 0;
     pointer-events: none;
+
 }
 
 .course {
@@ -34,6 +35,8 @@ body {
     text-align: center;
     margin-top: 10px;
     margin-bottom: 4px;
+    margin-top: 6px;
+    margin-bottom: 6px;
     padding: 2px;
     cursor: grab;
     width: 100px;
@@ -59,6 +62,10 @@ body {
 }
 
 .collapsible-course-pool .course-placeholder {
+    margin-left: 10px;
+}
+
+.collapsible-course-pool .course {
     margin-left: 10px;
 }
 
@@ -145,6 +152,8 @@ body {
     justify-content: center;
     background-color: rgba(255, 255, 255, 0.1);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-left: 6px;
+    background: #2C333A;
     overflow: visible;
     width: 16px;
     height: 16px;
@@ -528,4 +537,12 @@ body.modal-open {
     margin-bottom: 15px;
     width: 100%;
     min-width: 240px;
+=======
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 3px;
+}
+
+.delete-semester-btn:hover img{
+    filter: brightness(1.6);
+
 }
