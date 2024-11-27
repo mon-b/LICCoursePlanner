@@ -86,7 +86,8 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-content: center;
+    border-radius: 16px;
+    overflow: hidden;
 }
 
 .semester-pool {
@@ -94,13 +95,14 @@ body {
     justify-content: center;
     align-content: center;
     background-color: #25292c;
-    padding-left: 6px;
-    padding-right: 6px;
-    padding-bottom: 6px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-bottom: 8px;
+    border-radius: 16px;
 }
 
 .header {
-    background: #2C333A;
+    background-color: #343a40;
     padding: 10px;
     display: flex;
     align-items: center;
@@ -108,7 +110,7 @@ body {
 }
 
 .header:hover {
-    background: #373f47;
+    background: #3c4249;
     cursor: pointer;
 }
 
@@ -316,7 +318,7 @@ a:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color:  #343a40;;
     padding: 8px 0;
     border-radius: 6px;
     margin-bottom: 12px;
@@ -382,9 +384,10 @@ a:hover {
     justify-content: flex-start;
     flex-wrap: wrap;
     padding: 10px;
-    height: 180px;
+    height: 200px;
     overflow-y: scroll;
     background: #22272B;
+
 }
 
 .filter-tag.active {
