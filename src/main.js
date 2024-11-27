@@ -11,11 +11,6 @@ let eng = true;
 let placeholder = document.createElement('div');
 placeholder.className = 'course-placeholder';
 
-
-function initializeFilters() {
-    // 
-}
-
 function createCourse(course) {
     const courseDiv = document.createElement('div');
     courseDiv.className = 'course ' + course.type;
@@ -181,22 +176,17 @@ function handleDrop(event) {
     const courseElement = document.getElementById(courseId);
 
 
-    // Return early if we don't have both elements
     if (!courseElement || !placeholder.parentNode) return;
 
-    // Get the target container (either semester or course pool)
     const targetContainer = event.target.closest('.semester, #course-pool');
     if (!targetContainer) return;
 
-    // Insert the course where the placeholder is
     placeholder.parentNode.insertBefore(courseElement, placeholder);
 
-    // Remove the placeholder
     if (placeholder.parentNode) {
         placeholder.parentNode.removeChild(placeholder);
     }
 
-    // Update width if needed (for custom semesters)
     if (targetContainer.classList.contains('semester')) {
         const semesterText = targetContainer.textContent || targetContainer.innerText;
         const semesterNumber = parseInt(semesterText.match(/\d+/)?.[0] || '0', 10);
@@ -269,16 +259,17 @@ function addOptCourses() {
 
 function toggleCoursePool() {
     const coursePool = document.getElementById('course-pool');
-    coursePool.classList.toggle('open');
+    const filters = document.getElementById('filters');
     const toggleText = document.getElementById('toggle-text');
     const imgIcon = document.querySelector('#header img');
 
-    if (coursePool.classList.contains('open')) {
-        coursePool.style.display = 'flex';
+    coursePool.style.display = coursePool.style.display === 'none' ? 'flex' : 'none';
+    filters.style.display = coursePool.style.display === 'flex' ? 'block' : 'none';
+
+    if (coursePool.style.display === 'flex') {
         toggleText.textContent = 'Ocultar cursos disponibles';
         imgIcon.src = 'icons/less.png';
     } else {
-        coursePool.style.display = 'none';
         toggleText.textContent = show.spanish;
         imgIcon.src = 'icons/more.png';
     }
@@ -287,6 +278,84 @@ function toggleCoursePool() {
 function updateCoursePoolWidth() {
     const semesterPoolWidth = document.getElementById('semester-pool').offsetWidth;
     document.querySelector('.collapsible-course-pool').style.width = semesterPoolWidth + 'px';
+}
+
+function createFilterUI() {
+    const filterDiv = document.getElementById('filters');
+    filterDiv.innerHTML = `
+       <input type="text" id="course-search" placeholder="Buscar por nombre o sigla" class="search-input">
+       <div class="filter-tags"></div>
+   `;
+
+    const tagMappings = {
+        'fmat': legend.spanish.matematicos,
+        'dcc': legend.spanish.minimosCompu,
+        'major': legend.spanish.majorCompu,
+        'ofg': legend.spanish.formacionGeneral,
+        'eti': legend.spanish.etica,
+        'optcomp': legend.spanish.optComputacion,
+        'opt-cien': legend.spanish.optCiencias,
+        'opt-mat': legend.spanish.optMatematicos,
+        'optlet': legend.spanish.optLetras,
+        'econ': legend.spanish.optEconomia,
+        'opt-ast': legend.spanish.optAstronomia,
+        'optbio': legend.spanish.optBiologia,
+        'optsci': '', // Exclude this category
+        'optcom': legend.spanish.optComunicacion
+    };
+
+    const allTypes = Object.keys(tagMappings).filter(type => tagMappings[type] !== '');
+    const tagContainer = filterDiv.querySelector('.filter-tags');
+    const activeFilters = new Set();
+
+    allTypes.forEach(type => {
+        const tag = document.createElement('button');
+        tag.className = `filter-tag ${type}`;
+        tag.dataset.type = type;
+        tag.textContent = tagMappings[type];
+        tag.addEventListener('click', () => {
+            tag.classList.toggle('active');
+            if (tag.classList.contains('active')) {
+                activeFilters.add(type);
+            } else {
+                activeFilters.delete(type);
+            }
+        });
+        tagContainer.appendChild(tag);
+    });
+
+    initializeFilters(activeFilters);
+}
+
+function initializeFilters(activeFilters) {
+    const searchInput = document.getElementById('course-search');
+    const filterTags = document.querySelectorAll('.filter-tag');
+
+    searchInput.addEventListener('input', () => filterCourses(activeFilters));
+    filterTags.forEach(tag => {
+        if (activeFilters.has(tag.dataset.type)) {
+            tag.classList.add('active');
+        }
+        tag.addEventListener('click', () => {
+            filterCourses(activeFilters);
+        });
+    });
+
+    function filterCourses(activeFilters) {
+        const searchTerm = searchInput.value.toLowerCase();
+        const courses = document.querySelectorAll('#course-pool .course');
+
+        courses.forEach(course => {
+            const courseText = course.textContent.toLowerCase();
+            const courseType = Array.from(course.classList)
+                .find(cls => cls !== 'course');
+
+            const matchesSearch = !searchTerm || courseText.includes(searchTerm);
+            const matchesType = activeFilters.size === 0 || activeFilters.has(courseType);
+
+            course.style.display = matchesSearch && matchesType ? 'flex' : 'none';
+        });
+    }
 }
 
 let tooltipTimeout;
@@ -343,9 +412,13 @@ document.addEventListener('DOMContentLoaded', function () {
     initializeCoursePool();
     initializeSemesters();
     addOptCourses();
+    createFilterUI();
 
     const addSemesterBtn = document.getElementById('add-semester-btn');
     addSemesterBtn.addEventListener('click', handleAddSemesterClick);
+
+    document.getElementById('course-pool').style.display = 'none';
+    document.getElementById('filters').style.display = 'none';
 
     const header = document.getElementById('header');
     header.addEventListener('click', toggleCoursePool);
