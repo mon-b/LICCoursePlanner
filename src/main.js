@@ -160,9 +160,9 @@ function allowDrop(event) {
         }
 
         const wouldBePlacedAfterDraggedCourse =
-            draggedCourse.parentNode === target && // Same container
-            draggedCourse.nextElementSibling === insertBefore && // Would insert after dragged
-            !(draggedCourse.nextElementSibling === null && !insertBefore); // Unless it's a last-position drop
+            draggedCourse.parentNode === target &&
+            ((draggedCourse.nextElementSibling === insertBefore) ||
+            (!insertBefore && Array.from(target.children).indexOf(draggedCourse) === target.children.length - 1));
 
         if (!wouldBePlacedAfterDraggedCourse) {
             if (insertBefore) {
@@ -275,7 +275,7 @@ function toggleCoursePool() {
 
     if (coursePool.classList.contains('open')) {
         coursePool.style.display = 'flex';
-        toggleText.textContent = 'Ocultar Cursos Disponibles';
+        toggleText.textContent = 'Ocultar cursos disponibles';
         imgIcon.src = 'icons/less.png';
     } else {
         coursePool.style.display = 'none';

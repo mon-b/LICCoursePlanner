@@ -1,6 +1,6 @@
 body {
     font-family: Helvetica, sans-serif;
-    background-color: #161A1D;
+    background-color: #131313;
     color: #ededed;
     overflow-y: scroll;
     margin: 0;
@@ -45,7 +45,8 @@ body {
 .course-placeholder {
     height: 68px;
     width: 96px;
-    border: 2px dashed #007bff; /* A dashed border for visual clarity */
+    border: 2px dashed #007bff;
+    border-radius: 6px;
     background-color: rgba(0, 123, 255, 0.1); /* Light blue background */
     margin-top: 10px;
     margin-bottom: 4px;
@@ -54,6 +55,10 @@ body {
 
 
 .collapsible-course-pool .course {
+    margin-left: 10px;
+}
+
+.collapsible-course-pool .course-placeholder {
     margin-left: 10px;
 }
 
