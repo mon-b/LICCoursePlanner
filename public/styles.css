@@ -384,3 +384,155 @@ a:hover {
     color: #fff;
     opacity: 1;
 }
+
+.new-course-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #1e1e1e; /* Darker background to match the image */
+    color: #ffffff;
+    padding: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    z-index: 9999;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    width: 300px;
+}
+
+.modal-title {
+    color: #ffffff;
+    font-size: 20px;
+    margin: 0 0 20px 0;
+    text-align: center;
+    width: 100%;
+}
+
+.new-course-modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    cursor: pointer;
+    color: #ffffff;
+    font-size: 20px;
+}
+
+.new-course-modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    color: #ffffff;
+    font-size: 20px;
+}
+
+.form-element {
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.course-type-dropdown,
+.course-name-input,
+.course-id-input,
+.course-cred-input,
+.create-course-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #333333; /* Slightly lighter than modal background */
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+
+.create-course-btn {
+    background-color: #4285F4;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.create-course-btn:hover {
+    background-color: #3367D6;
+}
+
+::placeholder {
+    color: #999999;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9998;
+    display: none;
+}
+
+
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: none;
+    z-index: 9998;
+    pointer-events: all;
+}
+
+
+body.modal-open {
+    overflow: hidden;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw; /* Changed from right: 0 to ensure it covers scrollbar */
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: none;
+    z-index: 9998;
+    pointer-events: all;
+    margin-right: 0; /* Ensure no margin compensation */
+    padding-right: 0; /* Ensure no padding compensation */
+}
+
+body.modal-open {
+    /* Don't change the body at all - leave scrollbar exactly as is */
+    overflow-y: auto !important;
+    position: relative !important;
+    width: 100% !important;
+    padding-right: 0 !important;
+    margin-right: 0 !important;
+}
+
+.new-course-modal {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #1e1e1e;
+    padding: 30px;
+    border-radius: 8px;
+    z-index: 9999;
+    display: none;
+    pointer-events: all;
+    overflow-y: auto;
+    margin-right: 0;
+    max-width: calc(100vw - 40px);
+}
+
+.form-element {
+    margin-bottom: 15px;
+    width: 100%;
+    min-width: 240px;
+}

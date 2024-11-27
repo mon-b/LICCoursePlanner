@@ -49,6 +49,22 @@ const legend = {
             "opt-ast": "OPT Astronomía",
             "optbio": "OPT Biología",
             "optsci": "OPT Ciencias"
+        },
+        "typeMap":{
+            "matematicos": "fmat",
+            "minimosCompu": "dcc",
+            "majorCompu": "major",
+            "formacionGeneral": "ofg",
+            "etica": "eti",
+            "opt": "opt",
+            "optComputacion": "optcomp",
+            "optCiencias": "opt-cien",
+            "optComunicacion": "optcom",
+            "optLetras": "optlet",
+            "optEconomia": "econ",
+            "optAstronomia": "opt-ast",
+            "optBiologia": "optbio",
+            "optMatematicos": "opt-mat",
         }
     }
 };

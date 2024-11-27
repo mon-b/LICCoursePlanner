@@ -39,7 +39,6 @@ function handleTakenCourse(event) {
 
 function initializeCoursePool() {
     const coursePool = document.getElementById('course-pool');
-
     coursePool.addEventListener('dragover', allowDrop);
     coursePool.addEventListener('drop', handleDrop);
 }
@@ -175,11 +174,24 @@ function handleDrop(event) {
     const courseId = event.dataTransfer.getData('text/plain');
     const courseElement = document.getElementById(courseId);
 
-
     if (!courseElement || !placeholder.parentNode) return;
 
     const targetContainer = event.target.closest('.semester, #course-pool');
     if (!targetContainer) return;
+
+    if (targetContainer.id === 'course-pool') {
+        if (courseId.startsWith('OFG')) {
+            courseElement.parentNode.removeChild(courseElement);
+            return;
+        }
+    }
+
+    if (targetContainer.id === 'course-pool') {
+        if (courseId.startsWith('OPT')) {
+            courseElement.parentNode.removeChild(courseElement);
+            return;
+        }
+    }
 
     placeholder.parentNode.insertBefore(courseElement, placeholder);
 
@@ -222,6 +234,153 @@ function handleDragStart(event) {
         event.target.style.opacity = '';
     }, { once: true });
 }
+
+function createOverlay() {
+    const overlay = document.createElement('div');
+    overlay.classList.add('modal-overlay');
+
+    // Prevent all events from propagating through the overlay
+    const events = ['click', 'mousedown', 'mouseup', 'touchstart', 'touchend', 'scroll', 'keydown'];
+    events.forEach(eventType => {
+        overlay.addEventListener(eventType, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            // Only handle closing on direct overlay click
+            if (eventType === 'click' && e.target === overlay) {
+                hideModal();
+            }
+        }, true); // Use capture phase
+    });
+
+    document.body.appendChild(overlay);
+    return overlay;
+}
+
+function removeOverlay(overlay) {
+    if (overlay && overlay.parentNode) {
+        overlay.parentNode.removeChild(overlay);
+    }
+}
+
+function createNewCourseModal() {
+    const modal = document.createElement('div');
+    modal.classList.add('new-course-modal');
+
+    const modalOverlay = document.createElement('div');
+    modalOverlay.classList.add('modal-overlay');
+
+    const modalContent = document.createElement('div');
+    modalContent.classList.add('modal-content');
+
+    const closeButton = document.createElement('span');
+    closeButton.classList.add('new-course-modal-close');
+    closeButton.textContent = '×';
+
+    const title = document.createElement('h2');
+    title.classList.add('modal-title');
+    title.textContent = 'Crear nuevo curso';
+
+    const nameInput = document.createElement('input');
+    nameInput.classList.add('course-name-input');
+    nameInput.placeholder = 'Nombre del curso';
+
+    const typeDropdown = document.createElement('select');
+    typeDropdown.classList.add('course-type-dropdown');
+
+    const defaultOption = document.createElement('option');
+    defaultOption.value = "";
+    defaultOption.textContent = "Seleccionar tipo de curso";
+    defaultOption.disabled = true;
+    defaultOption.selected = true;
+    typeDropdown.appendChild(defaultOption);
+
+    Object.keys(legend.spanish.tagMappings).forEach(type => {
+        const option = document.createElement('option');
+        option.value = type;
+        option.textContent = legend.spanish.tagMappings[type];
+        typeDropdown.appendChild(option);
+    });
+
+    const idInput = document.createElement('input');
+    idInput.classList.add('course-id-input');
+    idInput.placeholder = 'Sigla del curso';
+
+    const credInput = document.createElement('input');
+    credInput.classList.add('course-cred-input');
+    credInput.placeholder = 'Créditos';
+
+    const createButton = document.createElement('button');
+    createButton.classList.add('create-course-btn');
+    createButton.textContent = 'Crear curso';
+
+    const formElements = [nameInput, typeDropdown, idInput, credInput].map(el => {
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('form-element');
+        wrapper.appendChild(el);
+        return wrapper;
+    });
+
+    modalContent.appendChild(closeButton);
+    modalContent.appendChild(title);
+    formElements.forEach(el => modalContent.appendChild(el));
+    modalContent.appendChild(createButton);
+    modal.appendChild(modalContent);
+
+
+
+    const placeholder = document.createElement('div');
+    placeholder.classList.add('course', 'course-placeholder');
+    placeholder.innerHTML = `<div class="course-placeholder-content">
+        <img src="icons/more.png" alt="Add" width="70"> 
+    </div>`;
+
+    const showModal = () => {
+        modalOverlay.style.display = 'block';
+        modal.style.display = 'block';
+        document.body.appendChild(modalOverlay);
+        document.body.appendChild(modal);
+    };
+
+    const hideModal = () => {
+        modalOverlay.style.display = 'none';
+        modal.style.display = 'none';
+        if (modalOverlay.parentNode) modalOverlay.parentNode.removeChild(modalOverlay);
+        if (modal.parentNode) modal.parentNode.removeChild(modal);
+
+        // Reset inputs
+        nameInput.value = '';
+        idInput.value = '';
+        credInput.value = '';
+        typeDropdown.selectedIndex = 0;
+    };
+
+    modalOverlay.addEventListener('click', (e) => {
+        if (e.target === modalOverlay) {
+            hideModal();
+        }
+    });
+
+    closeButton.addEventListener('click', hideModal);
+
+    createButton.addEventListener('click', () => {
+        createNewCourse(
+            typeDropdown.value,
+            nameInput.value,
+            idInput.value,
+            credInput.value
+        );
+        hideModal();
+    });
+
+    placeholder.addEventListener('click', () => {
+        showModal();
+    });
+
+    return { modal, placeholder, showModal, hideModal };
+}
+
+
 
 function newSemester() {
     const semesterPool = document.getElementById('semester-pool');
@@ -340,22 +499,64 @@ function initializeFilters(activeFilters) {
             filterCourses(activeFilters);
         });
     });
+}
 
-    function filterCourses(activeFilters) {
-        const searchTerm = searchInput.value.toLowerCase();
-        const courses = document.querySelectorAll('#course-pool .course');
+function filterCourses(activeFilters) {
+    const searchTerm = document.getElementById('course-search').value.toLowerCase();
+    const courses = document.querySelectorAll('#course-pool .course');
+    const placeholder = document.querySelector('.course-placeholder');
 
-        courses.forEach(course => {
-            const courseText = course.textContent.toLowerCase();
-            const courseType = Array.from(course.classList)
-                .find(cls => cls !== 'course');
+    courses.forEach(course => {
+        if (course.classList.contains('course-placeholder')) {
+            return;
+        }
 
-            const matchesSearch = !searchTerm || courseText.includes(searchTerm);
-            const matchesType = activeFilters.size === 0 || activeFilters.has(courseType);
+        const courseText = course.textContent.toLowerCase();
+        const courseType = Array.from(course.classList)
+            .find(cls => cls !== 'course');
 
-            course.style.display = matchesSearch && matchesType ? 'flex' : 'none';
-        });
+        const matchesSearch = !searchTerm || courseText.includes(searchTerm);
+        const matchesType = activeFilters.size === 0 || activeFilters.has(courseType);
+
+        course.style.display = matchesSearch && matchesType ? 'flex' : 'none';
+    });
+
+    if (placeholder) {
+        placeholder.style.display = 'flex';
     }
+}
+
+function createNewCourse(type, name, id, cred) {
+    const course = {
+        type,
+        name_stylized: name,
+        id,
+        cred,
+        prereq: '',
+    };
+
+    const courseElement = createCourse(course);
+    courseElement.classList.add(type);
+
+    const placeholder = document.querySelector('.course-placeholder');
+
+    if (placeholder && placeholder.parentNode) {
+        placeholder.parentNode.insertBefore(courseElement, placeholder.nextSibling);
+    } else {
+        document.getElementById('course-pool').appendChild(courseElement);
+    }
+
+    const filterTags = document.querySelectorAll('.filter-tag.active');
+    filterTags.forEach(tag => {
+        tag.classList.remove('active');
+    });
+
+    const searchInput = document.getElementById('course-search');
+    if (searchInput) {
+        searchInput.value = '';
+    }
+
+    filterCourses(new Set());
 }
 
 let tooltipTimeout;
@@ -408,7 +609,13 @@ function hideTooltip(event) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function ()
+{
+    const { modal, placeholder, showModal, hideModal } = createNewCourseModal();
+    document.body.appendChild(modal);
+
+    const coursePool = document.getElementById('course-pool');
+    coursePool.insertBefore(placeholder, coursePool.firstChild);
     initializeCoursePool();
     initializeSemesters();
     addOptCourses();
