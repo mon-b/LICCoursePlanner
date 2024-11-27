@@ -45,9 +45,9 @@ body {
 .course-placeholder {
     height: 68px;
     width: 96px;
-    border: 2px dashed #007bff;
+    border: 2px dashed #ffffff;
     border-radius: 6px;
-    background-color: rgba(0, 123, 255, 0.1); /* Light blue background */
+    background-color: rgba(255, 255, 255, 0.1);
     margin-top: 10px;
     margin-bottom: 4px;
     padding: 2px;
@@ -58,9 +58,15 @@ body {
     margin-left: 10px;
 }
 
+.course-placeholder:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
 .collapsible-course-pool .course-placeholder {
     margin-left: 10px;
 }
+
+
 
 .hidden {
     display: none;
@@ -146,6 +152,7 @@ body {
     background-color: rgba(255, 255, 255, 0.1);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     overflow: visible;
+    border-radius: 6px;
     width: 16px;
     height: 16px;
     padding: 8px;
@@ -189,13 +196,12 @@ body {
     visibility: visible;
 }
 #add-semester-btn img {
-    width: 38px;
-    height: 38px;
-    transition: transform 0.2s ease;
+    width: 20px;
+    height: 20px;
 }
 
-#add-semester-btn:hover img {
-    transform: rotate(90deg);
+#add-semester-btn:hover {
+    filter: brightness(120%);
 }
 
 .clickable-h2 {
@@ -312,6 +318,7 @@ a:hover {
     justify-content: center;
     background-color: rgba(255, 255, 255, 0.1);
     padding: 8px 0;
+    border-radius: 6px;
     margin-bottom: 12px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -528,4 +535,9 @@ body.modal-open {
     margin-bottom: 15px;
     width: 100%;
     min-width: 240px;
+}
+
+.rotate180 {
+    display: inline-block;  /* needed for rotation to work */
+    transform: rotate(180deg);
 }

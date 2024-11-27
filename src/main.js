@@ -328,7 +328,7 @@ function createNewCourseModal() {
     const placeholder = document.createElement('div');
     placeholder.classList.add('course', 'course-placeholder');
     placeholder.innerHTML = `<div class="course-placeholder-content">
-        <img src="icons/more.png" alt="Add" width="70"> 
+        <img src="icons/more.png" alt="Add" width="50"> 
     </div>`;
 
     const showModal = () => {
@@ -422,11 +422,9 @@ function toggleCoursePool() {
     filters.style.display = coursePool.style.display === 'flex' ? 'block' : 'none';
 
     if (coursePool.style.display === 'flex') {
-        toggleText.textContent = 'Ocultar cursos disponibles';
-        imgIcon.src = 'icons/less.png';
+        toggleText.innerHTML = '<span class="rotate180">&#9662;</span> Ocultar cursos disponibles';
     } else {
-        toggleText.textContent = show.spanish;
-        imgIcon.src = 'icons/more.png';
+        toggleText.innerHTML = show.spanish;
     }
 }
 
