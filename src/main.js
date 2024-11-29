@@ -80,19 +80,19 @@ function createSemester(number) {
 function deleteSemester(semesterID) {
     const confirmed = window.confirm('¿Quieres eliminar este semestre?');
     if (confirmed) {
-        const semester = document.getElementById(semesterID)
+        const semester = document.getElementById(semesterID);
         const coursePool = document.getElementById('course-pool');
 
         const semesterHead = semester.firstChild;
-        semester.removeChild(semesterHead); // so the head isnt returned to the course pool
+        semester.removeChild(semesterHead);
 
         while (semester.firstChild) {
             coursePool.appendChild(semester.firstChild);
         }
         semester.parentNode.removeChild(semester);
-        updateCoursePoolWidth()
+        updateCoursePoolWidth();
+        saveState();
     }
-
 }
 
 function initializeSemesters() {
@@ -377,16 +377,24 @@ function createNewCourseModal() {
 }
 
 
-
 function newSemester() {
     const semesterPool = document.getElementById('semester-pool');
-    const newSemesterNumber = semesterPool.children.length;
+    const semesters = semesterPool.querySelectorAll('.semester');
 
-    const semesterDiv = createSemester(newSemesterNumber);
-    semesterPool.appendChild(semesterDiv);
+    let maxNumber = 8;
+    semesters.forEach(semester => {
+        const semesterHead = semester.querySelector('.semesterHead');
+        const number = parseInt(semesterHead.textContent.match(/\d+/)[0]);
+        maxNumber = Math.max(maxNumber, number);
+    });
+
+    const newNumber = maxNumber + 1;
+    const semesterDiv = createSemester(newNumber);
 
     const addSemesterBtn = document.getElementById('add-semester-btn');
-    semesterPool.appendChild(addSemesterBtn);
+    semesterPool.insertBefore(semesterDiv, addSemesterBtn);
+
+    updateCoursePoolWidth();
 }
 
 function handleAddSemesterClick() {
@@ -603,16 +611,133 @@ function hideTooltip(event) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function ()
-{
+function saveState() {
+    const state = {
+        semesters: [],
+        coursePool: [],
+        semesterCount: 0
+    };
+
+    const semesterPool = document.getElementById('semester-pool');
+    const semesterDivs = semesterPool.querySelectorAll('.semester');
+
+    semesterDivs.forEach((semester, index) => {
+        const semesterHead = semester.querySelector('.semesterHead');
+        const semesterNumber = parseInt(semesterHead.textContent.match(/\d+/)[0]);
+
+        const semesterData = {
+            number: semesterNumber,
+            courses: []
+        };
+
+        const courses = semester.querySelectorAll('.course');
+        courses.forEach(course => {
+            if (!course.classList.contains('course-placeholder')) {
+                semesterData.courses.push({
+                    id: course.id,
+                    type: Array.from(course.classList)
+                        .find(cls => cls !== 'course'),
+                    taken: course.classList.contains('taken')
+                });
+            }
+        });
+
+        state.semesters.push(semesterData);
+    });
+
+    const coursePool = document.getElementById('course-pool');
+    const poolCourses = coursePool.querySelectorAll('.course');
+
+    poolCourses.forEach(course => {
+        if (!course.classList.contains('course-placeholder')) {
+            state.coursePool.push({
+                id: course.id,
+                type: Array.from(course.classList)
+                    .find(cls => cls !== 'course'),
+                taken: course.classList.contains('taken')
+            });
+        }
+    });
+
+    state.semesterCount = Math.max(...state.semesters.map(s => s.number), 8);
+
+    localStorage.setItem('coursePlannerState', JSON.stringify(state));
+}
+
+function loadState() {
+    const savedState = localStorage.getItem('coursePlannerState');
+    if (!savedState) return;
+
+    const state = JSON.parse(savedState);
+
+    const semesterPool = document.getElementById('semester-pool');
+    const coursePool = document.getElementById('course-pool');
+
+    const addSemesterBtn = document.getElementById('add-semester-btn');
+    const coursePlaceholder = coursePool.querySelector('.course-placeholder');
+
+    semesterPool.innerHTML = '';
+    coursePool.innerHTML = '';
+    coursePool.appendChild(coursePlaceholder);
+
+    state.semesters.sort((a, b) => a.number - b.number);
+
+    state.semesters.forEach(semesterData => {
+        const semesterDiv = createSemester(semesterData.number);
+
+        semesterData.courses.forEach(courseData => {
+            const courseElement = document.getElementById(courseData.id) ||
+                createCourseFromPool(courseData.id);
+            if (courseElement) {
+                if (courseData.taken) {
+                    courseElement.classList.add('taken');
+                }
+                semesterDiv.appendChild(courseElement);
+            }
+        });
+
+        semesterPool.appendChild(semesterDiv);
+    });
+
+    state.coursePool.forEach(courseData => {
+        const courseElement = document.getElementById(courseData.id) ||
+            createCourseFromPool(courseData.id);
+        if (courseElement) {
+            if (courseData.taken) {
+                courseElement.classList.add('taken');
+            }
+            coursePool.appendChild(courseElement);
+        }
+    });
+
+    semesterPool.appendChild(addSemesterBtn);
+
+    window.lastSemesterNumber = state.semesterCount;
+}
+
+function createCourseFromPool(courseId) {
+    const allCourses = [...jsonData.flatMap(sem => sem.courses), ...optData.flatMap(opt => opt.courses)];
+    const courseData = allCourses.find(course => course.id === courseId);
+
+    if (courseData) {
+        return createCourse(courseData);
+    }
+    return null;
+}
+
+document.addEventListener('DOMContentLoaded', function () {
     const { modal, placeholder, showModal, hideModal } = createNewCourseModal();
     document.body.appendChild(modal);
 
     const coursePool = document.getElementById('course-pool');
     coursePool.insertBefore(placeholder, coursePool.firstChild);
+
+    window.lastSemesterNumber = 8;
+
     initializeCoursePool();
     initializeSemesters();
     addOptCourses();
+    loadState();
     createFilterUI();
 
     const addSemesterBtn = document.getElementById('add-semester-btn');
@@ -627,6 +752,16 @@ document.addEventListener('DOMContentLoaded', function ()
     document.querySelectorAll('.course').forEach(course => {
         course.addEventListener('mouseover', showTooltip);
         course.addEventListener('mouseout', hideTooltip);
+    });
+
+    ['dragend', 'click'].forEach(eventType => {
+        document.addEventListener(eventType, () => {
+            saveState();
+        });
+    });
+
+    window.addEventListener('beforeunload', () => {
+        saveState();
     });
 
     updateCoursePoolWidth();
