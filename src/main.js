@@ -513,6 +513,8 @@ function filterCourses(activeFilters) {
     }
 }
 
+window.customCourses = new Set();
+
 function createNewCourse(type, name, id, cred) {
     const course = {
         type,
@@ -524,6 +526,8 @@ function createNewCourse(type, name, id, cred) {
 
     const courseElement = createCourse(course);
     courseElement.classList.add(type);
+
+    window.customCourses.add(id);
 
     const placeholder = document.querySelector('.course-placeholder');
 
@@ -600,13 +604,14 @@ function saveState() {
     const state = {
         semesters: [],
         coursePool: [],
+        customCourses: [],
         semesterCount: 0
     };
 
     const semesterPool = document.getElementById('semester-pool');
     const semesterDivs = semesterPool.querySelectorAll('.semester');
 
-    semesterDivs.forEach((semester, index) => {
+    semesterDivs.forEach(semester => {
         const semesterHead = semester.querySelector('.semesterHead');
         const semesterNumber = parseInt(semesterHead.textContent.match(/\d+/)[0]);
 
@@ -618,12 +623,19 @@ function saveState() {
         const courses = semester.querySelectorAll('.course');
         courses.forEach(course => {
             if (!course.classList.contains('course-placeholder')) {
-                semesterData.courses.push({
+                const courseData = {
                     id: course.id,
-                    type: Array.from(course.classList)
-                        .find(cls => cls !== 'course'),
+                    type: Array.from(course.classList).find(cls => cls !== 'course'),
                     taken: course.classList.contains('taken')
-                });
+                };
+
+                if (window.customCourses.has(course.id)) {
+                    courseData.isCustom = true;
+                    courseData.name = course.querySelector('.course-name').textContent;
+                    courseData.credits = course.querySelector('small').textContent.split(' ')[0];
+                }
+
+                semesterData.courses.push(courseData);
             }
         });
 
@@ -635,17 +647,31 @@ function saveState() {
 
     poolCourses.forEach(course => {
         if (!course.classList.contains('course-placeholder')) {
-            state.coursePool.push({
+            const courseData = {
                 id: course.id,
-                type: Array.from(course.classList)
-                    .find(cls => cls !== 'course'),
+                type: Array.from(course.classList).find(cls => cls !== 'course'),
                 taken: course.classList.contains('taken')
-            });
+            };
+
+            if (window.customCourses.has(course.id)) {
+                courseData.isCustom = true;
+                courseData.name = course.querySelector('.course-name').textContent;
+                courseData.credits = course.querySelector('small').textContent.split(' ')[0];
+
+                state.customCourses.push({
+                    id: courseData.id,
+                    name_stylized: courseData.name,
+                    type: courseData.type,
+                    cred: courseData.credits,
+                    prereq: ''
+                });
+            }
+
+            state.coursePool.push(courseData);
         }
     });
 
     state.semesterCount = Math.max(...state.semesters.map(s => s.number), 8);
-
     localStorage.setItem('coursePlannerState', JSON.stringify(state));
 }
 
@@ -654,6 +680,8 @@ function loadState() {
     if (!savedState) return;
 
     const state = JSON.parse(savedState);
+
+    window.customCourses = new Set(state.customCourses.map(course => course.id));
 
     const semesterPool = document.getElementById('semester-pool');
     const coursePool = document.getElementById('course-pool');
