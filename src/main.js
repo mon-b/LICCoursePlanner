@@ -97,6 +97,11 @@ function deleteSemester(semesterID) {
 
 function initializeSemesters() {
     const semesterPool = document.getElementById('semester-pool');
+    const existingButton = document.getElementById('add-semester-btn');
+
+    while (semesterPool.firstChild) {
+        semesterPool.removeChild(semesterPool.firstChild);
+    }
 
     jsonData.forEach(semester => {
         const semesterDiv = createSemester(semester.sem);
@@ -109,11 +114,16 @@ function initializeSemesters() {
         semesterPool.appendChild(semesterDiv);
     });
 
-    const addSemesterBtn = document.getElementById('add-semester-btn');
-    semesterPool.appendChild(addSemesterBtn);
+    if (existingButton) {
+        semesterPool.appendChild(existingButton);
+    } else {
+        const addSemesterBtn = document.createElement('button');
+        addSemesterBtn.id = 'add-semester-btn';
+        addSemesterBtn.innerHTML = '+';
+        addSemesterBtn.addEventListener('click', handleAddSemesterClick);
+        semesterPool.appendChild(addSemesterBtn);
+    }
 
-    semesterPool.addEventListener('dragover', allowDrop);
-    semesterPool.addEventListener('drop', handleDrop);
 }
 
 function allowDrop(event) {
@@ -235,30 +245,6 @@ function handleDragStart(event) {
     }, { once: true });
 }
 
-function createOverlay() {
-    const overlay = document.createElement('div');
-    overlay.classList.add('modal-overlay');
-
-    const events = ['click', 'mousedown', 'mouseup', 'touchstart', 'touchend', 'scroll', 'keydown'];
-    events.forEach(eventType => {
-        overlay.addEventListener(eventType, (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-
-
-        }, true);
-    });
-
-    document.body.appendChild(overlay);
-    return overlay;
-}
-
-function removeOverlay(overlay) {
-    if (overlay && overlay.parentNode) {
-        overlay.parentNode.removeChild(overlay);
-    }
-}
-
 function createNewCourseModal() {
     const modal = document.createElement('div');
     modal.classList.add('new-course-modal');
@@ -375,7 +361,6 @@ function createNewCourseModal() {
 
     return { modal, placeholder, showModal, hideModal };
 }
-
 
 function newSemester() {
     const semesterPool = document.getElementById('semester-pool');
@@ -715,6 +700,34 @@ function loadState() {
     window.lastSemesterNumber = state.semesterCount;
 }
 
+function resetPlanner() {
+    const confirmed = window.confirm('¿Estás seguro que quieres reiniciar el planner? Todos los cambios se perderán.');
+
+    if (confirmed) {
+        localStorage.removeItem('coursePlannerState');
+
+        const coursePool = document.getElementById('course-pool');
+
+        const coursePlaceholder = coursePool.querySelector('.course-placeholder');
+
+        coursePool.innerHTML = '';
+
+        coursePool.appendChild(coursePlaceholder);
+
+        initializeCoursePool();
+        initializeSemesters();
+        addOptCourses();
+
+        updateCoursePoolWidth();
+
+        document.querySelectorAll('.course').forEach(course => {
+            course.classList.remove('taken');
+            course.addEventListener('mouseover', showTooltip);
+            course.addEventListener('mouseout', hideTooltip);
+        });
+    }
+}
+
 function createCourseFromPool(courseId) {
     const allCourses = [...jsonData.flatMap(sem => sem.courses), ...optData.flatMap(opt => opt.courses)];
     const courseData = allCourses.find(course => course.id === courseId);
@@ -743,11 +756,24 @@ document.addEventListener('DOMContentLoaded', function () {
     const addSemesterBtn = document.getElementById('add-semester-btn');
     addSemesterBtn.addEventListener('click', handleAddSemesterClick);
 
-    document.getElementById('course-pool').style.display = 'none';
-    document.getElementById('filters').style.display = 'none';
+    const resetButton = document.createElement('button');
+    resetButton.id = 'reset-button';
+    resetButton.className = 'reset-button';
+    resetButton.textContent = 'Reiniciar planner';
+    resetButton.addEventListener('click', resetPlanner);
 
     const header = document.getElementById('header');
-    header.addEventListener('click', toggleCoursePool);
+    header.appendChild(resetButton);
+
+    coursePool.style.display = 'none';
+    document.getElementById('filters').style.display = 'none';
+
+    header.addEventListener('click', function(e) {
+        if (e.target === resetButton || (e.target.parentElement === resetButton)) {
+            return;
+        }
+        toggleCoursePool();
+    });
 
     document.querySelectorAll('.course').forEach(course => {
         course.addEventListener('mouseover', showTooltip);
