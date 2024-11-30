@@ -192,6 +192,7 @@ body {
 #add-semester-btn:hover {
     background: #373f47;
     cursor: pointer;
+    filter: brightness(120%);
 }
 
 #add-semester-btn:hover .tooltip-text {
@@ -202,9 +203,6 @@ body {
     height: 20px;
 }
 
-#add-semester-btn:hover {
-    filter: brightness(120%);
-}
 
 .clickable-h2 {
     text-decoration: none;
@@ -541,33 +539,33 @@ body.modal-open {
 }
 
 
-.reset-button {
-    margin-left: auto;
-    padding: 4px 8px;
-    background-color: #ff4444;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
+#reset-btn {
+    position: relative;
     display: flex;
     align-items: center;
-    font-size: 14px;
-    transition: background-color 0.2s;
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: visible;
+    border-radius: 6px;
+    width: 32px;
+    height: 32px;
+    margin-top: 10px;
+    margin-left: 4px;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
 }
 
-.reset-button:hover {
-    background-color: #ff6666;
+#reset-btn:hover {
+    background: #373f47;
+    filter: brightness(120%);
 }
 
-.reset-button:active {
-    background-color: #cc0000;
-}
-
-#header {
-    position: relative;
-    transition: background-color 0.2s;
+#reset-btn span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
 }
