@@ -86,7 +86,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    border-radius: 16px;
+    border-radius: 12px;
     overflow: hidden;
 }
 
@@ -192,6 +192,7 @@ body {
 #add-semester-btn:hover {
     background: #373f47;
     cursor: pointer;
+    filter: brightness(120%);
 }
 
 #add-semester-btn:hover .tooltip-text {
@@ -202,9 +203,6 @@ body {
     height: 20px;
 }
 
-#add-semester-btn:hover {
-    filter: brightness(120%);
-}
 
 .clickable-h2 {
     text-decoration: none;
@@ -513,8 +511,8 @@ body.modal-open {
     display: none;
     z-index: 9998;
     pointer-events: all;
-    margin-right: 0; /* Ensure no margin compensation */
-    padding-right: 0; /* Ensure no padding compensation */
+    margin-right: 0;
+    padding-right: 0;
 }
 
 
@@ -540,7 +538,34 @@ body.modal-open {
     min-width: 240px;
 }
 
-.rotate180 {
-    display: inline-block;  /* needed for rotation to work */
-    transform: rotate(180deg);
+
+#reset-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: visible;
+    border-radius: 6px;
+    width: 32px;
+    height: 32px;
+    margin-top: 10px;
+    margin-left: 4px;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+#reset-btn:hover {
+    background: #373f47;
+    filter: brightness(120%);
+}
+
+#reset-btn span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
 }
