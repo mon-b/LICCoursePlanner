@@ -11,18 +11,41 @@ let eng = true;
 let placeholder = document.createElement('div');
 placeholder.className = 'course-placeholder';
 
+function isParityValid(course, semesterNumber) {
+    const parity = course.getAttribute('data-parity');
+    if (!parity || parity === 'both') return true;
+
+    const isEvenSemester = semesterNumber % 2 === 0;
+    if (parity === 'even' && !isEvenSemester) return false;
+    if (parity === 'odd' && isEvenSemester) return false;
+
+    return true;
+}
+
+function getParityText(parity) {
+    switch(parity) {
+        case 'even': return 'pares';
+        case 'odd': return 'impares';
+        case 'both': return 'ambos';
+        default: return '';
+    }
+}
+
 function createCourse(course) {
     const courseDiv = document.createElement('div');
     courseDiv.className = 'course ' + course.type;
     courseDiv.draggable = true;
+    courseDiv.setAttribute('data-parity', course.parity || 'both');
     courseDiv.innerHTML = `
         <div class="course-content">
             <b class="course-name">${course.name_stylized}</b> <br>
             [${course.id}] <br>
             <small>${course.cred} ${credits.spanish}</small>
-            
         </div>
-        <span class="prereq-tooltip">Prereq: ${course.prereq}</span>
+        <span class="prereq-tooltip">
+            Prereq: ${course.prereq || 'None'}
+            ${course.parity ? `<br>Dictado en semestres ${getParityText(course.parity)}` : ''}
+        </span>
     `;
     courseDiv.id = course.id;
 
@@ -57,7 +80,7 @@ function createSemester(number) {
     if (number > 8) {
         const deleteButton = document.createElement('div');
         deleteButton.className = 'delete-semester-btn';
-        deleteButton.innerHTML = `&nbsp<img src="../public/icons/cross.png" alt="x" style="width:12px"> `
+        deleteButton.innerHTML = `&nbsp<img src="icons/cross.png" alt="x" style="width:12px"> `
 
         deleteButton.setAttribute('data-semester-id', semesterDiv.id);
 
@@ -163,7 +186,7 @@ function allowDrop(event) {
         const wouldBePlacedAfterDraggedCourse =
             draggedCourse.parentNode === target &&
             ((draggedCourse.nextElementSibling === insertBefore) ||
-            (!insertBefore && Array.from(target.children).indexOf(draggedCourse) === target.children.length - 1));
+                (!insertBefore && Array.from(target.children).indexOf(draggedCourse) === target.children.length - 1));
 
         if (!wouldBePlacedAfterDraggedCourse) {
             if (insertBefore) {
@@ -186,6 +209,19 @@ function handleDrop(event) {
     const targetContainer = event.target.closest('.semester, #course-pool');
     if (!targetContainer) return;
 
+    if (targetContainer.classList.contains('semester')) {
+        const semesterText = targetContainer.querySelector('.semesterHead').textContent;
+        const semesterNumber = parseInt(semesterText.match(/\d+/)[0]);
+
+        if (!isParityValid(courseElement, semesterNumber)) {
+            alert('Este curso solo puede ser dictado en otro semestre debido a su paridad');
+            if (placeholder.parentNode) {
+                placeholder.parentNode.removeChild(placeholder);
+            }
+            return;
+        }
+    }
+
     placeholder.parentNode.insertBefore(courseElement, placeholder);
 
     if (placeholder.parentNode) {
@@ -193,12 +229,13 @@ function handleDrop(event) {
     }
 
     if (targetContainer.classList.contains('semester')) {
-        const semesterText = targetContainer.textContent || targetContainer.innerText;
-        const semesterNumber = parseInt(semesterText.match(/\d+/)?.[0] || '0', 10);
+        const semesterNumber = parseInt(targetContainer.querySelector('.semesterHead').textContent.match(/\d+/)[0]);
         if (semesterNumber >= 9) {
             updateCoursePoolWidth();
         }
     }
+
+    saveState();
 }
 
 function handleDragStart(event) {
