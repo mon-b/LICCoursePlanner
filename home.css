@@ -1,0 +1,111 @@
+body {
+    font-family: Helvetica, sans-serif;
+    background-color: #131313;
+    color: #ededed;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    color: #fff;
+}
+
+.hero {
+    background-color: #22272B;
+    padding: 3rem 1rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+}
+
+.features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.feature-card {
+    background-color: #25292c;
+    padding: 1.5rem;
+    border-radius: 8px;
+    text-align: left;
+}
+
+.feature-card h3 {
+    color: #5da1ff;
+    margin-top: 0;
+}
+
+.cta-button {
+    display: inline-block;
+    background-color: #131313;
+    color: white;
+    width: 17%;
+    padding: 1.2rem 2.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 2rem;
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
+    border: 2px solid #1D7AFC;
+}
+
+.cta-button:hover {
+    background-color: #1D7AFC;
+    text-decoration: none;
+    color: white;
+    border: 2px solid #1D7AFC;
+    transform: translateY(-2px);
+}
+
+.cta-button:active {
+    transform: translateY(1px);
+}
+
+.footer {
+    text-align: center;
+    margin-top: 4vh;
+    background-color: #25292c;
+    padding: 40px;
+}
+
+a:link {
+    color: #5da1ff;
+    text-decoration: none;
+}
+
+a:visited {
+    color: #5da1ff;
+}
+
+a:active {
+    color: #5da1ff;
+}
+
+a:hover {
+    color: #5da1ff;
+    text-decoration: underline;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #2C333A;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #8590A2;
+}
