@@ -3,6 +3,7 @@ body {
     background-color: #131313;
     color: #ededed;
     overflow-y: scroll;
+    overflow-x: hidden;
     margin: 0;
 }
 .container {
@@ -12,6 +13,25 @@ body {
     align-items: center;
 }
 
+.title-link {
+    color: #1D7AFC;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.title-link:hover {
+    color: #5da1ff;
+    text-decoration: none;
+    transform: translateY(-2px);
+    display: inline-block;
+}
+
+h2 {
+    margin: 0;
+    padding: 20px 0;
+    transition: all 0.3s ease;
+}
 .semester {
     text-align: center;
     padding-left: 4px;
@@ -291,6 +311,18 @@ body {
     margin-top: 4vh;
     background-color: #25292c;
     padding: 40px;
+}
+
+.footer a {
+    color: #5da1ff;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+    display: inline-block;
+}
+
+.footer a:hover {
+    transform: translateY(-2px);
+    text-decoration: none;
 }
 
 a:link {
