@@ -4,122 +4,82 @@
     background: #1D7AFC;
 }
 
-.dcc:hover {
-    background: #388BFF;
-}
-
 .fmat {
     background: #DA62AC;
-}
-
-.fmat:hover {
-    background: #E774BB;
 }
 
 .ofg {
     background: #F15B50;
 }
 
-.ofg:hover {
-    background: #F87168;
-}
-
 .opt {
     background: #6E5DC6;
-}
-
-.opt:hover {
-    background: #8270DB;
 }
 
 .eti {
     background: #2898BD;
 }
 
-.eti:hover {
-    background: #42B2D7;
-}
-
 .general {
     background: #6A9A23;
-}
-
-
-.general:hover {
-    background: #82B536;
 }
 
 .opt-mat {
     background: #DA62AC;
 }
 
-.opt-mat:hover {
-    background: #E774BB;
-}
-
 .optcom {
     background: #5E4DB2;
-}
-
-.optcom:hover {
-    background: #6E5DC6;
 }
 
 .optlet {
     background: #E56910;
 }
 
-.optlet:hover {
-    background: #F38A3F;
-}
-
 .econ {
     background: #9543c5;
-}
-
-.econ:hover {
-    background: #b15ee1;
 }
 
 .opt-cien {
     background: #1F845A;
 }
 
-.opt-cien:hover {
-    background: #22A06B;
-}
-
 .optbio {
     background: #164B35;
-}
-
-.optbio:hover {
-    background: #216E4E;
 }
 
 .opt-ast {
     background-color: #130947;
 }
-.opt-ast:hover {
-    background-color: #201268;
-}
+
 
 .optcomp {
     background-color: #1686d6;
-}
-
-.optcomp:hover {
-    background-color: #2a97e4;
 }
 
 .major {
     background: #0055CC;
 }
 
+.dcc:hover,
+.fmat:hover,
+.ofg:hover,
+.opt:hover,
+.eti:hover,
+.general:hover,
+.opt-mat:hover,
+.optlet:hover,
+.optcom:hover,
+.econ:hover,
+.opt-cien:hover,
+.opt-ast:hover,
+.optbio:hover,
+.optcomp:hover,
 .major:hover {
-    background: #1D7AFC;
-
+    filter: brightness(1.3);
+    overflow: hidden;
 }
+
 
 .taken {
     opacity: 0.55;

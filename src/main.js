@@ -57,7 +57,7 @@ function createSemester(number) {
     if (number > 8) {
         const deleteButton = document.createElement('div');
         deleteButton.className = 'delete-semester-btn';
-        deleteButton.innerHTML = `&nbsp<img src="icons/cross.png" alt="x" style="width:12px"> `
+        deleteButton.innerHTML = `&nbsp<img src="../public/icons/cross.png" alt="x" style="width:12px"> `
 
         deleteButton.setAttribute('data-semester-id', semesterDiv.id);
 
