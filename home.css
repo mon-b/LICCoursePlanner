@@ -109,3 +109,28 @@ a:hover {
 ::-webkit-scrollbar-thumb {
     background: #8590A2;
 }
+
+.disclaimer-container {
+    background-color: #22272B;
+    border-radius: 12px;
+    margin: 2rem 0;
+    padding: 1.5rem;
+}
+
+.disclaimer-content {
+    display: flex;
+    align-items: center;
+    text-align: initial;
+    gap: 1rem;
+    color: white;
+}
+
+.disclaimer-icon {
+    font-size: 2.5rem;
+}
+
+.disclaimer-content p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
