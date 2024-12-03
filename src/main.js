@@ -221,7 +221,6 @@ function allowDrop(event) {
         }
     }
 
-    // Ocultar tooltips de otros cursos durante el drag
     document.querySelectorAll('.course:not(.dragging) .prereq-tooltip').forEach(otherTooltip => {
         otherTooltip.style.visibility = 'hidden';
     });
@@ -375,7 +374,6 @@ function createNewCourseModal() {
         if (modalOverlay.parentNode) modalOverlay.parentNode.removeChild(modalOverlay);
         if (modal.parentNode) modal.parentNode.removeChild(modal);
 
-        // Reset inputs
         nameInput.value = '';
         idInput.value = '';
         credInput.value = '';
@@ -491,7 +489,7 @@ function createFilterUI() {
         'econ': legend.spanish.optEconomia,
         'opt-ast': legend.spanish.optAstronomia,
         'optbio': legend.spanish.optBiologia,
-        'optsci': '', // Exclude this category
+        'optsci': '',
         'optcom': legend.spanish.optComunicacion
     };
 
@@ -597,17 +595,17 @@ function createNewCourse(type, name, id, cred) {
     saveState();
 }
 
-
-
 function saveState() {
     const state = {
         semesters: [],
         coursePool: [],
         customCourses: [],
-        semesterCount: 0
+        semesterCount: 0,
+        coursePoolVisible: document.getElementById('course-pool').style.display === 'flex'
     };
 
     const semesterPool = document.getElementById('semester-pool');
+    const coursePool = document.getElementById('course-pool');
     const semesterDivs = semesterPool.querySelectorAll('.semester');
 
     document.querySelectorAll('.course').forEach(course => {
@@ -626,37 +624,28 @@ function saveState() {
         const semesterHead = semester.querySelector('.semesterHead');
         const semesterNumber = parseInt(semesterHead.textContent.match(/\d+/)[0]);
 
+        const courses = semester.querySelectorAll('.course');
         const semesterData = {
             number: semesterNumber,
-            courses: []
-        };
-
-        const courses = semester.querySelectorAll('.course');
-        courses.forEach(course => {
-            if (!course.classList.contains('course-placeholder')) {
-                semesterData.courses.push({
+            courses: Array.from(courses)
+                .filter(course => !course.classList.contains('course-placeholder'))
+                .map(course => ({
                     id: course.id,
                     type: Array.from(course.classList).find(cls => cls !== 'course' && cls !== 'taken'),
                     taken: course.classList.contains('taken')
-                });
-            }
-        });
+                }))
+        };
 
         state.semesters.push(semesterData);
     });
 
-    const coursePool = document.getElementById('course-pool');
-    const poolCourses = coursePool.querySelectorAll('.course');
-
-    poolCourses.forEach(course => {
-        if (!course.classList.contains('course-placeholder')) {
-            state.coursePool.push({
-                id: course.id,
-                type: Array.from(course.classList).find(cls => cls !== 'course' && cls !== 'taken'),
-                taken: course.classList.contains('taken')
-            });
-        }
-    });
+    state.coursePool = Array.from(coursePool.querySelectorAll('.course'))
+        .filter(course => !course.classList.contains('course-placeholder'))
+        .map(course => ({
+            id: course.id,
+            type: Array.from(course.classList).find(cls => cls !== 'course' && cls !== 'taken'),
+            taken: course.classList.contains('taken')
+        }));
 
     state.semesterCount = Math.max(...state.semesters.map(s => s.number), 8);
     localStorage.setItem('coursePlannerState', JSON.stringify(state));
@@ -673,13 +662,24 @@ function loadState() {
     const semesterPool = document.getElementById('semester-pool');
     const coursePool = document.getElementById('course-pool');
 
+    const newCoursePool = coursePool.cloneNode(false);
+    coursePool.parentNode.replaceChild(newCoursePool, coursePool);
+
+    const coursePlaceholder = document.createElement('div');
+    coursePlaceholder.classList.add('course', 'course-placeholder');
+    coursePlaceholder.innerHTML = `<div class="course-placeholder-content">
+        <img src="icons/more.png" alt="Add" width="50"> 
+    </div>`;
+
     const addSemesterBtn = document.getElementById('add-semester-btn');
     const resetSemesterBtn = document.getElementById('reset-btn');
-    const coursePlaceholder = coursePool.querySelector('.course-placeholder');
 
     semesterPool.innerHTML = '';
-    coursePool.innerHTML = '';
-    coursePool.appendChild(coursePlaceholder);
+    newCoursePool.innerHTML = '';
+    newCoursePool.appendChild(coursePlaceholder);
+
+    newCoursePool.addEventListener('dragover', allowDrop);
+    newCoursePool.addEventListener('drop', handleDrop);
 
     state.semesters.sort((a, b) => a.number - b.number);
 
@@ -689,10 +689,8 @@ function loadState() {
         semesterData.courses.forEach(courseData => {
             let courseElement;
             if (window.customCourses.has(courseData.id)) {
-                // Create custom course element
                 courseElement = createCourseFromPool(courseData.id, state.customCourses);
             } else {
-                // Create regular course element
                 courseElement = document.getElementById(courseData.id) ||
                     createCourseFromPool(courseData.id);
             }
@@ -710,10 +708,8 @@ function loadState() {
     state.coursePool.forEach(courseData => {
         let courseElement;
         if (window.customCourses.has(courseData.id)) {
-            // Create custom course element
             courseElement = createCourseFromPool(courseData.id, state.customCourses);
         } else {
-            // Create regular course element
             courseElement = document.getElementById(courseData.id) ||
                 createCourseFromPool(courseData.id);
         }
@@ -721,12 +717,25 @@ function loadState() {
             if (courseData.taken) {
                 courseElement.classList.add('taken');
             }
-            coursePool.appendChild(courseElement);
+            newCoursePool.appendChild(courseElement);
         }
     });
 
     semesterPool.appendChild(addSemesterBtn);
     semesterPool.appendChild(resetSemesterBtn);
+
+    const filters = document.getElementById('filters');
+    const toggleText = document.getElementById('toggle-text');
+
+    if (state.coursePoolVisible) {
+        newCoursePool.style.display = 'flex';
+        filters.style.display = 'block';
+        toggleText.innerHTML = '<span class="rotate180">&#9662;</span> Ocultar cursos disponibles';
+    } else {
+        newCoursePool.style.display = 'none';
+        filters.style.display = 'none';
+        toggleText.innerHTML = show.spanish;
+    }
 
     window.lastSemesterNumber = state.semesterCount;
 }
@@ -758,10 +767,8 @@ function resetPlanner() {
 }
 
 function createCourseFromPool(courseId, customCourses = []) {
-    // If it's a custom course
     const customCourse = customCourses.find(course => course.id === courseId);
     if (customCourse) {
-        // Need to pass the full custom course data
         const courseElement = createCourse({
             id: customCourse.id,
             name_stylized: customCourse.name_stylized,
@@ -773,7 +780,6 @@ function createCourseFromPool(courseId, customCourses = []) {
         return courseElement;
     }
 
-    // If not custom, check default courses
     const allCourses = [...jsonData.flatMap(sem => sem.courses), ...optData.flatMap(opt => opt.courses)];
     const courseData = allCourses.find(course => course.id === courseId);
 
