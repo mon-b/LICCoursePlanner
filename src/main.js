@@ -24,11 +24,16 @@ function isParityValid(course, semesterNumber) {
 
 function getParityText(parity) {
     switch(parity) {
-        case 'even': return 'pares';
-        case 'odd': return 'impares';
-        case 'both': return 'ambos';
-        default: return '';
+        case 'even': return 'Semestres Pares';
+        case 'odd': return 'Semestres Impares';
+        case 'both': return 'Ambos Semestres';
+        default: return 'Ambos Semestres';
     }
+}
+
+function formatPrereq(prereq) {
+    if (!prereq) return 'Sin prerrequisitos';
+    return prereq;
 }
 
 function createCourse(course) {
@@ -36,22 +41,32 @@ function createCourse(course) {
     courseDiv.className = 'course ' + course.type;
     courseDiv.draggable = true;
     courseDiv.setAttribute('data-parity', course.parity || 'both');
+    
     courseDiv.innerHTML = `
         <div class="course-content">
             <b class="course-name">${course.name_stylized}</b> <br>
             [${course.id}] <br>
-            <small>${course.cred} ${credits.spanish}</small>
+            <small>${course.cred} créditos</small>
+            <div class="prereq-tooltip">
+                <div class="tooltip-header">${course.name_stylized}</div>
+                <div class="tooltip-prereq">
+                    <strong>Prerrequisitos:</strong><br>
+                    ${formatPrereq(course.prereq)}
+                </div>
+                <div class="tooltip-parity">
+                    <strong>Dictado en:</strong><br>
+                    ${getParityText(course.parity)}
+                </div>
+            </div>
         </div>
-        <span class="prereq-tooltip">
-            Prereq: ${course.prereq || 'None'}
-            ${course.parity ? `<br>Dictado en semestres ${getParityText(course.parity)}` : ''}
-        </span>
     `;
+    
     courseDiv.id = course.id;
-
+    
     courseDiv.addEventListener('dragstart', handleDragStart);
+    courseDiv.addEventListener('dragend', handleDragEnd);
     courseDiv.addEventListener('click', handleTakenCourse);
-
+    
     return courseDiv;
 }
 
@@ -141,20 +156,28 @@ function initializeSemesters() {
         semesterPool.appendChild(semesterDiv);
     });
 
-
     semesterPool.appendChild(addSemesterBtn);
     semesterPool.appendChild(resetSemesterBtn);
 }
 
 function allowDrop(event) {
     event.preventDefault();
-
-    const target = event.target.closest('.semester, #course-pool');
+    event.dataTransfer.dropEffect = 'move';
+    
+    let target = event.target.closest('.semester, #course-pool');
+    if (!target && event.target.parentElement && event.target.parentElement.id === 'course-pool') {
+        target = event.target.parentElement;
+    }
     if (!target) return;
 
     const mouseY = event.clientY;
-    const draggedCourse = document.querySelector('.course[style*="opacity: 0.5"]');
+    const draggedCourse = document.querySelector('.course.dragging');
     if (!draggedCourse) return;
+
+    const tooltip = draggedCourse.querySelector('.prereq-tooltip');
+    if (tooltip) {
+        tooltip.style.visibility = 'hidden';
+    }
 
     if (target.id === 'course-pool') {
         if (placeholder.parentNode !== target) {
@@ -163,6 +186,7 @@ function allowDrop(event) {
             }
             target.appendChild(placeholder);
         }
+
     } else if (target.classList.contains('semester')) {
         const children = Array.from(target.children).filter(
             child => child.classList.contains('course') &&
@@ -196,6 +220,11 @@ function allowDrop(event) {
             }
         }
     }
+
+    // Ocultar tooltips de otros cursos durante el drag
+    document.querySelectorAll('.course:not(.dragging) .prereq-tooltip').forEach(otherTooltip => {
+        otherTooltip.style.visibility = 'hidden';
+    });
 }
 
 function handleDrop(event) {
@@ -239,30 +268,26 @@ function handleDrop(event) {
 }
 
 function handleDragStart(event) {
-    const tooltip = event.currentTarget.querySelector('.prereq-tooltip');
-    if (tooltip) {
-        tooltip.style.display = 'none';
-    }
+    const courseElement = event.currentTarget;
+    courseElement.classList.add('dragging');
 
-    event.target.style.opacity = '0.5';
+    document.querySelectorAll('.prereq-tooltip').forEach(tooltip => {
+        tooltip.style.visibility = 'hidden';
+        tooltip.style.opacity = '0';
+    });
 
-    if (placeholder.parentNode) {
-        placeholder.parentNode.removeChild(placeholder);
-    }
+    event.dataTransfer.setData('text/plain', courseElement.id);
+    event.dataTransfer.effectAllowed = 'move';
+}
 
-    event.dataTransfer.setData('text/plain', event.target.id);
-
-    event.currentTarget.addEventListener('dragend', () => {
-        if (tooltip) {
-            tooltip.style.display = '';
-        }
-
-        if (placeholder.parentNode) {
-            placeholder.parentNode.removeChild(placeholder);
-        }
-
-        event.target.style.opacity = '';
-    }, { once: true });
+function handleDragEnd(event) {
+    const courseElement = event.currentTarget;
+    courseElement.classList.remove('dragging');
+    
+    document.querySelectorAll('.prereq-tooltip').forEach(tooltip => {
+        tooltip.style.visibility = '';
+        tooltip.style.opacity = '';
+    });
 }
 
 function createNewCourseModal() {
@@ -572,55 +597,7 @@ function createNewCourse(type, name, id, cred) {
     saveState();
 }
 
-let tooltipTimeout;
 
-function showTooltip(event) {
-    const tooltip = event.currentTarget.querySelector('.prereq-tooltip');
-    if (tooltip) {
-        tooltip.classList.add('visible');
-
-        function positionTooltip() {
-
-            if (event.currentTarget) {
-                const rect = event.currentTarget.getBoundingClientRect();
-                const tooltipWidth = tooltip.offsetWidth;
-                const tooltipHeight = tooltip.offsetHeight;
-
-                const verticalCenter = rect.top + window.scrollY + (rect.height / 2);
-
-                const offset = Math.max(tooltipHeight / 2, 48);
-
-                tooltip.style.top = `${verticalCenter - (tooltipHeight / 2) - offset}px`;
-                tooltip.style.left = `${rect.left + window.scrollX + (rect.width / 2) - (tooltipWidth / 2)}px`;
-            }
-        }
-
-        positionTooltip();
-
-        const mouseMoveHandler = (e) => {
-            positionTooltip();
-        };
-
-        document.addEventListener('mousemove', mouseMoveHandler);
-
-        event.currentTarget.addEventListener('mouseleave', () => {
-            tooltip.classList.remove('visible');
-            document.removeEventListener('mousemove', mouseMoveHandler);
-        }, { once: true });
-    }
-}
-
-function hideTooltip(event) {
-    clearTimeout(tooltipTimeout);
-
-    const targetElement = event.currentTarget;
-    if (targetElement && targetElement.querySelector) {
-        const tooltip = targetElement.querySelector('.prereq-tooltip');
-        if (tooltip) {
-            tooltip.classList.remove('visible');
-        }
-    }
-}
 
 function saveState() {
     const state = {
@@ -776,8 +753,6 @@ function resetPlanner() {
 
         document.querySelectorAll('.course').forEach(course => {
             course.classList.remove('taken');
-            course.addEventListener('mouseover', showTooltip);
-            course.addEventListener('mouseout', hideTooltip);
         });
     }
 }
@@ -809,6 +784,7 @@ function createCourseFromPool(courseId, customCourses = []) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+
     const { modal, placeholder, showModal, hideModal } = createNewCourseModal();
     document.body.appendChild(modal);
 
@@ -840,11 +816,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const header = document.getElementById('header');
     header.addEventListener('click', toggleCoursePool);
-
-    document.querySelectorAll('.course').forEach(course => {
-        course.addEventListener('mouseover', showTooltip);
-        course.addEventListener('mouseout', hideTooltip);
-    });
 
     ['dragend', 'click'].forEach(eventType => {
         document.addEventListener(eventType, () => {
