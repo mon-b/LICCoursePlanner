@@ -299,106 +299,70 @@ function createNewCourseModal() {
     const modalContent = document.createElement('div');
     modalContent.classList.add('modal-content');
 
-    const closeButton = document.createElement('span');
-    closeButton.classList.add('new-course-modal-close');
-    closeButton.textContent = '×';
+    modalContent.innerHTML = `
+        <span class="new-course-modal-close">&times;</span>
+        <h2 class="modal-title">Crear nuevo curso</h2>
+        <div class="form-element">
+            <input type="text" class="course-name-input" placeholder="Nombre del curso">
+        </div>
+        <div class="form-element">
+            <select class="course-type-dropdown">
+                <option value="" disabled selected>Seleccionar tipo de curso</option>
+                ${Object.entries(legend.spanish.tagMappings).map(([type, label]) => 
+                    `<option value="${type}">${label}</option>`
+                ).join('')}
+            </select>
+        </div>
+        <div class="form-element">
+            <input type="text" class="course-id-input" placeholder="Sigla del curso">
+        </div>
+        <div class="form-element">
+            <input type="text" class="course-cred-input" placeholder="Créditos">
+        </div>
+        <button class="create-course-btn">Crear curso</button>
+    `;
 
-    const title = document.createElement('h2');
-    title.classList.add('modal-title');
-    title.textContent = 'Crear nuevo curso';
-
-    const nameInput = document.createElement('input');
-    nameInput.classList.add('course-name-input');
-    nameInput.placeholder = 'Nombre del curso';
-
-    const typeDropdown = document.createElement('select');
-    typeDropdown.classList.add('course-type-dropdown');
-
-    const defaultOption = document.createElement('option');
-    defaultOption.value = "";
-    defaultOption.textContent = "Seleccionar tipo de curso";
-    defaultOption.disabled = true;
-    defaultOption.selected = true;
-    typeDropdown.appendChild(defaultOption);
-
-    Object.keys(legend.spanish.tagMappings).forEach(type => {
-        const option = document.createElement('option');
-        option.value = type;
-        option.textContent = legend.spanish.tagMappings[type];
-        typeDropdown.appendChild(option);
-    });
-
-    const idInput = document.createElement('input');
-    idInput.classList.add('course-id-input');
-    idInput.placeholder = 'Sigla del curso';
-
-    const credInput = document.createElement('input');
-    credInput.classList.add('course-cred-input');
-    credInput.placeholder = 'Créditos';
-
-    const createButton = document.createElement('button');
-    createButton.classList.add('create-course-btn');
-    createButton.textContent = 'Crear curso';
-
-    const formElements = [nameInput, typeDropdown, idInput, credInput].map(el => {
-        const wrapper = document.createElement('div');
-        wrapper.classList.add('form-element');
-        wrapper.appendChild(el);
-        return wrapper;
-    });
-
-    modalContent.appendChild(closeButton);
-    modalContent.appendChild(title);
-    formElements.forEach(el => modalContent.appendChild(el));
-    modalContent.appendChild(createButton);
     modal.appendChild(modalContent);
-
-
-
+    
     const placeholder = document.createElement('div');
     placeholder.classList.add('course', 'course-placeholder');
-    placeholder.innerHTML = `<div class="course-placeholder-content">
-        <img src="icons/more.png" alt="Add" width="50"> 
-    </div>`;
+    placeholder.innerHTML = `
+        <div class="course-placeholder-content">
+            <img src="icons/more.png" alt="Add" width="50">
+        </div>
+    `;
 
     const showModal = () => {
-        modalOverlay.style.display = 'block';
-        modal.style.display = 'block';
+        console.log('Showing modal'); 
         document.body.appendChild(modalOverlay);
         document.body.appendChild(modal);
+        modalOverlay.style.display = 'block';
+        modal.style.display = 'block';
     };
 
     const hideModal = () => {
-        modalOverlay.style.display = 'none';
         modal.style.display = 'none';
-        if (modalOverlay.parentNode) modalOverlay.parentNode.removeChild(modalOverlay);
-        if (modal.parentNode) modal.parentNode.removeChild(modal);
-
-        nameInput.value = '';
-        idInput.value = '';
-        credInput.value = '';
-        typeDropdown.selectedIndex = 0;
+        modalOverlay.style.display = 'none';
+        document.body.removeChild(modal);
+        document.body.removeChild(modalOverlay);
     };
 
-    modalOverlay.addEventListener('click', (e) => {
-        if (e.target === modalOverlay) {
+    modalOverlay.addEventListener('click', hideModal);
+    modalContent.querySelector('.new-course-modal-close').addEventListener('click', hideModal);
+    modalContent.querySelector('.create-course-btn').addEventListener('click', () => {
+        const name = modalContent.querySelector('.course-name-input').value;
+        const type = modalContent.querySelector('.course-type-dropdown').value;
+        const id = modalContent.querySelector('.course-id-input').value;
+        const cred = modalContent.querySelector('.course-cred-input').value;
+
+        if (name && type && id && cred) {
+            createNewCourse(type, name, id, cred);
             hideModal();
         }
     });
 
-    closeButton.addEventListener('click', hideModal);
-
-    createButton.addEventListener('click', () => {
-        createNewCourse(
-            typeDropdown.value,
-            nameInput.value,
-            idInput.value,
-            credInput.value
-        );
-        hideModal();
-    });
-
     placeholder.addEventListener('click', () => {
+        console.log('Placeholder clicked'); 
         showModal();
     });
 
@@ -656,33 +620,25 @@ function loadState() {
     if (!savedState) return;
 
     const state = JSON.parse(savedState);
-
     window.customCourses = new Set(state.customCourses.map(course => course.id));
 
     const semesterPool = document.getElementById('semester-pool');
     const coursePool = document.getElementById('course-pool');
-
-    const newCoursePool = coursePool.cloneNode(false);
-    coursePool.parentNode.replaceChild(newCoursePool, coursePool);
-
-    const coursePlaceholder = document.createElement('div');
-    coursePlaceholder.classList.add('course', 'course-placeholder');
-    coursePlaceholder.innerHTML = `<div class="course-placeholder-content">
-        <img src="icons/more.png" alt="Add" width="50"> 
-    </div>`;
-
     const addSemesterBtn = document.getElementById('add-semester-btn');
     const resetSemesterBtn = document.getElementById('reset-btn');
 
-    semesterPool.innerHTML = '';
-    newCoursePool.innerHTML = '';
-    newCoursePool.appendChild(coursePlaceholder);
-
+    const newCoursePool = coursePool.cloneNode(false);
+    coursePool.parentNode.replaceChild(newCoursePool, coursePool);
     newCoursePool.addEventListener('dragover', allowDrop);
     newCoursePool.addEventListener('drop', handleDrop);
 
-    state.semesters.sort((a, b) => a.number - b.number);
+    semesterPool.innerHTML = '';
+    newCoursePool.innerHTML = '';
 
+    const modalComponents = createNewCourseModal();
+    newCoursePool.appendChild(modalComponents.placeholder);
+
+    state.semesters.sort((a, b) => a.number - b.number);
     state.semesters.forEach(semesterData => {
         const semesterDiv = createSemester(semesterData.number);
 
@@ -691,8 +647,7 @@ function loadState() {
             if (window.customCourses.has(courseData.id)) {
                 courseElement = createCourseFromPool(courseData.id, state.customCourses);
             } else {
-                courseElement = document.getElementById(courseData.id) ||
-                    createCourseFromPool(courseData.id);
+                courseElement = createCourseFromPool(courseData.id);
             }
             if (courseElement) {
                 if (courseData.taken) {
@@ -710,8 +665,7 @@ function loadState() {
         if (window.customCourses.has(courseData.id)) {
             courseElement = createCourseFromPool(courseData.id, state.customCourses);
         } else {
-            courseElement = document.getElementById(courseData.id) ||
-                createCourseFromPool(courseData.id);
+            courseElement = createCourseFromPool(courseData.id);
         }
         if (courseElement) {
             if (courseData.taken) {
@@ -739,6 +693,7 @@ function loadState() {
 
     window.lastSemesterNumber = state.semesterCount;
 }
+
 
 function resetPlanner() {
     const confirmed = window.confirm('¿Estás seguro que quieres reiniciar el planner? Todos los cambios se perderán.');
@@ -790,15 +745,10 @@ function createCourseFromPool(courseId, customCourses = []) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-
-    const { modal, placeholder, showModal, hideModal } = createNewCourseModal();
-    document.body.appendChild(modal);
-
-    const coursePool = document.getElementById('course-pool');
-    coursePool.insertBefore(placeholder, coursePool.firstChild);
-
     window.lastSemesterNumber = 8;
     window.customCourses = new Set();
+
+    const coursePool = document.getElementById('course-pool');
 
     const savedState = localStorage.getItem('coursePlannerState');
     if (savedState) {
@@ -807,6 +757,9 @@ document.addEventListener('DOMContentLoaded', function () {
         initializeCoursePool();
         initializeSemesters();
         addOptCourses();
+        
+        const modalComponents = createNewCourseModal();
+        coursePool.insertBefore(modalComponents.placeholder, coursePool.firstChild);
     }
 
     createFilterUI();

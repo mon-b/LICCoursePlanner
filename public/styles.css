@@ -97,18 +97,25 @@
         margin-top: 10px;
         margin-bottom: 4px;
         padding: 2px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
-
-
-    .collapsible-course-pool .course {
-        margin-left: 10px;
+    
+    .course-placeholder-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
     }
-
+    
     .course-placeholder:hover {
         background-color: rgba(255, 255, 255, 0.2);
     }
 
-    .collapsible-course-pool .course-placeholder {
+    .collapsible-course-pool .course {
         margin-left: 10px;
     }
 
@@ -486,16 +493,14 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background-color: #1e1e1e; 
-        color: #ffffff;
+        background-color: #1e1e1e;
         padding: 30px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
         border-radius: 8px;
         z-index: 9999;
         display: none;
-        flex-direction: column;
-        align-items: stretch;
         width: 300px;
+        max-width: calc(100vw - 40px);
+        pointer-events: all;
     }
 
     .modal-title {
@@ -506,13 +511,9 @@
         width: 100%;
     }
 
-    .new-course-modal-close {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        cursor: pointer;
-        color: #ffffff;
-        font-size: 20px;
+    .modal-content {
+        position: relative;
+        width: 100%;
     }
 
     .new-course-modal-close {
@@ -565,23 +566,9 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        z-index: 9998;
-        display: none;
-    }
-
-
-
-    .modal-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
         background-color: rgba(0, 0, 0, 0.75);
-        display: none;
         z-index: 9998;
-        pointer-events: all;
+        display: none;
     }
 
 
@@ -589,36 +576,6 @@
         overflow: hidden;
     }
 
-    .modal-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw; 
-        height: 100vh;
-        background-color: rgba(0, 0, 0, 0.75);
-        display: none;
-        z-index: 9998;
-        pointer-events: all;
-        margin-right: 0;
-        padding-right: 0;
-    }
-
-
-
-    .new-course-modal {
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: #1e1e1e;
-        padding: 30px;
-        border-radius: 8px;
-        z-index: 9999;
-        display: none;
-        pointer-events: all;
-        overflow-y: auto;
-        margin-right: 0;
-        max-width: calc(100vw - 40px);
-    }
 
     .form-element {
         margin-bottom: 15px;
