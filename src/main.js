@@ -73,6 +73,7 @@ function createCourse(course) {
 function handleTakenCourse(event) {
     const courseDiv = event.currentTarget;
     courseDiv.classList.toggle('taken');
+    saveState();
 }
 
 function initializeCoursePool() {
@@ -243,6 +244,41 @@ function handleDrop(event) {
 
         if (!isParityValid(courseElement, semesterNumber)) {
             alert('Este curso solo puede ser dictado en otro semestre debido a su paridad');
+            if (placeholder.parentNode) {
+                placeholder.parentNode.removeChild(placeholder);
+            }
+            return;
+        }
+
+        if (!checkPrerequisites(courseId, targetContainer)) {
+            const course = findCourseData(courseId);
+            if (!course) return;
+
+            const prereqs = parsePrerequisites(course.prereq);
+            let message = `No puedes tomar ${course.name_stylized} porque no cumples con los requisitos necesarios.\n\n`;
+            
+            prereqs.forEach((group, i) => {
+                if (i > 0) message += '\nY también ';
+                
+                if (group.length > 1) {
+                    message += 'necesitas al menos uno de los siguientes:\n';
+                    group.forEach(req => {
+                        if (req.isCoreq) {
+                            message += `- Tomar ${req.id} en el mismo semestre\n`;
+                        } else {
+                            message += `- Tener aprobado ${req.id}\n`;
+                        }
+                    });
+                } else if (group.length === 1) {
+                    if (group[0].isCoreq) {
+                        message += `necesitas tener aprobado ${group[0].id} o tomar ${group[0].id} en el mismo semestre`;
+                    } else {
+                        message += `necesitas tener aprobado ${group[0].id}`;
+                    }
+                }
+            });
+
+            alert(message);
             if (placeholder.parentNode) {
                 placeholder.parentNode.removeChild(placeholder);
             }
@@ -686,7 +722,7 @@ function loadState() {
         filters.style.display = 'block';
         toggleText.innerHTML = '<span class="rotate180">&#9662;</span> Ocultar cursos disponibles';
     } else {
-        newCoursePool.style.display = 'none';
+        newCoursePool.style.display = 'block';
         filters.style.display = 'none';
         toggleText.innerHTML = show.spanish;
     }
@@ -788,3 +824,132 @@ document.addEventListener('DOMContentLoaded', function () {
 
     updateCoursePoolWidth();
 });
+
+function parsePrerequisites(prereqString) {
+    if (!prereqString) return [];
+    
+    const andGroups = prereqString.split(' y ');
+    
+    const groups = andGroups.map(group => {
+        const orGroup = group.split(' o ');
+        return orGroup.map(course => {
+            const coreqMatch = course.match(/([A-Z]+\d+)\(c\)/);
+            if (coreqMatch) {
+                return {
+                    id: coreqMatch[1],
+                    isCoreq: true
+                };
+            }
+            
+            const normalMatch = course.match(/([A-Z]+\d+)/);
+            if (normalMatch) {
+                return {
+                    id: normalMatch[1],
+                    isCoreq: false
+                };
+            }
+            
+            return null;
+        }).filter(item => item !== null);
+    });
+    
+    return groups;
+}
+
+function isTaken(courseId) {
+    const courseElement = document.getElementById(courseId);
+    return courseElement && courseElement.classList.contains('taken');
+}
+
+function checkPrerequisites(courseId, targetSemesterDiv, checkedCourses = new Set()) {
+    if (checkedCourses.has(courseId)) {
+        return true;
+    }
+    checkedCourses.add(courseId);
+
+    const course = findCourseData(courseId);
+    if (!course || !course.prereq) {
+        return true;
+    }
+
+    const prereqGroups = parsePrerequisites(course.prereq);
+    
+    for (const orGroup of prereqGroups) {
+        const orGroupSatisfied = orGroup.some(prereq => {
+            if (prereq.isCoreq) {
+                return isTaken(prereq.id) || isInSameSemester(prereq.id, targetSemesterDiv);
+            } else {
+                return isTaken(prereq.id) && checkPrerequisites(prereq.id, targetSemesterDiv, checkedCourses);
+            }
+        });
+
+        if (!orGroupSatisfied) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function findCourseData(courseId) {
+    for (const semester of jsonData) {
+        const course = semester.courses.find(c => c.id === courseId);
+        if (course) return course;
+    }
+    
+    for (const optGroup of optData) {
+        const course = optGroup.courses.find(c => c.id === courseId);
+        if (course) return course;
+    }
+    
+    return null;
+}
+
+function checkPrerequisitesWithoutCourse(courseId, excludedCourseId, checkedCourses = new Set()) {
+    if (checkedCourses.has(courseId)) {
+        return true;
+    }
+    checkedCourses.add(courseId);
+
+    const course = findCourseData(courseId);
+    if (!course || !course.prereq) {
+        return true;
+    }
+
+    const prereqGroups = parsePrerequisites(course.prereq);
+    
+    for (const orGroup of prereqGroups) {
+        const orGroupSatisfied = orGroup.some(prereq => {
+            if (prereq.id === excludedCourseId) {
+                return false;
+            }
+
+            if (prereq.isCoreq) {
+                const semester = document.querySelector(`.semester .course[id="${courseId}"]`)?.closest('.semester');
+                return isTaken(prereq.id) || (semester && isInSameSemester(prereq.id, semester));
+            } else {
+                return isTaken(prereq.id) && 
+                       checkPrerequisitesWithoutCourse(prereq.id, excludedCourseId, checkedCourses);
+            }
+        });
+
+        if (!orGroupSatisfied) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+function isInSameSemester(courseId, semesterDiv) {
+    if (!semesterDiv) return false;
+    const courses = Array.from(semesterDiv.querySelectorAll('.course'));
+    const draggedCourse = document.querySelector('.course.dragging');
+    
+    if (draggedCourse && draggedCourse.id === courseId && 
+        draggedCourse.closest('.semester') === semesterDiv) {
+        return true;
+    }
+    
+    return courses.some(course => course.id === courseId && !course.classList.contains('dragging'));
+}
