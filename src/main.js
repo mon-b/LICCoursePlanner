@@ -722,8 +722,8 @@ function loadState() {
         filters.style.display = 'block';
         toggleText.innerHTML = '<span class="rotate180">&#9662;</span> Ocultar cursos disponibles';
     } else {
-        newCoursePool.style.display = 'block';
-        filters.style.display = 'none';
+        newCoursePool.style.display = 'none';
+        filters.style.display = 'block';
         toggleText.innerHTML = show.spanish;
     }
 
