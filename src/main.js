@@ -256,29 +256,23 @@ function handleDrop(event) {
 
             const prereqs = parsePrerequisites(course.prereq);
             let message = `No puedes tomar ${course.name_stylized} porque no cumples con los requisitos necesarios.\n\n`;
-            
+
             prereqs.forEach((group, i) => {
-                if (i > 0) message += '\nY también ';
-                
-                if (group.length > 1) {
-                    message += 'necesitas al menos uno de los siguientes:\n';
-                    group.forEach(req => {
-                        if (req.isCoreq) {
-                            message += `- Tomar ${req.id} en el mismo semestre\n`;
-                        } else {
-                            message += `- Tener aprobado ${req.id}\n`;
-                        }
-                    });
-                } else if (group.length === 1) {
+                if (group.length === 1) {
                     if (group[0].isCoreq) {
-                        message += `necesitas tener aprobado ${group[0].id} o tomar ${group[0].id} en el mismo semestre`;
+                        message += `• Necesitas haber tomado ${group[0].id} o tomar ${group[0].id} en el mismo semestre.\n`;
                     } else {
-                        message += `necesitas tener aprobado ${group[0].id}`;
+                        message += `• Necesitas haber tomado ${group[0].id} previamente.\n`;
                     }
+                } else if (group.length > 1) {
+                    const requiredCourses = group
+                        .map(req => (req.isCoreq ? `${req.id} (en el mismo semestre)` : req.id))
+                        .join(' y ');
+                    message += `• Necesitas haber tomado ${requiredCourses} previamente.\n`;
                 }
             });
 
-            alert(message);
+            alert(message.trim());
             if (placeholder.parentNode) {
                 placeholder.parentNode.removeChild(placeholder);
             }
@@ -426,7 +420,7 @@ function newSemester() {
 }
 
 function handleAddSemesterClick() {
-    const confirmed = window.confirm('Are you sure you want to add a new semester?');
+    const confirmed = window.confirm('¿Añadir un nuevo semestre?');
 
     if (confirmed) {
         newSemester();
