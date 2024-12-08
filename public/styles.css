@@ -102,6 +102,10 @@
         align-items: center;
         justify-content: center;
     }
+
+    .course-pool .course-placeholder{
+        margin-left: 10px;
+    }
     
     .course-placeholder-content {
         display: flex;
@@ -327,20 +331,20 @@
         left: 50%;
         bottom: 80%;
         transform: translateX(-50%);
-        border-radius: 6px; 
+        border-radius: 6px;
         font-size: 12px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     }
-    
+
     .prereq-tooltip::after {
         content: '';
         position: absolute;
-        top: 100%; 
+        top: 100%;
         left: 50%;
         transform: translateX(-50%);
         border-width: 6px;
         border-style: solid;
-        border-color: rgb(14, 14, 14) transparent transparent transparent; 
+        border-color: rgb(14, 14, 14) transparent transparent transparent;
     }
 
 
@@ -422,18 +426,14 @@
     .delete-semester-btn:hover img{
         filter: brightness(1.6);
     }
-    .filter-container {
+    #filters{
         padding: 12px;
+        background: #181d22;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         display: flex;
         flex-direction: column;
-        margin-bottom: 4px;
     }
 
-    #filters {
-        padding: 12px;
-        background: #181d22;
-    }
 
     .search-input {
         width: calc(100% - 24px);
@@ -463,8 +463,6 @@
         transition: all 0.2s;
         font-size: 12px;
     }
-
-
 
     .search-input:focus {
         outline: none;
