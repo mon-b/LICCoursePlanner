@@ -455,6 +455,7 @@ function toggleCoursePool() {
     const imgIcon = document.querySelector('#header img');
 
     coursePool.style.display = coursePool.style.display === 'none' ? 'flex' : 'none';
+    console.log(coursePool.style.display);
     filters.style.display = coursePool.style.display === 'flex' ? 'block' : 'none';
 
     if (coursePool.style.display === 'flex') {
@@ -718,9 +719,11 @@ function loadState() {
     const toggleText = document.getElementById('toggle-text');
 
     if (state.coursePoolVisible) {
+        console.log("visible");
         newCoursePool.style.display = 'flex';
         filters.style.display = 'block';
-        toggleText.innerHTML = '<span class="rotate180">&#9662;</span> Ocultar cursos disponibles';
+        toggleCoursePool();
+        toggleText.innerHTML = '<span class="rotate180">&#9662;</span> Mostrar cursos disponibles';
     } else {
         newCoursePool.style.display = 'none';
         filters.style.display = 'block';

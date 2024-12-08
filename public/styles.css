@@ -120,12 +120,12 @@
     }
 
     #course-pool {
-        min-height: 100px; 
+        min-height: 100px;
         position: relative;
         z-index: 1;
         cursor: default;
     }
-    
+
 
     .hidden {
         display: none;
@@ -475,6 +475,10 @@
         overflow-y: scroll;
         background: #22272B;
 
+    }
+
+    #course-pool .course{
+        margin-left: 10px;
     }
 
     .filter-tag.active {
