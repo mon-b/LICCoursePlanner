@@ -254,25 +254,28 @@ function handleDrop(event) {
             const course = findCourseData(courseId);
             if (!course) return;
 
-            const prereqs = parsePrerequisites(course.prereq);
             let message = `No puedes tomar ${course.name_stylized} porque no cumples con los requisitos necesarios.\n\n`;
 
-            prereqs.forEach((group, i) => {
-                if (group.length === 1) {
-                    if (group[0].isCoreq) {
-                        message += `• Necesitas haber tomado ${group[0].id} o tomar ${group[0].id} en el mismo semestre.\n`;
-                    } else {
-                        message += `• Necesitas haber tomado ${group[0].id} previamente.\n`;
+            const mainAlternatives = course.prereq.split(' o ');
+            
+            const prereqMessages = mainAlternatives.map(alternative => {
+                if (alternative.includes(' y ')) {
+                    const courses = alternative.split(' y ');
+                    const cleanCourses = courses.map(c => c.replace(/[()]/g, '').trim());
+                    return `• Necesitas haber tomado ${cleanCourses.join(' y ')} previamente`;
+                } else {
+                    const cleanCourse = alternative.replace(/[()]/g, '').trim();
+                    if (cleanCourse.includes('(c)')) {
+                        const courseId = cleanCourse.replace('(c)', '');
+                        return `• Necesitas haber tomado ${courseId} o tomarlo en el mismo semestre`;
                     }
-                } else if (group.length > 1) {
-                    const requiredCourses = group
-                        .map(req => (req.isCoreq ? `${req.id} (en el mismo semestre)` : req.id))
-                        .join(' y ');
-                    message += `• Necesitas haber tomado ${requiredCourses} previamente.\n`;
+                    return `• Necesitas haber tomado ${cleanCourse} previamente`;
                 }
             });
 
+            message += prereqMessages.join('\n o \n');
             alert(message.trim());
+            
             if (placeholder.parentNode) {
                 placeholder.parentNode.removeChild(placeholder);
             }
@@ -853,11 +856,6 @@ function parsePrerequisites(prereqString) {
     return groups;
 }
 
-function isTaken(courseId) {
-    const courseElement = document.getElementById(courseId);
-    return courseElement && courseElement.classList.contains('taken');
-}
-
 function checkPrerequisites(courseId, targetSemesterDiv, checkedCourses = new Set()) {
     if (checkedCourses.has(courseId)) {
         return true;
@@ -874,9 +872,11 @@ function checkPrerequisites(courseId, targetSemesterDiv, checkedCourses = new Se
     for (const orGroup of prereqGroups) {
         const orGroupSatisfied = orGroup.some(prereq => {
             if (prereq.isCoreq) {
-                return isTaken(prereq.id) || isInSameSemester(prereq.id, targetSemesterDiv);
+                return isInPreviousSemester(prereq.id, targetSemesterDiv) || 
+                       isInSameSemester(prereq.id, targetSemesterDiv);
             } else {
-                return isTaken(prereq.id) && checkPrerequisites(prereq.id, targetSemesterDiv, checkedCourses);
+                return isInPreviousSemester(prereq.id, targetSemesterDiv) && 
+                       checkPrerequisites(prereq.id, targetSemesterDiv, checkedCourses);
             }
         });
 
@@ -902,44 +902,9 @@ function findCourseData(courseId) {
     return null;
 }
 
-function checkPrerequisitesWithoutCourse(courseId, excludedCourseId, checkedCourses = new Set()) {
-    if (checkedCourses.has(courseId)) {
-        return true;
-    }
-    checkedCourses.add(courseId);
-
-    const course = findCourseData(courseId);
-    if (!course || !course.prereq) {
-        return true;
-    }
-
-    const prereqGroups = parsePrerequisites(course.prereq);
-    
-    for (const orGroup of prereqGroups) {
-        const orGroupSatisfied = orGroup.some(prereq => {
-            if (prereq.id === excludedCourseId) {
-                return false;
-            }
-
-            if (prereq.isCoreq) {
-                const semester = document.querySelector(`.semester .course[id="${courseId}"]`)?.closest('.semester');
-                return isTaken(prereq.id) || (semester && isInSameSemester(prereq.id, semester));
-            } else {
-                return isTaken(prereq.id) && 
-                       checkPrerequisitesWithoutCourse(prereq.id, excludedCourseId, checkedCourses);
-            }
-        });
-
-        if (!orGroupSatisfied) {
-            return false;
-        }
-    }
-    
-    return true;
-}
-
 function isInSameSemester(courseId, semesterDiv) {
     if (!semesterDiv) return false;
+    
     const courses = Array.from(semesterDiv.querySelectorAll('.course'));
     const draggedCourse = document.querySelector('.course.dragging');
     
@@ -949,4 +914,22 @@ function isInSameSemester(courseId, semesterDiv) {
     }
     
     return courses.some(course => course.id === courseId && !course.classList.contains('dragging'));
+}
+
+function getSemesterNumber(element) {
+    const semesterDiv = element.closest('.semester');
+    if (!semesterDiv) return null;
+    const semesterText = semesterDiv.querySelector('.semesterHead').textContent;
+    return parseInt(semesterText.match(/\d+/)[0]);
+}
+
+function isInPreviousSemester(courseId, targetSemesterDiv) {
+    const targetSemesterNumber = getSemesterNumber(targetSemesterDiv);
+    if (!targetSemesterNumber) return false;
+
+    const course = document.getElementById(courseId);
+    if (!course) return false;
+
+    const courseSemesterNumber = getSemesterNumber(course);
+    return courseSemesterNumber && courseSemesterNumber < targetSemesterNumber;
 }
