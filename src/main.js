@@ -254,31 +254,28 @@ function handleDrop(event) {
             const course = findCourseData(courseId);
             if (!course) return;
 
-            const prereqs = parsePrerequisites(course.prereq);
             let message = `No puedes tomar ${course.name_stylized} porque no cumples con los requisitos necesarios.\n\n`;
+
+            const mainAlternatives = course.prereq.split(' o ');
             
-            prereqs.forEach((group, i) => {
-                if (i > 0) message += '\nY también ';
-                
-                if (group.length > 1) {
-                    message += 'necesitas al menos uno de los siguientes:\n';
-                    group.forEach(req => {
-                        if (req.isCoreq) {
-                            message += `- Tomar ${req.id} en el mismo semestre\n`;
-                        } else {
-                            message += `- Tener aprobado ${req.id}\n`;
-                        }
-                    });
-                } else if (group.length === 1) {
-                    if (group[0].isCoreq) {
-                        message += `necesitas tener aprobado ${group[0].id} o tomar ${group[0].id} en el mismo semestre`;
-                    } else {
-                        message += `necesitas tener aprobado ${group[0].id}`;
+            const prereqMessages = mainAlternatives.map(alternative => {
+                if (alternative.includes(' y ')) {
+                    const courses = alternative.split(' y ');
+                    const cleanCourses = courses.map(c => c.replace(/[()]/g, '').trim());
+                    return `• Necesitas haber tomado ${cleanCourses.join(' y ')} previamente`;
+                } else {
+                    const cleanCourse = alternative.replace(/[()]/g, '').trim();
+                    if (cleanCourse.includes('(c)')) {
+                        const courseId = cleanCourse.replace('(c)', '');
+                        return `• Necesitas haber tomado ${courseId} o tomarlo en el mismo semestre`;
                     }
+                    return `• Necesitas haber tomado ${cleanCourse} previamente`;
                 }
             });
 
-            alert(message);
+            message += prereqMessages.join('\n o \n');
+            alert(message.trim());
+            
             if (placeholder.parentNode) {
                 placeholder.parentNode.removeChild(placeholder);
             }
@@ -426,7 +423,7 @@ function newSemester() {
 }
 
 function handleAddSemesterClick() {
-    const confirmed = window.confirm('Are you sure you want to add a new semester?');
+    const confirmed = window.confirm('¿Añadir un nuevo semestre?');
 
     if (confirmed) {
         newSemester();
@@ -452,16 +449,26 @@ function toggleCoursePool() {
     const coursePool = document.getElementById('course-pool');
     const filters = document.getElementById('filters');
     const toggleText = document.getElementById('toggle-text');
-    const imgIcon = document.querySelector('#header img');
-
-    coursePool.style.display = coursePool.style.display === 'none' ? 'flex' : 'none';
-    console.log(coursePool.style.display);
-    filters.style.display = coursePool.style.display === 'flex' ? 'block' : 'none';
-
-    if (coursePool.style.display === 'flex') {
+    const collapsibleContainer = document.querySelector('.collapsible-course-pool');
+    
+    // Toggle las clases expanded
+    coursePool.classList.toggle('expanded');
+    filters.classList.toggle('expanded');
+    toggleText.classList.toggle('expanded');
+    collapsibleContainer.classList.toggle('expanded');
+    
+    // Actualizar el texto del botón
+    if (coursePool.classList.contains('expanded')) {
         toggleText.innerHTML = '<span class="rotate180">&#9662;</span> Ocultar cursos disponibles';
+        
+        setTimeout(() => {
+            if (coursePool.scrollHeight > coursePool.clientHeight) {
+                coursePool.style.overflowY = 'scroll';
+            }
+        }, 500);
     } else {
         toggleText.innerHTML = show.spanish;
+        coursePool.style.overflowY = 'hidden';
     }
 }
 
@@ -659,26 +666,38 @@ function loadState() {
     const state = JSON.parse(savedState);
     window.customCourses = new Set(state.customCourses.map(course => course.id));
 
+    // Obtener todas las referencias DOM necesarias
     const semesterPool = document.getElementById('semester-pool');
     const coursePool = document.getElementById('course-pool');
+    const filters = document.getElementById('filters');
+    const toggleText = document.getElementById('toggle-text');
     const addSemesterBtn = document.getElementById('add-semester-btn');
     const resetSemesterBtn = document.getElementById('reset-btn');
 
+    // Clonar y reemplazar el course pool
     const newCoursePool = coursePool.cloneNode(false);
     coursePool.parentNode.replaceChild(newCoursePool, coursePool);
+    
+    // Añadir event listeners
     newCoursePool.addEventListener('dragover', allowDrop);
     newCoursePool.addEventListener('drop', handleDrop);
 
+    // Limpiar los contenedores
     semesterPool.innerHTML = '';
     newCoursePool.innerHTML = '';
 
+    // Añadir el placeholder para nuevos cursos
     const modalComponents = createNewCourseModal();
     newCoursePool.appendChild(modalComponents.placeholder);
 
+    // Cargar los semestres ordenados
     state.semesters.sort((a, b) => a.number - b.number);
+    
+    // Restaurar cada semestre
     state.semesters.forEach(semesterData => {
         const semesterDiv = createSemester(semesterData.number);
 
+        // Restaurar los cursos de cada semestre
         semesterData.courses.forEach(courseData => {
             let courseElement;
             if (window.customCourses.has(courseData.id)) {
@@ -686,6 +705,7 @@ function loadState() {
             } else {
                 courseElement = createCourseFromPool(courseData.id);
             }
+            
             if (courseElement) {
                 if (courseData.taken) {
                     courseElement.classList.add('taken');
@@ -697,6 +717,7 @@ function loadState() {
         semesterPool.appendChild(semesterDiv);
     });
 
+    // Restaurar los cursos en el course pool
     state.coursePool.forEach(courseData => {
         let courseElement;
         if (window.customCourses.has(courseData.id)) {
@@ -704,6 +725,7 @@ function loadState() {
         } else {
             courseElement = createCourseFromPool(courseData.id);
         }
+        
         if (courseElement) {
             if (courseData.taken) {
                 courseElement.classList.add('taken');
@@ -712,25 +734,18 @@ function loadState() {
         }
     });
 
+    // Restaurar los botones
     semesterPool.appendChild(addSemesterBtn);
     semesterPool.appendChild(resetSemesterBtn);
 
-    const filters = document.getElementById('filters');
-    const toggleText = document.getElementById('toggle-text');
+    // Inicializar el estado del course pool con las nuevas animaciones
+    initializeCoursePoolState(newCoursePool, filters, toggleText, state.coursePoolVisible);
 
-    if (state.coursePoolVisible) {
-        console.log("visible");
-        newCoursePool.style.display = 'flex';
-        filters.style.display = 'block';
-        toggleCoursePool();
-        toggleText.innerHTML = '<span class="rotate180">&#9662;</span> Mostrar cursos disponibles';
-    } else {
-        newCoursePool.style.display = 'none';
-        filters.style.display = 'block';
-        toggleText.innerHTML = show.spanish;
-    }
-
+    // Actualizar el número del último semestre
     window.lastSemesterNumber = state.semesterCount;
+    
+    // Actualizar el ancho del course pool
+    updateCoursePoolWidth();
 }
 
 
@@ -859,11 +874,6 @@ function parsePrerequisites(prereqString) {
     return groups;
 }
 
-function isTaken(courseId) {
-    const courseElement = document.getElementById(courseId);
-    return courseElement && courseElement.classList.contains('taken');
-}
-
 function checkPrerequisites(courseId, targetSemesterDiv, checkedCourses = new Set()) {
     if (checkedCourses.has(courseId)) {
         return true;
@@ -880,9 +890,11 @@ function checkPrerequisites(courseId, targetSemesterDiv, checkedCourses = new Se
     for (const orGroup of prereqGroups) {
         const orGroupSatisfied = orGroup.some(prereq => {
             if (prereq.isCoreq) {
-                return isTaken(prereq.id) || isInSameSemester(prereq.id, targetSemesterDiv);
+                return isInPreviousSemester(prereq.id, targetSemesterDiv) || 
+                       isInSameSemester(prereq.id, targetSemesterDiv);
             } else {
-                return isTaken(prereq.id) && checkPrerequisites(prereq.id, targetSemesterDiv, checkedCourses);
+                return isInPreviousSemester(prereq.id, targetSemesterDiv) && 
+                       checkPrerequisites(prereq.id, targetSemesterDiv, checkedCourses);
             }
         });
 
@@ -908,44 +920,9 @@ function findCourseData(courseId) {
     return null;
 }
 
-function checkPrerequisitesWithoutCourse(courseId, excludedCourseId, checkedCourses = new Set()) {
-    if (checkedCourses.has(courseId)) {
-        return true;
-    }
-    checkedCourses.add(courseId);
-
-    const course = findCourseData(courseId);
-    if (!course || !course.prereq) {
-        return true;
-    }
-
-    const prereqGroups = parsePrerequisites(course.prereq);
-    
-    for (const orGroup of prereqGroups) {
-        const orGroupSatisfied = orGroup.some(prereq => {
-            if (prereq.id === excludedCourseId) {
-                return false;
-            }
-
-            if (prereq.isCoreq) {
-                const semester = document.querySelector(`.semester .course[id="${courseId}"]`)?.closest('.semester');
-                return isTaken(prereq.id) || (semester && isInSameSemester(prereq.id, semester));
-            } else {
-                return isTaken(prereq.id) && 
-                       checkPrerequisitesWithoutCourse(prereq.id, excludedCourseId, checkedCourses);
-            }
-        });
-
-        if (!orGroupSatisfied) {
-            return false;
-        }
-    }
-    
-    return true;
-}
-
 function isInSameSemester(courseId, semesterDiv) {
     if (!semesterDiv) return false;
+    
     const courses = Array.from(semesterDiv.querySelectorAll('.course'));
     const draggedCourse = document.querySelector('.course.dragging');
     
@@ -955,4 +932,47 @@ function isInSameSemester(courseId, semesterDiv) {
     }
     
     return courses.some(course => course.id === courseId && !course.classList.contains('dragging'));
+}
+
+function getSemesterNumber(element) {
+    const semesterDiv = element.closest('.semester');
+    if (!semesterDiv) return null;
+    const semesterText = semesterDiv.querySelector('.semesterHead').textContent;
+    return parseInt(semesterText.match(/\d+/)[0]);
+}
+
+function isInPreviousSemester(courseId, targetSemesterDiv) {
+    const targetSemesterNumber = getSemesterNumber(targetSemesterDiv);
+    if (!targetSemesterNumber) return false;
+
+    const course = document.getElementById(courseId);
+    if (!course) return false;
+
+    const courseSemesterNumber = getSemesterNumber(course);
+    return courseSemesterNumber && courseSemesterNumber < targetSemesterNumber;
+}
+
+function initializeCoursePoolState(coursePool, filters, toggleText, isVisible) {
+    const collapsibleContainer = document.querySelector('.collapsible-course-pool');
+    
+    if (isVisible) {
+        coursePool.classList.add('expanded');
+        filters.classList.add('expanded');
+        toggleText.classList.add('expanded');
+        collapsibleContainer.classList.add('expanded');
+        toggleText.innerHTML = '<span class="rotate180">&#9662;</span> Ocultar cursos disponibles';
+        
+        setTimeout(() => {
+            if (coursePool.scrollHeight > coursePool.clientHeight) {
+                coursePool.style.overflowY = 'scroll';
+            }
+        }, 500);
+    } else {
+        coursePool.classList.remove('expanded');
+        filters.classList.remove('expanded');
+        toggleText.classList.remove('expanded');
+        collapsibleContainer.classList.remove('expanded');
+        toggleText.innerHTML = show.spanish;
+        coursePool.style.overflowY = 'hidden';
+    }
 }
