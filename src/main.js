@@ -449,16 +449,26 @@ function toggleCoursePool() {
     const coursePool = document.getElementById('course-pool');
     const filters = document.getElementById('filters');
     const toggleText = document.getElementById('toggle-text');
-    const imgIcon = document.querySelector('#header img');
-
-    coursePool.style.display = coursePool.style.display === 'none' ? 'flex' : 'none';
-    console.log(coursePool.style.display);
-    filters.style.display = coursePool.style.display === 'flex' ? 'block' : 'none';
-
-    if (coursePool.style.display === 'flex') {
+    const collapsibleContainer = document.querySelector('.collapsible-course-pool');
+    
+    // Toggle las clases expanded
+    coursePool.classList.toggle('expanded');
+    filters.classList.toggle('expanded');
+    toggleText.classList.toggle('expanded');
+    collapsibleContainer.classList.toggle('expanded');
+    
+    // Actualizar el texto del botón
+    if (coursePool.classList.contains('expanded')) {
         toggleText.innerHTML = '<span class="rotate180">&#9662;</span> Ocultar cursos disponibles';
+        
+        setTimeout(() => {
+            if (coursePool.scrollHeight > coursePool.clientHeight) {
+                coursePool.style.overflowY = 'scroll';
+            }
+        }, 500);
     } else {
         toggleText.innerHTML = show.spanish;
+        coursePool.style.overflowY = 'hidden';
     }
 }
 
@@ -656,26 +666,38 @@ function loadState() {
     const state = JSON.parse(savedState);
     window.customCourses = new Set(state.customCourses.map(course => course.id));
 
+    // Obtener todas las referencias DOM necesarias
     const semesterPool = document.getElementById('semester-pool');
     const coursePool = document.getElementById('course-pool');
+    const filters = document.getElementById('filters');
+    const toggleText = document.getElementById('toggle-text');
     const addSemesterBtn = document.getElementById('add-semester-btn');
     const resetSemesterBtn = document.getElementById('reset-btn');
 
+    // Clonar y reemplazar el course pool
     const newCoursePool = coursePool.cloneNode(false);
     coursePool.parentNode.replaceChild(newCoursePool, coursePool);
+    
+    // Añadir event listeners
     newCoursePool.addEventListener('dragover', allowDrop);
     newCoursePool.addEventListener('drop', handleDrop);
 
+    // Limpiar los contenedores
     semesterPool.innerHTML = '';
     newCoursePool.innerHTML = '';
 
+    // Añadir el placeholder para nuevos cursos
     const modalComponents = createNewCourseModal();
     newCoursePool.appendChild(modalComponents.placeholder);
 
+    // Cargar los semestres ordenados
     state.semesters.sort((a, b) => a.number - b.number);
+    
+    // Restaurar cada semestre
     state.semesters.forEach(semesterData => {
         const semesterDiv = createSemester(semesterData.number);
 
+        // Restaurar los cursos de cada semestre
         semesterData.courses.forEach(courseData => {
             let courseElement;
             if (window.customCourses.has(courseData.id)) {
@@ -683,6 +705,7 @@ function loadState() {
             } else {
                 courseElement = createCourseFromPool(courseData.id);
             }
+            
             if (courseElement) {
                 if (courseData.taken) {
                     courseElement.classList.add('taken');
@@ -694,6 +717,7 @@ function loadState() {
         semesterPool.appendChild(semesterDiv);
     });
 
+    // Restaurar los cursos en el course pool
     state.coursePool.forEach(courseData => {
         let courseElement;
         if (window.customCourses.has(courseData.id)) {
@@ -701,6 +725,7 @@ function loadState() {
         } else {
             courseElement = createCourseFromPool(courseData.id);
         }
+        
         if (courseElement) {
             if (courseData.taken) {
                 courseElement.classList.add('taken');
@@ -709,25 +734,18 @@ function loadState() {
         }
     });
 
+    // Restaurar los botones
     semesterPool.appendChild(addSemesterBtn);
     semesterPool.appendChild(resetSemesterBtn);
 
-    const filters = document.getElementById('filters');
-    const toggleText = document.getElementById('toggle-text');
+    // Inicializar el estado del course pool con las nuevas animaciones
+    initializeCoursePoolState(newCoursePool, filters, toggleText, state.coursePoolVisible);
 
-    if (state.coursePoolVisible) {
-        console.log("visible");
-        newCoursePool.style.display = 'flex';
-        filters.style.display = 'block';
-        toggleCoursePool();
-        toggleText.innerHTML = '<span class="rotate180">&#9662;</span> Mostrar cursos disponibles';
-    } else {
-        newCoursePool.style.display = 'none';
-        filters.style.display = 'block';
-        toggleText.innerHTML = show.spanish;
-    }
-
+    // Actualizar el número del último semestre
     window.lastSemesterNumber = state.semesterCount;
+    
+    // Actualizar el ancho del course pool
+    updateCoursePoolWidth();
 }
 
 
@@ -932,4 +950,29 @@ function isInPreviousSemester(courseId, targetSemesterDiv) {
 
     const courseSemesterNumber = getSemesterNumber(course);
     return courseSemesterNumber && courseSemesterNumber < targetSemesterNumber;
+}
+
+function initializeCoursePoolState(coursePool, filters, toggleText, isVisible) {
+    const collapsibleContainer = document.querySelector('.collapsible-course-pool');
+    
+    if (isVisible) {
+        coursePool.classList.add('expanded');
+        filters.classList.add('expanded');
+        toggleText.classList.add('expanded');
+        collapsibleContainer.classList.add('expanded');
+        toggleText.innerHTML = '<span class="rotate180">&#9662;</span> Ocultar cursos disponibles';
+        
+        setTimeout(() => {
+            if (coursePool.scrollHeight > coursePool.clientHeight) {
+                coursePool.style.overflowY = 'scroll';
+            }
+        }, 500);
+    } else {
+        coursePool.classList.remove('expanded');
+        filters.classList.remove('expanded');
+        toggleText.classList.remove('expanded');
+        collapsibleContainer.classList.remove('expanded');
+        toggleText.innerHTML = show.spanish;
+        coursePool.style.overflowY = 'hidden';
+    }
 }

@@ -103,6 +103,12 @@
         margin-left: 10px;
     }
     
+    .course-pool-wrapper {
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+    }
+
     .course-placeholder-content {
         display: flex;
         align-items: center;
@@ -132,22 +138,48 @@
     }
 
     .course-pool {
-        display: none;
+        display: flex !important;
         justify-content: flex-start;
         flex-wrap: wrap;
-        padding: 10px;
-        height: 200px;
-        overflow-y: scroll;
+        max-height: 0;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        padding: 0;
+        margin: 0;
         background: #22272B;
-        z-index: 1;
+        overflow: hidden;
+    }
+
+    .course-pool.expanded {
+        max-height: 800px;
+        opacity: 1;
+        visibility: visible;
+        padding: 10px;
+        margin: 5px 0;
+        overflow-y: auto;
     }
 
     .collapsible-course-pool {
         display: flex;
         flex-direction: column;
-        justify-content: center;
         border-radius: 12px;
         overflow: hidden;
+        background: transparent;
+        margin: 0;
+        padding: 0;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .collapsible-course-pool.expanded {
+        transform: scaleY(1);
+        max-height: 1500px;
+    }
+
+    .collapsible-course-pool:not(.expanded) {
+        transform-origin: top;
+        transform: scaleY(1);
+        max-height: 42px;
     }
 
     .semester-pool {
@@ -160,6 +192,7 @@
         padding-right: 8px;
         padding-bottom: 8px;
         border-radius: 16px;
+        margin-top: 0; 
     }
 
     .header {
@@ -168,6 +201,16 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        border-radius: 12px;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        height: 42px;
+        box-sizing: border-box;
+        margin: 0;
+    }
+    
+
+    .collapsible-course-pool.expanded .header {
+        border-radius: 12px 12px 0 0;
     }
 
     .header:hover {
@@ -422,14 +465,36 @@
     .delete-semester-btn:hover img{
         filter: brightness(1.6);
     }
-    #filters{
-        padding: 12px;
+    
+    #filters {
+        display: block;
+        max-height: 0;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
         background: #181d22;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        display: flex;
-        flex-direction: column;
     }
 
+    #filters.expanded {
+        max-height: 300px; 
+        opacity: 1;
+        visibility: visible;
+        padding: 12px;
+        margin: 5px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    #toggle-text .rotate180 {
+        display: inline-block;
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #toggle-text.expanded .rotate180 {
+        transform: rotate(180deg);
+    }
 
     .search-input {
         width: calc(100% - 24px);
