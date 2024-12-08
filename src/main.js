@@ -24,11 +24,16 @@ function isParityValid(course, semesterNumber) {
 
 function getParityText(parity) {
     switch(parity) {
-        case 'even': return 'pares';
-        case 'odd': return 'impares';
-        case 'both': return 'ambos';
-        default: return '';
+        case 'even': return 'Semestres Pares';
+        case 'odd': return 'Semestres Impares';
+        case 'both': return 'Ambos Semestres';
+        default: return 'Ambos Semestres';
     }
+}
+
+function formatPrereq(prereq) {
+    if (!prereq) return 'Sin prerrequisitos';
+    return prereq;
 }
 
 function createCourse(course) {
@@ -36,22 +41,32 @@ function createCourse(course) {
     courseDiv.className = 'course ' + course.type;
     courseDiv.draggable = true;
     courseDiv.setAttribute('data-parity', course.parity || 'both');
+    
     courseDiv.innerHTML = `
         <div class="course-content">
             <b class="course-name">${course.name_stylized}</b> <br>
             [${course.id}] <br>
-            <small>${course.cred} ${credits.spanish}</small>
+            <small>${course.cred} créditos</small>
+            <div class="prereq-tooltip">
+                <div class="tooltip-header">${course.name_stylized}</div>
+                <div class="tooltip-prereq">
+                    <strong>Prerrequisitos:</strong><br>
+                    ${formatPrereq(course.prereq)}
+                </div>
+                <div class="tooltip-parity">
+                    <strong>Dictado en:</strong><br>
+                    ${getParityText(course.parity)}
+                </div>
+            </div>
         </div>
-        <span class="prereq-tooltip">
-            Prereq: ${course.prereq || 'None'}
-            ${course.parity ? `<br>Dictado en semestres ${getParityText(course.parity)}` : ''}
-        </span>
     `;
+    
     courseDiv.id = course.id;
-
+    
     courseDiv.addEventListener('dragstart', handleDragStart);
+    courseDiv.addEventListener('dragend', handleDragEnd);
     courseDiv.addEventListener('click', handleTakenCourse);
-
+    
     return courseDiv;
 }
 
@@ -141,20 +156,28 @@ function initializeSemesters() {
         semesterPool.appendChild(semesterDiv);
     });
 
-
     semesterPool.appendChild(addSemesterBtn);
     semesterPool.appendChild(resetSemesterBtn);
 }
 
 function allowDrop(event) {
     event.preventDefault();
-
-    const target = event.target.closest('.semester, #course-pool');
+    event.dataTransfer.dropEffect = 'move';
+    
+    let target = event.target.closest('.semester, #course-pool');
+    if (!target && event.target.parentElement && event.target.parentElement.id === 'course-pool') {
+        target = event.target.parentElement;
+    }
     if (!target) return;
 
     const mouseY = event.clientY;
-    const draggedCourse = document.querySelector('.course[style*="opacity: 0.5"]');
+    const draggedCourse = document.querySelector('.course.dragging');
     if (!draggedCourse) return;
+
+    const tooltip = draggedCourse.querySelector('.prereq-tooltip');
+    if (tooltip) {
+        tooltip.style.visibility = 'hidden';
+    }
 
     if (target.id === 'course-pool') {
         if (placeholder.parentNode !== target) {
@@ -163,6 +186,7 @@ function allowDrop(event) {
             }
             target.appendChild(placeholder);
         }
+
     } else if (target.classList.contains('semester')) {
         const children = Array.from(target.children).filter(
             child => child.classList.contains('course') &&
@@ -196,6 +220,10 @@ function allowDrop(event) {
             }
         }
     }
+
+    document.querySelectorAll('.course:not(.dragging) .prereq-tooltip').forEach(otherTooltip => {
+        otherTooltip.style.visibility = 'hidden';
+    });
 }
 
 function handleDrop(event) {
@@ -239,30 +267,26 @@ function handleDrop(event) {
 }
 
 function handleDragStart(event) {
-    const tooltip = event.currentTarget.querySelector('.prereq-tooltip');
-    if (tooltip) {
-        tooltip.style.display = 'none';
-    }
+    const courseElement = event.currentTarget;
+    courseElement.classList.add('dragging');
 
-    event.target.style.opacity = '0.5';
+    document.querySelectorAll('.prereq-tooltip').forEach(tooltip => {
+        tooltip.style.visibility = 'hidden';
+        tooltip.style.opacity = '0';
+    });
 
-    if (placeholder.parentNode) {
-        placeholder.parentNode.removeChild(placeholder);
-    }
+    event.dataTransfer.setData('text/plain', courseElement.id);
+    event.dataTransfer.effectAllowed = 'move';
+}
 
-    event.dataTransfer.setData('text/plain', event.target.id);
-
-    event.currentTarget.addEventListener('dragend', () => {
-        if (tooltip) {
-            tooltip.style.display = '';
-        }
-
-        if (placeholder.parentNode) {
-            placeholder.parentNode.removeChild(placeholder);
-        }
-
-        event.target.style.opacity = '';
-    }, { once: true });
+function handleDragEnd(event) {
+    const courseElement = event.currentTarget;
+    courseElement.classList.remove('dragging');
+    
+    document.querySelectorAll('.prereq-tooltip').forEach(tooltip => {
+        tooltip.style.visibility = '';
+        tooltip.style.opacity = '';
+    });
 }
 
 function createNewCourseModal() {
@@ -275,107 +299,70 @@ function createNewCourseModal() {
     const modalContent = document.createElement('div');
     modalContent.classList.add('modal-content');
 
-    const closeButton = document.createElement('span');
-    closeButton.classList.add('new-course-modal-close');
-    closeButton.textContent = '×';
+    modalContent.innerHTML = `
+        <span class="new-course-modal-close">&times;</span>
+        <h2 class="modal-title">Crear nuevo curso</h2>
+        <div class="form-element">
+            <input type="text" class="course-name-input" placeholder="Nombre del curso">
+        </div>
+        <div class="form-element">
+            <select class="course-type-dropdown">
+                <option value="" disabled selected>Seleccionar tipo de curso</option>
+                ${Object.entries(legend.spanish.tagMappings).map(([type, label]) => 
+                    `<option value="${type}">${label}</option>`
+                ).join('')}
+            </select>
+        </div>
+        <div class="form-element">
+            <input type="text" class="course-id-input" placeholder="Sigla del curso">
+        </div>
+        <div class="form-element">
+            <input type="text" class="course-cred-input" placeholder="Créditos">
+        </div>
+        <button class="create-course-btn">Crear curso</button>
+    `;
 
-    const title = document.createElement('h2');
-    title.classList.add('modal-title');
-    title.textContent = 'Crear nuevo curso';
-
-    const nameInput = document.createElement('input');
-    nameInput.classList.add('course-name-input');
-    nameInput.placeholder = 'Nombre del curso';
-
-    const typeDropdown = document.createElement('select');
-    typeDropdown.classList.add('course-type-dropdown');
-
-    const defaultOption = document.createElement('option');
-    defaultOption.value = "";
-    defaultOption.textContent = "Seleccionar tipo de curso";
-    defaultOption.disabled = true;
-    defaultOption.selected = true;
-    typeDropdown.appendChild(defaultOption);
-
-    Object.keys(legend.spanish.tagMappings).forEach(type => {
-        const option = document.createElement('option');
-        option.value = type;
-        option.textContent = legend.spanish.tagMappings[type];
-        typeDropdown.appendChild(option);
-    });
-
-    const idInput = document.createElement('input');
-    idInput.classList.add('course-id-input');
-    idInput.placeholder = 'Sigla del curso';
-
-    const credInput = document.createElement('input');
-    credInput.classList.add('course-cred-input');
-    credInput.placeholder = 'Créditos';
-
-    const createButton = document.createElement('button');
-    createButton.classList.add('create-course-btn');
-    createButton.textContent = 'Crear curso';
-
-    const formElements = [nameInput, typeDropdown, idInput, credInput].map(el => {
-        const wrapper = document.createElement('div');
-        wrapper.classList.add('form-element');
-        wrapper.appendChild(el);
-        return wrapper;
-    });
-
-    modalContent.appendChild(closeButton);
-    modalContent.appendChild(title);
-    formElements.forEach(el => modalContent.appendChild(el));
-    modalContent.appendChild(createButton);
     modal.appendChild(modalContent);
-
-
-
+    
     const placeholder = document.createElement('div');
     placeholder.classList.add('course', 'course-placeholder');
-    placeholder.innerHTML = `<div class="course-placeholder-content">
-        <img src="icons/more.png" alt="Add" width="50"> 
-    </div>`;
+    placeholder.innerHTML = `
+        <div class="course-placeholder-content">
+            <img src="icons/more.png" alt="Add" width="50">
+        </div>
+    `;
 
     const showModal = () => {
-        modalOverlay.style.display = 'block';
-        modal.style.display = 'block';
+        console.log('Showing modal'); 
         document.body.appendChild(modalOverlay);
         document.body.appendChild(modal);
+        modalOverlay.style.display = 'block';
+        modal.style.display = 'block';
     };
 
     const hideModal = () => {
-        modalOverlay.style.display = 'none';
         modal.style.display = 'none';
-        if (modalOverlay.parentNode) modalOverlay.parentNode.removeChild(modalOverlay);
-        if (modal.parentNode) modal.parentNode.removeChild(modal);
-
-        // Reset inputs
-        nameInput.value = '';
-        idInput.value = '';
-        credInput.value = '';
-        typeDropdown.selectedIndex = 0;
+        modalOverlay.style.display = 'none';
+        document.body.removeChild(modal);
+        document.body.removeChild(modalOverlay);
     };
 
-    modalOverlay.addEventListener('click', (e) => {
-        if (e.target === modalOverlay) {
+    modalOverlay.addEventListener('click', hideModal);
+    modalContent.querySelector('.new-course-modal-close').addEventListener('click', hideModal);
+    modalContent.querySelector('.create-course-btn').addEventListener('click', () => {
+        const name = modalContent.querySelector('.course-name-input').value;
+        const type = modalContent.querySelector('.course-type-dropdown').value;
+        const id = modalContent.querySelector('.course-id-input').value;
+        const cred = modalContent.querySelector('.course-cred-input').value;
+
+        if (name && type && id && cred) {
+            createNewCourse(type, name, id, cred);
             hideModal();
         }
     });
 
-    closeButton.addEventListener('click', hideModal);
-
-    createButton.addEventListener('click', () => {
-        createNewCourse(
-            typeDropdown.value,
-            nameInput.value,
-            idInput.value,
-            credInput.value
-        );
-        hideModal();
-    });
-
     placeholder.addEventListener('click', () => {
+        console.log('Placeholder clicked'); 
         showModal();
     });
 
@@ -466,7 +453,7 @@ function createFilterUI() {
         'econ': legend.spanish.optEconomia,
         'opt-ast': legend.spanish.optAstronomia,
         'optbio': legend.spanish.optBiologia,
-        'optsci': '', // Exclude this category
+        'optsci': '',
         'optcom': legend.spanish.optComunicacion
     };
 
@@ -572,65 +559,17 @@ function createNewCourse(type, name, id, cred) {
     saveState();
 }
 
-let tooltipTimeout;
-
-function showTooltip(event) {
-    const tooltip = event.currentTarget.querySelector('.prereq-tooltip');
-    if (tooltip) {
-        tooltip.classList.add('visible');
-
-        function positionTooltip() {
-
-            if (event.currentTarget) {
-                const rect = event.currentTarget.getBoundingClientRect();
-                const tooltipWidth = tooltip.offsetWidth;
-                const tooltipHeight = tooltip.offsetHeight;
-
-                const verticalCenter = rect.top + window.scrollY + (rect.height / 2);
-
-                const offset = Math.max(tooltipHeight / 2, 48);
-
-                tooltip.style.top = `${verticalCenter - (tooltipHeight / 2) - offset}px`;
-                tooltip.style.left = `${rect.left + window.scrollX + (rect.width / 2) - (tooltipWidth / 2)}px`;
-            }
-        }
-
-        positionTooltip();
-
-        const mouseMoveHandler = (e) => {
-            positionTooltip();
-        };
-
-        document.addEventListener('mousemove', mouseMoveHandler);
-
-        event.currentTarget.addEventListener('mouseleave', () => {
-            tooltip.classList.remove('visible');
-            document.removeEventListener('mousemove', mouseMoveHandler);
-        }, { once: true });
-    }
-}
-
-function hideTooltip(event) {
-    clearTimeout(tooltipTimeout);
-
-    const targetElement = event.currentTarget;
-    if (targetElement && targetElement.querySelector) {
-        const tooltip = targetElement.querySelector('.prereq-tooltip');
-        if (tooltip) {
-            tooltip.classList.remove('visible');
-        }
-    }
-}
-
 function saveState() {
     const state = {
         semesters: [],
         coursePool: [],
         customCourses: [],
-        semesterCount: 0
+        semesterCount: 0,
+        coursePoolVisible: document.getElementById('course-pool').style.display === 'flex'
     };
 
     const semesterPool = document.getElementById('semester-pool');
+    const coursePool = document.getElementById('course-pool');
     const semesterDivs = semesterPool.querySelectorAll('.semester');
 
     document.querySelectorAll('.course').forEach(course => {
@@ -649,37 +588,28 @@ function saveState() {
         const semesterHead = semester.querySelector('.semesterHead');
         const semesterNumber = parseInt(semesterHead.textContent.match(/\d+/)[0]);
 
+        const courses = semester.querySelectorAll('.course');
         const semesterData = {
             number: semesterNumber,
-            courses: []
-        };
-
-        const courses = semester.querySelectorAll('.course');
-        courses.forEach(course => {
-            if (!course.classList.contains('course-placeholder')) {
-                semesterData.courses.push({
+            courses: Array.from(courses)
+                .filter(course => !course.classList.contains('course-placeholder'))
+                .map(course => ({
                     id: course.id,
                     type: Array.from(course.classList).find(cls => cls !== 'course' && cls !== 'taken'),
                     taken: course.classList.contains('taken')
-                });
-            }
-        });
+                }))
+        };
 
         state.semesters.push(semesterData);
     });
 
-    const coursePool = document.getElementById('course-pool');
-    const poolCourses = coursePool.querySelectorAll('.course');
-
-    poolCourses.forEach(course => {
-        if (!course.classList.contains('course-placeholder')) {
-            state.coursePool.push({
-                id: course.id,
-                type: Array.from(course.classList).find(cls => cls !== 'course' && cls !== 'taken'),
-                taken: course.classList.contains('taken')
-            });
-        }
-    });
+    state.coursePool = Array.from(coursePool.querySelectorAll('.course'))
+        .filter(course => !course.classList.contains('course-placeholder'))
+        .map(course => ({
+            id: course.id,
+            type: Array.from(course.classList).find(cls => cls !== 'course' && cls !== 'taken'),
+            taken: course.classList.contains('taken')
+        }));
 
     state.semesterCount = Math.max(...state.semesters.map(s => s.number), 8);
     localStorage.setItem('coursePlannerState', JSON.stringify(state));
@@ -690,34 +620,34 @@ function loadState() {
     if (!savedState) return;
 
     const state = JSON.parse(savedState);
-
     window.customCourses = new Set(state.customCourses.map(course => course.id));
 
     const semesterPool = document.getElementById('semester-pool');
     const coursePool = document.getElementById('course-pool');
-
     const addSemesterBtn = document.getElementById('add-semester-btn');
     const resetSemesterBtn = document.getElementById('reset-btn');
-    const coursePlaceholder = coursePool.querySelector('.course-placeholder');
+
+    const newCoursePool = coursePool.cloneNode(false);
+    coursePool.parentNode.replaceChild(newCoursePool, coursePool);
+    newCoursePool.addEventListener('dragover', allowDrop);
+    newCoursePool.addEventListener('drop', handleDrop);
 
     semesterPool.innerHTML = '';
-    coursePool.innerHTML = '';
-    coursePool.appendChild(coursePlaceholder);
+    newCoursePool.innerHTML = '';
+
+    const modalComponents = createNewCourseModal();
+    newCoursePool.appendChild(modalComponents.placeholder);
 
     state.semesters.sort((a, b) => a.number - b.number);
-
     state.semesters.forEach(semesterData => {
         const semesterDiv = createSemester(semesterData.number);
 
         semesterData.courses.forEach(courseData => {
             let courseElement;
             if (window.customCourses.has(courseData.id)) {
-                // Create custom course element
                 courseElement = createCourseFromPool(courseData.id, state.customCourses);
             } else {
-                // Create regular course element
-                courseElement = document.getElementById(courseData.id) ||
-                    createCourseFromPool(courseData.id);
+                courseElement = createCourseFromPool(courseData.id);
             }
             if (courseElement) {
                 if (courseData.taken) {
@@ -733,26 +663,37 @@ function loadState() {
     state.coursePool.forEach(courseData => {
         let courseElement;
         if (window.customCourses.has(courseData.id)) {
-            // Create custom course element
             courseElement = createCourseFromPool(courseData.id, state.customCourses);
         } else {
-            // Create regular course element
-            courseElement = document.getElementById(courseData.id) ||
-                createCourseFromPool(courseData.id);
+            courseElement = createCourseFromPool(courseData.id);
         }
         if (courseElement) {
             if (courseData.taken) {
                 courseElement.classList.add('taken');
             }
-            coursePool.appendChild(courseElement);
+            newCoursePool.appendChild(courseElement);
         }
     });
 
     semesterPool.appendChild(addSemesterBtn);
     semesterPool.appendChild(resetSemesterBtn);
 
+    const filters = document.getElementById('filters');
+    const toggleText = document.getElementById('toggle-text');
+
+    if (state.coursePoolVisible) {
+        newCoursePool.style.display = 'flex';
+        filters.style.display = 'block';
+        toggleText.innerHTML = '<span class="rotate180">&#9662;</span> Ocultar cursos disponibles';
+    } else {
+        newCoursePool.style.display = 'none';
+        filters.style.display = 'block';
+        toggleText.innerHTML = show.spanish;
+    }
+
     window.lastSemesterNumber = state.semesterCount;
 }
+
 
 function resetPlanner() {
     const confirmed = window.confirm('¿Estás seguro que quieres reiniciar el planner? Todos los cambios se perderán.');
@@ -776,17 +717,13 @@ function resetPlanner() {
 
         document.querySelectorAll('.course').forEach(course => {
             course.classList.remove('taken');
-            course.addEventListener('mouseover', showTooltip);
-            course.addEventListener('mouseout', hideTooltip);
         });
     }
 }
 
 function createCourseFromPool(courseId, customCourses = []) {
-    // If it's a custom course
     const customCourse = customCourses.find(course => course.id === courseId);
     if (customCourse) {
-        // Need to pass the full custom course data
         const courseElement = createCourse({
             id: customCourse.id,
             name_stylized: customCourse.name_stylized,
@@ -798,7 +735,6 @@ function createCourseFromPool(courseId, customCourses = []) {
         return courseElement;
     }
 
-    // If not custom, check default courses
     const allCourses = [...jsonData.flatMap(sem => sem.courses), ...optData.flatMap(opt => opt.courses)];
     const courseData = allCourses.find(course => course.id === courseId);
 
@@ -809,14 +745,10 @@ function createCourseFromPool(courseId, customCourses = []) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    const { modal, placeholder, showModal, hideModal } = createNewCourseModal();
-    document.body.appendChild(modal);
-
-    const coursePool = document.getElementById('course-pool');
-    coursePool.insertBefore(placeholder, coursePool.firstChild);
-
     window.lastSemesterNumber = 8;
     window.customCourses = new Set();
+
+    const coursePool = document.getElementById('course-pool');
 
     const savedState = localStorage.getItem('coursePlannerState');
     if (savedState) {
@@ -825,6 +757,9 @@ document.addEventListener('DOMContentLoaded', function () {
         initializeCoursePool();
         initializeSemesters();
         addOptCourses();
+        
+        const modalComponents = createNewCourseModal();
+        coursePool.insertBefore(modalComponents.placeholder, coursePool.firstChild);
     }
 
     createFilterUI();
@@ -840,11 +775,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const header = document.getElementById('header');
     header.addEventListener('click', toggleCoursePool);
-
-    document.querySelectorAll('.course').forEach(course => {
-        course.addEventListener('mouseover', showTooltip);
-        course.addEventListener('mouseout', hideTooltip);
-    });
 
     ['dragend', 'click'].forEach(eventType => {
         document.addEventListener(eventType, () => {
