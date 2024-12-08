@@ -156,7 +156,6 @@
         opacity: 1;
         visibility: visible;
         padding: 10px;
-        margin: 5px 0;
         overflow-y: auto;
     }
 
@@ -467,8 +466,9 @@
     }
     
     #filters {
-        display: block;
+        display: block !important;
         max-height: 0;
+        min-height: 0; 
         opacity: 0;
         visibility: hidden;
         transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
@@ -483,8 +483,6 @@
         opacity: 1;
         visibility: visible;
         padding: 12px;
-        margin: 5px 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     #toggle-text .rotate180 {
