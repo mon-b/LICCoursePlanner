@@ -747,9 +747,14 @@
         position: relative;
     }
 
-    .course:not([draggable="true"]:active):hover .prereq-tooltip {
+    .course:not([draggable="true"]:active):hover:not(.taken) .prereq-tooltip {
         visibility: visible;
         opacity: 1;
+    }
+
+    .course.taken .prereq-tooltip {
+        visibility: hidden;
+        opacity: 0;
     }
 
     .course {
