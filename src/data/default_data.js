@@ -204,7 +204,7 @@ const jsonData = [
                 "prereq": null,
                 "cred": "10",
                 "hide": false,
-                "parity": "even",
+                "parity": "both",
                 "type": "fmat",
                 "name_stylized": "Modelos Probabilísticos",
                 "number": 18
