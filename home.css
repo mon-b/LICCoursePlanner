@@ -72,7 +72,7 @@ h1 {
 .feature-card h3 {
     color: #5da1ff;
     margin-top: 0;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 .feature-card p {
@@ -183,7 +183,7 @@ h1 {
 @media (max-width: 768px) {
     .container {
         width: 90%;
-        padding: 2rem 1rem;
+        padding: 1rem 0rem;
     }
     .features {
         grid-template-columns: 1fr;

@@ -53,7 +53,7 @@
         padding: 2px;
         cursor: grab;
         width: 100px;
-        height: 70px;
+        height: 76px;
         font-size: 10px;
         border-radius: 6px;
         overflow: visible;
@@ -365,7 +365,7 @@
         color: #ffffff;
         text-align: center;
         width: 200px;
-        padding: 12px;
+        padding: 10px;
         left: 50%;
         bottom: 80%;
         transform: translateX(-50%);
@@ -386,23 +386,10 @@
     }
 
 
-    .tooltip-header {
-        font-weight: bold;
-        color: #5da1ff;
-        margin-bottom: 8px;
-        padding-bottom: 8px;
-    }
     .course:hover .prereq-tooltip {
         transition-delay: 0.5s;
     }
-    
-    .tooltip-prereq {
-        margin-bottom: 8px;
-    }
-    
-    .tooltip-parity {
-        padding-top: 4px;
-    }
+
 
     .course-content:hover .prereq-tooltip {
         visibility: visible;
@@ -760,4 +747,14 @@
     .course {
         user-select: none;
         -webkit-user-select: none;
+    }
+
+    .sigla {
+        margin-top: 2px;
+        margin-bottom: 2px;
+        padding: 4px;
+        padding-left: 8px;
+        padding-right: 8px;
+        border-radius: 6px;
+        background-color: rgb(200,200,200, 0.4);
     }

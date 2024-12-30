@@ -44,18 +44,13 @@ function createCourse(course) {
     
     courseDiv.innerHTML = `
         <div class="course-content">
-            <b class="course-name">${course.name_stylized}</b> <br>
-            [${course.id}] <br>
+            <b class="course-name">${course.name_stylized}</b>
+            <div class="sigla">${course.id}</div>
             <small>${course.cred} créditos</small>
             <div class="prereq-tooltip">
-                <div class="tooltip-header">${course.name_stylized}</div>
                 <div class="tooltip-prereq">
                     <strong>Prerrequisitos:</strong><br>
                     ${formatPrereq(course.prereq)}
-                </div>
-                <div class="tooltip-parity">
-                    <strong>Dictado en:</strong><br>
-                    ${getParityText(course.parity)}
                 </div>
             </div>
         </div>
