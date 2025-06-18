@@ -54,7 +54,6 @@ const resources = {
         }
       },
       disclaimer: "The planner is still under development, so prerequisites or specific course details may be incorrect. Always verify official university information.",
-      footer: "Made with 💖 by <a href=\"https://instagram.com/w1ndtempos\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #8b45ff; text-decoration: none; font-weight: 600;\">Mon 🌸</a> and <a href=\"https://instagram.com/fercooncha\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #8b45ff; text-decoration: none; font-weight: 600;\">fña🧙‍♂️</a>",
       courseTypes: {
         fmat: "Math",
         dcc: "Min CS",
