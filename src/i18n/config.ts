@@ -31,6 +31,7 @@ const resources = {
       parityError: "This course can only be taught in another semester due to its parity",
       availableCourses: "Available Courses",
       noCoursesFound: "No courses found matching your criteria",
+      dropCoursesHere: "Drop courses here",
       categories: {
         all: "All Courses",
         core: "Core CS",
@@ -53,7 +54,7 @@ const resources = {
         }
       },
       disclaimer: "The planner is still under development, so prerequisites or specific course details may be incorrect. Always verify official university information.",
-      footer: "Made with 💖 by Mon 🌸 and fña🧙‍♂️",
+      footer: "Made with 💖 by <a href=\"https://instagram.com/w1ndtempos\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #8b45ff; text-decoration: none; font-weight: 600;\">Mon 🌸</a> and <a href=\"https://instagram.com/fercooncha\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #8b45ff; text-decoration: none; font-weight: 600;\">fña🧙‍♂️</a>",
       courseTypes: {
         fmat: "Math",
         dcc: "Min CS",
@@ -101,6 +102,7 @@ const resources = {
       parityError: "Este curso solo puede ser dictado en otro semestre debido a su paridad",
       availableCourses: "Cursos Disponibles",
       noCoursesFound: "No se encontraron cursos que coincidan con los criterios",
+      dropCoursesHere: "Suelta cursos aquí",
       categories: {
         all: "Todos los Cursos",
         core: "CS Centrales",
@@ -123,7 +125,7 @@ const resources = {
         }
       },
       disclaimer: "El planner aún está en desarrollo, por lo que los prerrequisitos o detalles específicos de los ramos pueden ser erróneos. Verifica siempre la información oficial de la universidad.",
-      footer: "Hecho con 💖 por Mon 🌸 y fña🧙‍♂️",
+      footer: "Hecho con 💖 por <a href=\"https://instagram.com/w1ndtempos\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #8b45ff; text-decoration: none; font-weight: 600;\">Mon 🌸</a> y <a href=\"https://www.instagram.com/fercooncha\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #8b45ff; text-decoration: none; font-weight: 600;\">fña🧙‍♂️</a>",
       courseTypes: {
         fmat: "Matemáticos",
         dcc: "Mínimos Compu",

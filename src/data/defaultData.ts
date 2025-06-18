@@ -230,7 +230,7 @@ export const defaultData: Semester[] = [
         "prereq": "IIC1253 y IIC2133",
         "cred": "10",
         "hide": false,
-        "parity": "even",
+        "parity": "both",
         "type": "major",
         "name_stylized": "Autómatas y Compiladores",
         "number": 20
@@ -398,10 +398,10 @@ export const defaultData: Semester[] = [
         "id": "IIC2523",
         "name": "SISTEMAS DISTRIBUIDOS",
         "name_english": "Distributed Systems",
-        "prereq": "IIC2333",
+        "prereq": "IIC233 o (IIC2343 y IIC2233)",
         "cred": "10",
         "hide": false,
-        "parity": "odd",
+        "parity": "both",
         "type": "major",
         "name_stylized": "Sistemas Distribuidos",
         "number": 34

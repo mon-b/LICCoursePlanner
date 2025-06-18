@@ -28,6 +28,7 @@
   align-items: center;
   justify-content: flex-start;
   flex: 1;
+  position: relative;
 }
 
 .deleteSemesterBtn {
@@ -45,7 +46,7 @@
   transition: all 0.2s ease;
   width: 16px;
   height: 16px;
-  flex-shrink: 0; /* Prevent button from shrinking */
+  flex-shrink: 0;
   box-shadow: 
     0 2px 8px rgba(0, 0, 0, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
@@ -66,4 +67,71 @@
   box-shadow: 
     0 4px 12px rgba(255, 77, 77, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.courseWrapper {
+  transition: transform 0.2s ease, margin 0.2s ease;
+}
+
+.insertIndicator {
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, #8b45ff 0%, #3b82f6 100%);
+  border-radius: 2px;
+  margin: 3px 0;
+}
+
+.coursePlaceholder {
+  width: 110px; 
+  height: 85px; 
+  margin: 7px 0;
+  border: 2px dashed rgba(139, 69, 255, 0.6);
+  border-radius: 8px; 
+  background: rgba(139, 69, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.8;
+  animation: placeholderPulse 1s ease-in-out infinite alternate;
+}
+
+.placeholderContent {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+  text-align: center;
+}
+
+@keyframes placeholderPulse {
+  from {
+    opacity: 0.6;
+  }
+  to {
+    opacity: 0.9;
+  }
+}
+
+.emptyMessage {
+  width: 100%;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  margin: 8px 0;
+}
+
+.emptyDropIndicator {
+  width: 100%;
+  height: 60px;
+  border: 2px dashed rgba(139, 69, 255, 0.6);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 8px 0;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(139, 69, 255, 0.1);
 }

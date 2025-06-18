@@ -30,7 +30,7 @@ export default function PlannerPage() {
     e.dataTransfer.dropEffect = 'move';
   };
 
-  const handleDrop = (e: React.DragEvent, containerId: string) => {
+  const handleDrop = (e: React.DragEvent, containerId: string, toIndex?: number) => {
     e.preventDefault();
 
     const courseId = e.dataTransfer.getData('text/plain');
@@ -69,7 +69,8 @@ export default function PlannerPage() {
       payload: {
         courseId,
         fromContainer,
-        toContainer: containerId
+        toContainer: containerId,
+        toIndex
       }
     });
   };
@@ -163,16 +164,11 @@ export default function PlannerPage() {
               <div
                 key={semester.number}
                 className={styles.semesterCard}
-                onDrop={(e) => handleDrop(e, `sem${semester.number}`)}
-                onDragOver={(e) => {
-                  e.preventDefault();
-                  e.dataTransfer.dropEffect = 'move';
-                }}
               >
                 <Semester
                   semester={semester}
-                  onDrop={() => {}}
-                  onDragOver={() => {}}
+                  onDrop={handleDrop}
+                  onDragOver={handleDragOver}
                   onCourseClick={handleCourseClick}
                   onDragStart={handleDragStart}
                   onDragEnd={handleDragEnd}
