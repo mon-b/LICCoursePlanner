@@ -1,0 +1,425 @@
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+  color: white;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.backgroundGradient {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, 
+    rgba(139, 69, 255, 0.1) 0%,
+    rgba(59, 130, 246, 0.08) 35%,
+    rgba(147, 51, 234, 0.1) 70%,
+    rgba(79, 70, 229, 0.08) 100%
+  );
+  animation: gradientShift 20s ease infinite;
+  z-index: -2;
+}
+
+.backgroundOrbs {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.orb1, .orb2, .orb3 {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(40px);
+  opacity: 0.3;
+  animation: float 20s ease-in-out infinite;
+}
+
+.orb1 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(139, 69, 255, 0.4) 0%, transparent 70%);
+  top: 10%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.orb2 {
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.4) 0%, transparent 70%);
+  top: 60%;
+  right: 15%;
+  animation-delay: -5s;
+}
+
+.orb3 {
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(147, 51, 234, 0.4) 0%, transparent 70%);
+  bottom: 10%;
+  left: 50%;
+  animation-delay: -10s;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1000;
+  backdrop-filter: blur(20px);
+  background: rgba(15, 15, 35, 0.9);
+  border-bottom: 1px solid rgba(139, 69, 255, 0.2);
+  padding: 20px;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+}
+
+.headerContent {
+  max-width: 100%;
+  margin: 0;
+  padding: 0 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #8b45ff 0%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+}
+
+.titleLink {
+  text-decoration: none;
+  transition: transform 0.3s ease;
+}
+
+.titleLink:hover {
+  transform: translateY(-2px);
+  text-decoration: none;
+  cursor: pointer !important;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.headerButton {
+  background: rgba(139, 69, 255, 0.1);
+  border: 1px solid rgba(139, 69, 255, 0.3);
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.headerButton:hover {
+  background: rgba(139, 69, 255, 0.2);
+  border-color: rgba(139, 69, 255, 0.5);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 69, 255, 0.2);
+}
+
+.headerIcon {
+  font-size: 14px;
+}
+
+.coursePoolToggleWrapper {
+  max-width: 100%;
+  padding: 0 0.25rem;
+  margin-top: 120px;
+  display: flex;
+  justify-content: center;
+}
+
+.coursePoolWrapper {
+  max-width: 100%;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.showCoursesButton {
+  background: rgba(139, 69, 255, 0.15);
+  border: 2px dashed rgba(139, 69, 255, 0.4);
+  color: rgba(255, 255, 255, 0.8);
+  padding: 12px 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 90%;
+  max-width: 1200px;
+  position: relative;
+}
+
+.showCoursesButton.connected {
+  border-radius: 12px 12px 0 0;
+}
+
+.showCoursesButton:hover {
+  background: rgba(139, 69, 255, 0.25);
+  border-color: rgba(139, 69, 255, 0.6);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(139, 69, 255, 0.2);
+}
+
+.buttonIcon {
+  font-size: 16px;
+}
+
+.semesterArea {
+  max-width: 100%;
+  margin-top: 20px;
+  padding: 0.25rem;
+  display: flex;
+  justify-content: center;
+}
+
+.semesterGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  max-width: fit-content;
+}
+
+.semesterCard {
+    display: flex;;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border-radius: 6px;
+  border: 1px solid rgba(139, 69, 255, 0.2);
+  padding: 0.25rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  flex: 0 0 auto;
+  width: 130px;
+  min-height: 80px;
+  justify-content: center;
+}
+
+.semesterCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #8b45ff 0%, #3b82f6 100%);
+  opacity: 0.7;
+}
+
+.semesterCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 15px 35px rgba(139, 69, 255, 0.2);
+  border-color: rgba(139, 69, 255, 0.4);
+}
+
+.actionCard {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  border-radius: 6px;
+  border: 1px solid rgba(139, 69, 255, 0.4);
+  padding: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 80px;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  flex: 0 0 auto;
+  width: 120px;
+  font-size: 12px;
+  text-align: center;
+}
+
+.actionCard:hover {
+  background: rgba(139, 69, 255, 0.15);
+  border-color: rgba(139, 69, 255, 0.7);
+  transform: translateY(-2px);
+  color: white;
+  box-shadow: 0 8px 20px rgba(139, 69, 255, 0.3);
+}
+
+.actionIcon {
+  font-size: 1.5rem;
+  margin-bottom: 0.3rem;
+  opacity: 0.9;
+}
+
+.footer {
+  background: rgba(15, 15, 35, 0.8);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(139, 69, 255, 0.2);
+  padding: 1.5rem;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.footerContent {
+  max-width: 1400px;
+  margin: 0 auto;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+@keyframes gradientShift {
+  0%, 100% { 
+    background-position: 0% 50%; 
+  }
+  50% { 
+    background-position: 100% 50%; 
+  }
+}
+
+@keyframes float {
+  0%, 100% { 
+    transform: translateY(0px) rotate(0deg); 
+  }
+  33% { 
+    transform: translateY(-30px) rotate(120deg); 
+  }
+  66% { 
+    transform: translateY(15px) rotate(240deg); 
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .semesterGrid {
+    gap: 0.2rem;
+  }
+  
+  .semesterCard {
+    width: 110px;
+  }
+  
+  .actionCard {
+    width: 110px;
+  }
+  
+  .showCoursesButton {
+    min-width: 110px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 15px;
+  }
+  
+  .coursePoolToggleWrapper {
+    margin-top: 100px;
+  }
+  
+  .coursePoolWrapper,
+  .semesterArea {
+    padding: 0.2rem;
+  }
+  
+  .semesterGrid {
+    gap: 0.15rem;
+  }
+  
+  .semesterCard {
+    width: 100px;
+    padding: 0.2rem;
+    min-height: 70px;
+  }
+  
+  .headerContent {
+    padding: 0 0.3rem;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  
+  .title {
+    font-size: 1.4rem;
+  }
+  
+  .actionCard {
+    width: 100px;
+    min-height: 70px;
+    padding: 0.2rem;
+  }
+  
+  .actionIcon {
+    font-size: 1.3rem;
+    margin-bottom: 0.2rem;
+  }
+  
+  .showCoursesButton {
+    width: 90%;
+    max-width: 1200px;
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 12px;
+  }
+  
+  .coursePoolToggleWrapper {
+    margin-top: 90px;
+  }
+  
+  .semesterCard {
+    width: 90px;
+    padding: 0.15rem;
+    min-height: 60px;
+  }
+  
+  .actionCard {
+    width: 90px;
+    min-height: 60px;
+    padding: 0.15rem;
+  }
+  
+  .actionIcon {
+    font-size: 1.1rem;
+    margin-bottom: 0.1rem;
+  }
+  
+  .showCoursesButton {
+    width: 90%;
+    max-width: 1200px;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}

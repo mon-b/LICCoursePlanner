@@ -1,0 +1,19 @@
+.languageToggle {
+  background-color: #25292c;
+  color: #ededed;
+  border: 1px solid #c2c2c2;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.languageToggle:hover {
+  background-color: #ffffff;
+  border: 1px solid #131313;
+  color: #131313;
+  transform: translateY(-2px);
+}
