@@ -1,0 +1,185 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease-out, visibility 0.15s ease-out;
+}
+
+.modalOverlay.visible {
+  opacity: 1;
+  visibility: visible;
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.modal {
+  position: relative;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+  border-radius: 10px;
+  border: 2px solid rgba(139, 69, 255, 0.4);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  padding: 20px;
+  max-width: 320px;
+  width: 85%;
+  max-height: 80vh;
+  overflow-y: auto;
+  z-index: 10000;
+  transform: scale(0.95);
+  transition: transform 0.15s ease-out;
+}
+
+.modalOverlay.visible .modal {
+  transform: scale(1);
+}
+
+/* Close button */
+.closeButton {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.closeButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  transform: scale(1.1);
+}
+
+/* Modal title */
+.modalTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #8b45ff 0%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0 0 16px 0;
+  text-align: center;
+}
+
+/* Form elements */
+.formElement {
+  margin-bottom: 12px;
+}
+
+.input, .select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  font-size: 13px;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.input:focus, .select:focus {
+  border-color: rgba(139, 69, 255, 0.6);
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 0 3px rgba(139, 69, 255, 0.2);
+}
+
+.input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.select {
+  cursor: pointer;
+}
+
+.select option {
+  background: #1a1a2e;
+  color: white;
+  padding: 8px;
+}
+
+/* Create button */
+.createButton {
+  width: 100%;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #8b45ff 0%, #3b82f6 100%);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 4px;
+}
+
+.createButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(139, 69, 255, 0.4);
+  background: linear-gradient(135deg, #9f5aff 0%, #4c94ff 100%);
+}
+
+.createButton:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  .modal {
+    margin: 15px;
+    padding: 16px;
+    width: calc(100% - 30px);
+    max-width: 300px;
+  }
+  
+  .modalTitle {
+    font-size: 1rem;
+  }
+  
+  .input, .select {
+    padding: 8px 10px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal {
+    margin: 10px;
+    padding: 14px;
+    width: calc(100% - 20px);
+    max-width: 280px;
+  }
+  
+  .closeButton {
+    top: 6px;
+    right: 10px;
+    font-size: 18px;
+    width: 20px;
+    height: 20px;
+  }
+  
+  .modalTitle {
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+  }
+  
+  .formElement {
+    margin-bottom: 10px;
+  }
+}

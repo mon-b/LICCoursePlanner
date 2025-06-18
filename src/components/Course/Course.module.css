@@ -1,0 +1,188 @@
+.course {
+  position: relative;
+  width: 110px;
+  height: 85px;
+  border-radius: 8px;
+  padding: 8px;
+  color: white;
+  font-size: 10px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  cursor: grab;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.2s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  margin: 7px 0;
+  overflow: visible;
+  z-index: 1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.course:hover {
+  transform: scale(1.05);
+  z-index: 1000;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  filter: brightness(1.1);
+}
+
+.course:active {
+  cursor: grabbing;
+  transform: scale(0.98);
+}
+
+.courseContent {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+  gap: 2px;
+}
+
+.courseName {
+  font-weight: bold;
+  line-height: 1.1;
+  font-size: 10px;
+  margin-bottom: 4px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.sigla {
+  background-color: rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin: 2px 0;
+  backdrop-filter: blur(10px);
+}
+
+.credits {
+  font-size: 8px;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+/* Course type colors - back to solid colors */
+.dcc {
+  background: linear-gradient(135deg, #1D7AFC 0%, #0056d3 100%);
+}
+
+.fmat {
+  background: linear-gradient(135deg, #DA62AC 0%, #c4498a 100%);
+}
+
+.ofg {
+  background: linear-gradient(135deg, #F15B50 0%, #e03e32 100%);
+}
+
+.opt {
+  background: linear-gradient(135deg, #6E5DC6 0%, #5a4ba3 100%);
+}
+
+.eti {
+  background: linear-gradient(135deg, #2898BD 0%, #1f7a9a 100%);
+}
+
+.general {
+  background: linear-gradient(135deg, #6A9A23 0%, #567d1c 100%);
+}
+
+.optMat {
+  background: linear-gradient(135deg, #DA62AC 0%, #c4498a 100%);
+}
+
+.optcom {
+  background: linear-gradient(135deg, #5E4DB2 0%, #4a3d8f 100%);
+}
+
+.optlet {
+  background: linear-gradient(135deg, #E56910 0%, #cc5500 100%);
+}
+
+.econ {
+  background: linear-gradient(135deg, #9543c5 0%, #7a359e 100%);
+}
+
+.optCien {
+  background: linear-gradient(135deg, #1F845A 0%, #196b47 100%);
+}
+
+.optbio {
+  background: linear-gradient(135deg, #164B35 0%, #0f3226 100%);
+}
+
+.optAst {
+  background: linear-gradient(135deg, #130947 0%, #0a0530 100%);
+}
+
+.optcomp {
+  background: linear-gradient(135deg, #1686d6 0%, #1270b3 100%);
+}
+
+.major {
+  background: linear-gradient(135deg, #0055CC 0%, #0044a3 100%);
+}
+
+.taken {
+  opacity: 0.65;
+  position: relative;
+}
+
+.prereqTooltip {
+  position: absolute;
+  z-index: 9999;
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%);
+  color: #ffffff;
+  text-align: center;
+  width: 220px;
+  padding: 12px;
+  left: 50%;
+  bottom: 90%;
+  transform: translateX(-50%);
+  border-radius: 8px;
+  font-size: 11px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.prereqTooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 8px;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.95) transparent transparent transparent;
+}
+
+.course:hover .prereqTooltip {
+  visibility: visible;
+  opacity: 1;
+  transition-delay: 0.6s;
+  transform: translateX(-50%) translateY(-4px);
+}
+
+.course:active .prereqTooltip,
+.course.dragging .prereqTooltip {
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+.taken .prereqTooltip {
+  visibility: hidden;
+  opacity: 0;
+}

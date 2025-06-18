@@ -1,0 +1,310 @@
+.course {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.course::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px 8px 0 0;
+}
+
+.container {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border-radius: 0 0 16px 16px;
+  border: 2px solid rgba(139, 69, 255, 0.4);
+  border-top: none;
+  margin: 0 auto;
+  max-width: 90%;
+  overflow: hidden;
+  width: 1200px;
+}
+
+.header {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 8px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(139, 69, 255, 0.2);
+}
+
+.title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #8b45ff 0%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+}
+
+.closeButton {
+  background: rgba(139, 69, 255, 0.15);
+  border: 2px dashed rgba(139, 69, 255, 0.4);
+  color: rgba(255, 255, 255, 0.8);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.closeButton:hover {
+  background: rgba(139, 69, 255, 0.25);
+  border-color: rgba(139, 69, 255, 0.6);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 69, 255, 0.2);
+}
+
+.searchSection {
+  padding: 8px 20px;
+  border-bottom: 1px solid rgba(139, 69, 255, 0.1);
+}
+
+.searchWrapper {
+  position: relative;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.searchInput {
+  width: 100%;
+  padding: 8px 8px 8px 32px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 13px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.searchInput:focus {
+  border-color: rgba(139, 69, 255, 0.5);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.searchInput::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.categorySection {
+  padding: 0 20px;
+  border-bottom: 1px solid rgba(139, 69, 255, 0.1);
+}
+
+.categoryTabs {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  padding-bottom: 1px;
+}
+
+.categoryTab {
+  padding: 6px 12px;
+  border: none;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7);
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+}
+
+.categoryTab:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.categoryTab.active {
+  background: rgba(139, 69, 255, 0.2);
+  color: white;
+  border-bottom-color: #8b45ff;
+}
+
+
+
+.courseList {
+  padding: 12px 20px;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.addCourseSection {
+  display: flex;
+  justify-content: center;
+}
+
+.addButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border: 2px dashed rgba(139, 69, 255, 0.5);
+  border-radius: 10px;
+  background: rgba(139, 69, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.addButton:hover {
+  background: rgba(139, 69, 255, 0.2);
+  border-color: rgba(139, 69, 255, 0.8);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.addIcon {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.courseGroup {
+  margin-bottom: 20px;
+}
+
+.groupTitle {
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+  padding-bottom: 6px;
+  border-bottom: 2px solid rgba(139, 69, 255, 0.3);
+  background: linear-gradient(135deg, #8b45ff 0%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.coursesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  border: 1px solid rgba(139, 69, 255, 0.1);
+}
+
+.courseWrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 40px 20px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.emptyIcon {
+  font-size: 36px;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.emptyState p {
+  font-size: 14px;
+  margin: 0;
+}
+
+.courseList::-webkit-scrollbar {
+  width: 6px;
+}
+
+.courseList::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.courseList::-webkit-scrollbar-thumb {
+  background: rgba(139, 69, 255, 0.5);
+  border-radius: 3px;
+}
+
+.courseList::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 69, 255, 0.7);
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+  .container {
+    min-width: 110px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    margin: 0;
+    max-width: 100%;
+    width: 100%;
+    min-width: 100px;
+    border-radius: 0 0 12px 12px;
+  }
+  
+  .header {
+    padding: 12px 15px;
+  }
+  
+  .title {
+    font-size: 1.1rem;
+  }
+  
+  .searchSection,
+  .courseList {
+    padding: 12px 15px;
+  }
+  
+  .categoryTabs {
+    gap: 2px;
+  }
+  
+  .categoryTab {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+  
+  .coursesGrid {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 8px;
+    padding: 10px;
+  }
+  
+  .courseList {
+    max-height: 180px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    min-width: 90px;
+    border-radius: 0 0 10px 10px;
+  }
+}
