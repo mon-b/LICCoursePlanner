@@ -5,7 +5,7 @@ const resources = {
   en: {
     translation: {
       title: "LICCoursePlanner",
-      subtitle: "Interactive course planner for UC Chile's Computer Science Bachelor's",
+      subtitle: "Interactive course planner for UC Chile's Computer Science degree",
       goToPlanner: "Go to Planner",
       semester: "Semester",
       showCoursePool: "Show available courses",
