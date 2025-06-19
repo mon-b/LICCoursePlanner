@@ -1,3 +1,5 @@
+/* 6. Update your Course.module.css - remove all the color classes since we're using dynamic styles */
+
 .course {
   position: relative;
   width: 110px;
@@ -68,67 +70,6 @@
   font-size: 8px;
   opacity: 0.9;
   font-weight: 500;
-}
-
-/* Course type colors - back to solid colors */
-.dcc {
-  background: linear-gradient(135deg, #1D7AFC 0%, #0056d3 100%);
-}
-
-.fmat {
-  background: linear-gradient(135deg, #DA62AC 0%, #c4498a 100%);
-}
-
-.ofg {
-  background: linear-gradient(135deg, #F15B50 0%, #e03e32 100%);
-}
-
-.opt {
-  background: linear-gradient(135deg, #6E5DC6 0%, #5a4ba3 100%);
-}
-
-.eti {
-  background: linear-gradient(135deg, #2898BD 0%, #1f7a9a 100%);
-}
-
-.general {
-  background: linear-gradient(135deg, #6A9A23 0%, #567d1c 100%);
-}
-
-.optMat {
-  background: linear-gradient(135deg, #DA62AC 0%, #c4498a 100%);
-}
-
-.optcom {
-  background: linear-gradient(135deg, #5E4DB2 0%, #4a3d8f 100%);
-}
-
-.optlet {
-  background: linear-gradient(135deg, #E56910 0%, #cc5500 100%);
-}
-
-.econ {
-  background: linear-gradient(135deg, #9543c5 0%, #7a359e 100%);
-}
-
-.optCien {
-  background: linear-gradient(135deg, #1F845A 0%, #196b47 100%);
-}
-
-.optbio {
-  background: linear-gradient(135deg, #164B35 0%, #0f3226 100%);
-}
-
-.optAst {
-  background: linear-gradient(135deg, #130947 0%, #0a0530 100%);
-}
-
-.optcomp {
-  background: linear-gradient(135deg, #1686d6 0%, #1270b3 100%);
-}
-
-.major {
-  background: linear-gradient(135deg, #0055CC 0%, #0044a3 100%);
 }
 
 .taken {

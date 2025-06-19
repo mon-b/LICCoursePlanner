@@ -1,3 +1,5 @@
+// 4. Update your Course.tsx component
+
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Course as CourseType, CourseState } from '../../types/course';
@@ -21,9 +23,10 @@ export default function Course({
   onClick 
 }: CourseProps) {
   const { t, i18n } = useTranslation();
-  const { findCourseData } = useCoursePlanner();
+  const { findCourseData, getCurrentPalette } = useCoursePlanner();
   
   const course = courseData || findCourseData(courseState.id);
+  const currentPalette = getCurrentPalette();
   
   if (!course) {
     return null;
@@ -74,14 +77,21 @@ export default function Course({
     };
     return typeMap[type] || 'opt';
   };
+
+  const getBackgroundColor = (): string => {
+    const typeKey = getTypeClassName(courseState.type) as keyof typeof currentPalette.colors;
+    return currentPalette.colors[typeKey] || currentPalette.colors.opt;
+  };
   
   return (
     <div
       className={clsx(
         styles.course,
-        styles[getTypeClassName(courseState.type)],
         courseState.taken && styles.taken
       )}
+      style={{ 
+        background: getBackgroundColor()
+      }}
       draggable
       onClick={handleClick}
       onDragStart={handleDragStart}
