@@ -1,6 +1,5 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-
 const resources = {
   en: {
     translation: {
@@ -32,6 +31,11 @@ const resources = {
       availableCourses: "Available Courses",
       noCoursesFound: "No courses found matching your criteria",
       dropCoursesHere: "Drop courses here",
+      choosePalette: "Choose color palette",
+      palettes: {
+        "soft-pastel": "Soft Pastels",
+        "original": "Original"
+      },
       categories: {
         all: "All Courses",
         core: "Core CS",
@@ -103,6 +107,11 @@ const resources = {
       availableCourses: "Cursos Disponibles",
       noCoursesFound: "No se encontraron cursos que coincidan con los criterios",
       dropCoursesHere: "Suelta cursos aquí",
+      choosePalette: "Elegir paleta de colores",
+      palettes: {
+        "soft-pastel": "Soft Pastels",
+        "original": "Original"
+      },
       categories: {
         all: "Todos los Cursos",
         core: "Computación Centrales",

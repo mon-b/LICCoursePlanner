@@ -1,0 +1,130 @@
+.paletteContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: rgba(139, 69, 255, 0.1);
+  border: 1px solid rgba(139, 69, 255, 0.3);
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.paletteContainer:hover {
+  background: rgba(139, 69, 255, 0.2);
+  border-color: rgba(139, 69, 255, 0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 69, 255, 0.2);
+}
+
+.paletteIcon {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.customSelect {
+  position: relative;
+}
+
+.selectButton {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0;
+  transition: color 0.3s ease;
+}
+
+.selectButton:hover {
+  color: white;
+}
+
+.selectedText {
+  min-width: 100px;
+  text-align: left;
+}
+
+.arrow {
+  font-size: 10px;
+  transition: transform 0.3s ease;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.arrowUp {
+  transform: rotate(180deg);
+}
+
+.optionsContainer {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: -12px;
+  right: -12px;
+  background: linear-gradient(135deg, rgba(15, 15, 35, 0.98) 0%, rgba(30, 41, 59, 0.98) 100%);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(139, 69, 255, 0.3);
+  border-radius: 8px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  overflow: hidden;
+  animation: slideDown 0.2s ease-out;
+}
+
+.option {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+.option:hover {
+  background: rgba(139, 69, 255, 0.2);
+  color: white;
+}
+
+.optionSelected {
+  background: rgba(139, 69, 255, 0.15);
+  color: white;
+}
+
+.optionSelected:hover {
+  background: rgba(139, 69, 255, 0.25);
+}
+
+.optionText {
+  flex: 1;
+}
+
+.checkmark {
+  font-size: 12px;
+  color: #8b45ff;
+  font-weight: bold;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

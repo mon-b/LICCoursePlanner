@@ -1,13 +1,58 @@
 import React, { createContext, useContext, useReducer, useEffect, ReactNode, useRef, useMemo, useCallback } from 'react';
-import { Course, AppState } from '../types/course';
+import { Course, AppState, PaletteConfig } from '../types/course';
 import { defaultData } from '../data/defaultData';
 import { optData } from '../data/optData';
+
+const PALETTES: Record<string, PaletteConfig> = {
+  'soft-pastel': {
+    id: 'soft-pastel',
+    name: 'Soft Pastels',
+    colors: {
+      dcc: '#a78bfa',
+      fmat: '#f472b6',
+      major: '#7c3aed',
+      ofg: '#fb7185',
+      eti: '#fb923c',
+      opt: '#38bdf8',
+      optcomp: '#8b5cf6',
+      'opt-cien': '#22c55e',
+      'opt-mat': '#e879f9',
+      optlet: '#f87171',
+      econ: '#ec4899',
+      'opt-ast': '#1e293b',
+      optbio: '#34d399',
+      optcom: '#fbbf24',
+    }
+  },
+  'original': {
+    id: 'original',
+    name: 'Original',
+    colors: {
+      dcc: 'linear-gradient(135deg, #1D7AFC 0%, #0056d3 100%)',
+      fmat: 'linear-gradient(135deg, #DA62AC 0%, #c4498a 100%)',
+      major: 'linear-gradient(135deg, #0055CC 0%, #0044a3 100%)',
+      ofg: 'linear-gradient(135deg, #F15B50 0%, #e03e32 100%)',
+      eti: 'linear-gradient(135deg, #2898BD 0%, #1f7a9a 100%)',
+      opt: 'linear-gradient(135deg, #6E5DC6 0%, #5a4ba3 100%)',
+      optcomp: 'linear-gradient(135deg, #1686d6 0%, #1270b3 100%)',
+      'opt-cien': 'linear-gradient(135deg, #1F845A 0%, #196b47 100%)',
+      'opt-mat': 'linear-gradient(135deg, #DA62AC 0%, #c4498a 100%)',
+      optlet: 'linear-gradient(135deg, #E56910 0%, #cc5500 100%)',
+      econ: 'linear-gradient(135deg, #9543c5 0%, #7a359e 100%)',
+      'opt-ast': 'linear-gradient(135deg, #130947 0%, #0a0530 100%)',
+      optbio: 'linear-gradient(135deg, #164B35 0%, #0f3226 100%)',
+      optcom: 'linear-gradient(135deg, #5E4DB2 0%, #4a3d8f 100%)'
+    }
+  }
+};
 
 interface CoursePlannerContextType {
   state: AppState;
   dispatch: React.Dispatch<CoursePlannerAction>;
   allCourses: Course[];
   findCourseData: (courseId: string) => Course | undefined;
+  getCurrentPalette: () => PaletteConfig;
+  getAvailablePalettes: () => PaletteConfig[];
 }
 
 type CoursePlannerAction =
@@ -18,7 +63,8 @@ type CoursePlannerAction =
   | { type: 'RESET_PLANNER' }
   | { type: 'TOGGLE_COURSE_POOL' }
   | { type: 'CREATE_CUSTOM_COURSE'; payload: Course }
-  | { type: 'LOAD_STATE'; payload: AppState };
+  | { type: 'LOAD_STATE'; payload: AppState }
+  | { type: 'SET_PALETTE'; payload: { paletteId: string } };
 
 const CoursePlannerContext = createContext<CoursePlannerContextType | undefined>(undefined);
 
@@ -29,7 +75,8 @@ const initialState: AppState = {
   coursePool: [],
   customCourses: [],
   semesterCount: 8,
-  coursePoolVisible: false
+  coursePoolVisible: false,
+  currentPalette: 'soft-pastel'
 };
 
 function findNextAvailableSemesterNumber(semesters: { number: number; courses: any[] }[]): number {
@@ -41,7 +88,6 @@ function findNextAvailableSemesterNumber(semesters: { number: number; courses: a
     }
   }
   
-  // If no gaps, return the next number after the highest
   return Math.max(...existingNumbers, 0) + 1;
 }
 
@@ -157,6 +203,13 @@ function coursePlannerReducer(state: AppState, action: CoursePlannerAction): App
       return action.payload;
     }
     
+    case 'SET_PALETTE': {
+      return {
+        ...state,
+        currentPalette: action.payload.paletteId
+      };
+    }
+    
     default:
       return state;
   }
@@ -192,7 +245,8 @@ function initializeDefaultState(): AppState {
     coursePool,
     customCourses: [],
     semesterCount: 8,
-    coursePoolVisible: false
+    coursePoolVisible: false,
+    currentPalette: 'soft-pastel'
   };
 }
 
@@ -212,6 +266,9 @@ function loadStateFromStorage(): AppState | null {
       typeof parsedState.semesterCount === 'number' &&
       typeof parsedState.coursePoolVisible === 'boolean'
     ) {
+      if (!parsedState.currentPalette) {
+        parsedState.currentPalette = 'soft-pastel';
+      }
       return parsedState;
     }
     
@@ -237,7 +294,7 @@ export function CoursePlannerProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(
     coursePlannerReducer, 
     initialState, 
-    (initial) => {
+    (_initial) => {
       const savedState = loadStateFromStorage();
       if (savedState) {
         hasLoadedFromStorage.current = true;
@@ -258,6 +315,14 @@ export function CoursePlannerProvider({ children }: { children: ReactNode }) {
   const findCourseData = useCallback((courseId: string): Course | undefined => {
     return allCourses.find(course => course.id === courseId);
   }, [allCourses]);
+
+  const getCurrentPalette = useCallback((): PaletteConfig => {
+    return PALETTES[state.currentPalette] || PALETTES['soft-pastel'];
+  }, [state.currentPalette]);
+
+  const getAvailablePalettes = useCallback((): PaletteConfig[] => {
+    return Object.values(PALETTES);
+  }, []);
   
   useEffect(() => {
     if (hasLoadedFromStorage.current) {
@@ -271,8 +336,10 @@ export function CoursePlannerProvider({ children }: { children: ReactNode }) {
     state,
     dispatch,
     allCourses,
-    findCourseData
-  }), [state, allCourses, findCourseData]);
+    findCourseData,
+    getCurrentPalette,
+    getAvailablePalettes
+  }), [state, allCourses, findCourseData, getCurrentPalette, getAvailablePalettes]);
   
   return (
     <CoursePlannerContext.Provider value={value}>

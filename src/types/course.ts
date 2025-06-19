@@ -45,6 +45,26 @@ export interface SemesterState {
   number: number;
   courses: CourseState[];
 }
+export interface PaletteConfig {
+  id: string;
+  name: string;
+  colors: {
+    dcc: string;
+    fmat: string;
+    major: string;
+    ofg: string;
+    eti: string;
+    opt: string;
+    optcomp: string;
+    'opt-cien': string;
+    'opt-mat': string;
+    optlet: string;
+    econ: string;
+    'opt-ast': string;
+    optbio: string;
+    optcom: string;
+  };
+}
 
 export interface AppState {
   semesters: SemesterState[];
@@ -52,4 +72,5 @@ export interface AppState {
   customCourses: Course[];
   semesterCount: number;
   coursePoolVisible: boolean;
+  currentPalette: string;
 }

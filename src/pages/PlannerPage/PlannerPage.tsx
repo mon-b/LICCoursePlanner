@@ -7,6 +7,7 @@ import Semester from '../../components/Semester/Semester';
 import CoursePool from '../../components/CoursePool/CoursePool';
 import CourseCreationModal from '../../components/CourseCreationModal/CourseCreationModal';
 import LanguageToggle from '../../components/LanguageToggle/LanguageToggle';
+import PaletteToggle from '../../components/PaletteToggle/PaletteToggle';
 import styles from './PlannerPage.module.css';
 
 export default function PlannerPage() {
@@ -116,6 +117,7 @@ export default function PlannerPage() {
               {t('resetPlan')}
             </button>
 
+            <PaletteToggle />
             <LanguageToggle />
           </div>
         </div>
