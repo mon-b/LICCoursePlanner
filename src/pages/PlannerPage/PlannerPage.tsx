@@ -121,40 +121,30 @@ export default function PlannerPage() {
         </div>
       </header>
 
-      {state.coursePoolVisible ? (
-        <>
-          <div className={styles.coursePoolToggleWrapper}>
-            <button
-              className={`${styles.showCoursesButton} ${styles.connected}`}
-              onClick={() => dispatch({ type: 'TOGGLE_COURSE_POOL' })}
-            >
-              <span className={styles.buttonIcon}>📚</span>
-              {t('hideCoursePool')}
-            </button>
-          </div>
-          <div className={styles.coursePoolWrapper}>
-            <CoursePool
-              onDrop={handleDrop}
-              onDragOver={handleDragOver}
-              onCourseClick={handleCourseClick}
-              onDragStart={handleDragStart}
-              onDragEnd={handleDragEnd}
-              onClose={() => dispatch({ type: 'TOGGLE_COURSE_POOL' })}
-              onCreateCourse={() => setShowCourseModal(true)}
-            />
-          </div>
-        </>
-      ) : (
-        <div className={styles.coursePoolToggleWrapper}>
-          <button
-            className={styles.showCoursesButton}
-            onClick={() => dispatch({ type: 'TOGGLE_COURSE_POOL' })}
-          >
-            <span className={styles.buttonIcon}>📚</span>
-            {t('showCoursePool')}
-          </button>
-        </div>
-      )}
+      {/* Course Pool Toggle Button */}
+      <div className={styles.coursePoolToggleWrapper}>
+        <button
+          className={`${styles.showCoursesButton} ${state.coursePoolVisible ? styles.connected : ''}`}
+          onClick={() => dispatch({ type: 'TOGGLE_COURSE_POOL' })}
+        >
+          <span className={styles.buttonIcon}>📚</span>
+          {state.coursePoolVisible ? t('hideCoursePool') : t('showCoursePool')}
+        </button>
+      </div>
+
+      {/* Animated Course Pool */}
+      <div className={styles.coursePoolWrapper}>
+        <CoursePool
+          isVisible={state.coursePoolVisible}
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+          onCourseClick={handleCourseClick}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+          onClose={() => dispatch({ type: 'TOGGLE_COURSE_POOL' })}
+          onCreateCourse={() => setShowCourseModal(true)}
+        />
+      </div>
 
       <div className={styles.semesterArea}>
         <div className={styles.semesterGrid}>

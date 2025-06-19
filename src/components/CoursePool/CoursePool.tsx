@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCoursePlanner } from '../../context/CoursePlannerContext';
 import Course from '../Course/Course';
@@ -12,6 +12,7 @@ interface CoursePoolProps {
   onDragEnd: (e: React.DragEvent) => void;
   onClose: () => void;
   onCreateCourse: () => void;
+  isVisible: boolean;
 }
 
 export default function CoursePool({
@@ -21,16 +22,28 @@ export default function CoursePool({
   onDragStart,
   onDragEnd,
   onCreateCourse,
+  isVisible,
 }: CoursePoolProps) {
   const { t } = useTranslation();
   const { state, findCourseData } = useCoursePlanner();
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState<string>('all');
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [shouldRender, setShouldRender] = useState(isVisible);
+  const containerRef = useRef<HTMLDivElement>(null);
   
-  // Debug logging
+  // animation hehe
   useEffect(() => {
-    console.log('CoursePool re-rendered');
-  });
+    if (isVisible) {
+      setShouldRender(true);
+      const timer = setTimeout(() => setIsAnimating(true), 50);
+      return () => clearTimeout(timer);
+    } else {
+      setIsAnimating(false);
+      const timer = setTimeout(() => setShouldRender(false), 350);
+      return () => clearTimeout(timer);
+    }
+  }, [isVisible]);
   
   const categories = useMemo(() => [
     { id: 'all', label: t('categories.all', 'All Courses'), types: [] },
@@ -45,12 +58,10 @@ export default function CoursePool({
       const course = findCourseData(courseState.id);
       if (!course) return false;
       
-      // Search filter
       const matchesSearch = !searchTerm || 
         course.name_stylized.toLowerCase().includes(searchTerm.toLowerCase()) ||
         course.id.toLowerCase().includes(searchTerm.toLowerCase());
       
-      // Category filter
       const selectedCategory = categories.find(cat => cat.id === activeCategory);
       const matchesCategory = activeCategory === 'all' || 
         (selectedCategory && selectedCategory.types.includes(courseState.type));
@@ -78,8 +89,15 @@ export default function CoursePool({
     return grouped;
   }, [filteredCourses, findCourseData, t]);
   
+  if (!shouldRender) {
+    return null;
+  }
+  
   return (
-    <div className={styles.container} style={{ minHeight: '200px', opacity: 1 }}>
+    <div 
+      ref={containerRef}
+      className={`${styles.container} ${isAnimating ? styles.visible : styles.hidden}`}
+    >
       {/* Header */}
       <div className={styles.header}>
         <h2 className={styles.title}>{t('availableCourses', 'Available Courses')}</h2>
@@ -125,7 +143,7 @@ export default function CoursePool({
         <div className={styles.addCourseSection}>
           <button 
             className={styles.addButton}
-            onClick={onCreateCourse} // Call parent function
+            onClick={onCreateCourse}
           >
             <span className={styles.addIcon}>+</span>
             {t('createCustomCourse', 'Create Custom Course')}

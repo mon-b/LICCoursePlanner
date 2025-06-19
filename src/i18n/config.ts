@@ -5,7 +5,7 @@ const resources = {
   en: {
     translation: {
       title: "LICCoursePlanner",
-      subtitle: "Course planner for Computer Science Degree UC",
+      subtitle: "Interactive course planner for UC Chile's Computer Science Bachelor's",
       goToPlanner: "Go to Planner",
       semester: "Semester",
       showCoursePool: "Show available courses",
@@ -14,7 +14,7 @@ const resources = {
       addSemester: "Add Semester",
       deleteSemester: "Delete Semester",
       resetPlanner: "Reset Planner",
-      resetPlan: "Reset Plan",
+      resetPlan: "Reset Planner",
       confirmAddSemester: "Add a new semester?",
       confirmDeleteSemester: "Delete this semester?",
       confirmReset: "Are you sure you want to reset the planner? All changes will be lost.",
@@ -53,7 +53,7 @@ const resources = {
           description: "Courses separated by area of interest."
         }
       },
-      disclaimer: "The planner is still under development, so prerequisites or specific course details may be incorrect. Always verify official university information.",
+      disclaimer: "The planner is still under development. Prerequisites or specific course details may be incorrect. Always verify official university information.",
       courseTypes: {
         fmat: "Math",
         dcc: "Min CS",
@@ -69,7 +69,8 @@ const resources = {
         econ: "OPT Economics",
         "opt-ast": "OPT Astronomy",
         optbio: "OPT Biology"
-      }
+      },
+      footer: "Made with 💖 by <a href=\"https://instagram.com/w1ndtempos\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #8b45ff; text-decoration: none; font-weight: 600;\">Mon 🌸</a> and <a href=\"https://www.instagram.com/fercooncha\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #8b45ff; text-decoration: none; font-weight: 600;\">fña🧙‍♂️</a>"
     }
   },
   es: {
@@ -84,7 +85,7 @@ const resources = {
       addSemester: "Añadir Semestre",
       deleteSemester: "Eliminar Semestre",
       resetPlanner: "Reiniciar Planner",
-      resetPlan: "Reiniciar Plan",
+      resetPlan: "Reiniciar Planner",
       confirmAddSemester: "¿Añadir un nuevo semestre?",
       confirmDeleteSemester: "¿Quieres eliminar este semestre?",
       confirmReset: "¿Estás seguro que quieres reiniciar el planner? Todos los cambios se perderán.",
@@ -104,10 +105,10 @@ const resources = {
       dropCoursesHere: "Suelta cursos aquí",
       categories: {
         all: "Todos los Cursos",
-        core: "CS Centrales",
-        math: "Matemáticas",
+        core: "Computación Centrales",
+        math: "Matemáticos",
         electives: "Electivos",
-        general: "Generales"
+        general: "Formación General"
       },
       features: {
         dragDrop: {
@@ -123,23 +124,23 @@ const resources = {
           description: "Ramos separados por área de interés."
         }
       },
-      disclaimer: "El planner aún está en desarrollo, por lo que los prerrequisitos o detalles específicos de los ramos pueden ser erróneos. Verifica siempre la información oficial de la universidad.",
+      disclaimer: "El planner aún está en desarrollo. Los prerrequisitos o detalles de los ramos pueden ser incorrectos. Verifica siempre la información oficial de la universidad.",
       footer: "Hecho con 💖 por <a href=\"https://instagram.com/w1ndtempos\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #8b45ff; text-decoration: none; font-weight: 600;\">Mon 🌸</a> y <a href=\"https://www.instagram.com/fercooncha\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #8b45ff; text-decoration: none; font-weight: 600;\">fña🧙‍♂️</a>",
       courseTypes: {
         fmat: "Matemáticos",
-        dcc: "Mínimos Compu",
-        major: "Major Compu",
+        dcc: "Mínimos Computación",
+        major: "Major Computación",
         ofg: "Formación General",
         eti: "Ética",
         opt: "OPT",
-        optcomp: "OPT Computación",
+        optcomp: "OPR Computación",
         "opt-cien": "OPT Ciencias",
-        optcom: "OPT Comunicación",
-        "opt-mat": "OPT Matemáticos",
-        optlet: "OPT Letras",
-        econ: "OPT Economía",
-        "opt-ast": "OPT Astronomía",
-        optbio: "OPT Biología"
+        optcom: "OPR Comunicación",
+        "opt-mat": "OPR Matemáticos",
+        optlet: "OPR Letras",
+        econ: "OPR Economía",
+        "opt-ast": "OPR Astronomía",
+        optbio: "OPR Biología"
       }
     }
   }
