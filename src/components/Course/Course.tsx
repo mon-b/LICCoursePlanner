@@ -1,5 +1,3 @@
-// 4. Update your Course.tsx component
-
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Course as CourseType, CourseState } from '../../types/course';
