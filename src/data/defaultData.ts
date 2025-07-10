@@ -203,7 +203,7 @@ export const defaultData: Semester[] = [
         "id": "EYP1025",
         "name": "MODELOS PROBABILÍSTICOS",
         "name_english": "Probabilistic Models",
-        "prereq": "MAT1620",
+        "prereq": "MAT1620 y IIC1253",
         "cred": "10",
         "hide": false,
         "parity": "both",
