@@ -182,7 +182,24 @@ export default function PlannerPage() {
 
       <footer className={styles.footer}>
         <div className={styles.footerContent}>
-          <span dangerouslySetInnerHTML={{ __html: t('footer') }} />
+          {t('footerText')}{' '}
+          <a
+            href="https://instagram.com/w1ndtempos"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.footerLink}
+          >
+            Mon 🌸
+          </a>{' '}
+          {t('footerAnd')}{' '}
+          <a
+            href="https://www.instagram.com/fercooncha"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.footerLink}
+          >
+            fña🧙‍♂️
+          </a>
         </div>
       </footer>
     </div>
@@ -199,18 +216,18 @@ function getPrerequisiteErrorMessage(course: any, t: any): string {
       if (alternative.includes(' y ')) {
         const courses = alternative.split(' y ');
         const cleanCourses = courses.map((c: string) => c.replace(/[()]/g, '').trim());
-        return `• Necesitas haber tomado ${cleanCourses.join(' y ')} previamente`;
+        return `• ${t('prerequisiteMultiple', { courses: cleanCourses.join(' y ') })}`;
       } else {
         const cleanCourse = alternative.replace(/[()]/g, '').trim();
         if (cleanCourse.includes('(c)')) {
           const courseId = cleanCourse.replace('(c)', '');
-          return `• Necesitas haber tomado ${courseId} o tomarlo en el mismo semestre`;
+          return `• ${t('prerequisiteCorequisite', { course: courseId })}`;
         }
-        return `• Necesitas haber tomado ${cleanCourse} previamente`;
+        return `• ${t('prerequisiteSingle', { course: cleanCourse })}`;
       }
     });
 
-    message += prereqMessages.join('\n o \n');
+    message += prereqMessages.join(`\n ${t('prerequisiteOr')} \n`);
   }
 
   return message.trim();

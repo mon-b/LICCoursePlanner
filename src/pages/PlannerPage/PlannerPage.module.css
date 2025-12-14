@@ -5,6 +5,8 @@
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   position: relative;
   overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .backgroundGradient {
@@ -202,6 +204,7 @@
   padding: 0.25rem;
   display: flex;
   justify-content: center;
+  flex: 1;
 }
 
 .semesterGrid {
@@ -288,13 +291,32 @@
   border-top: 1px solid rgba(139, 69, 255, 0.2);
   padding: 1.5rem;
   text-align: center;
-  margin-top: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+  margin-top: auto;
 }
 
 .footerContent {
   max-width: 1400px;
   margin: 0 auto;
   color: rgba(255, 255, 255, 0.7);
+}
+
+.footerLink {
+  color: #8b45ff;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.footerLink:hover {
+  transform: translateY(-2px);
+  text-decoration: none;
+  text-shadow: 0 0 15px rgba(139, 69, 255, 0.5);
+  filter: brightness(1.2);
 }
 
 @keyframes gradientShift {
