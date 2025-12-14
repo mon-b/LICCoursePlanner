@@ -8,6 +8,7 @@ import CoursePool from '../../components/CoursePool/CoursePool';
 import CourseCreationModal from '../../components/CourseCreationModal/CourseCreationModal';
 import LanguageToggle from '../../components/LanguageToggle/LanguageToggle';
 import PaletteToggle from '../../components/PaletteToggle/PaletteToggle';
+import PrerequisiteLines from '../../components/PrerequisiteLines/PrerequisiteLines';
 import styles from './PlannerPage.module.css';
 
 export default function PlannerPage() {
@@ -15,6 +16,8 @@ export default function PlannerPage() {
   const { state, dispatch, findCourseData } = useCoursePlanner();
   const [draggedCourse, setDraggedCourse] = useState<string | null>(null);
   const [showCourseModal, setShowCourseModal] = useState(false);
+  const [hoveredCourseId, setHoveredCourseId] = useState<string | null>(null);
+  const [prereqColors, setPrereqColors] = useState<Map<string, string>>(new Map());
 
   const handleDragStart = (e: React.DragEvent, courseId: string) => {
     setDraggedCourse(courseId);
@@ -145,6 +148,9 @@ export default function PlannerPage() {
           onDragEnd={handleDragEnd}
           onClose={() => dispatch({ type: 'TOGGLE_COURSE_POOL' })}
           onCreateCourse={() => setShowCourseModal(true)}
+          onHoverStart={setHoveredCourseId}
+          onHoverEnd={() => setHoveredCourseId(null)}
+          prereqColors={prereqColors}
         />
       </div>
 
@@ -164,6 +170,9 @@ export default function PlannerPage() {
                   onCourseClick={handleCourseClick}
                   onDragStart={handleDragStart}
                   onDragEnd={handleDragEnd}
+                  onHoverStart={setHoveredCourseId}
+                  onHoverEnd={() => setHoveredCourseId(null)}
+                  prereqColors={prereqColors}
                 />
               </div>
             ))}
@@ -202,6 +211,12 @@ export default function PlannerPage() {
           </a>
         </div>
       </footer>
+
+      {/* Prerequisite Lines Overlay */}
+      <PrerequisiteLines
+        hoveredCourseId={hoveredCourseId}
+        onPrereqColorsChange={setPrereqColors}
+      />
     </div>
   );
 }

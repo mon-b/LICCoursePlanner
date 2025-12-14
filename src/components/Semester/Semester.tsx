@@ -12,9 +12,12 @@ interface SemesterProps {
   onCourseClick: (courseId: string) => void;
   onDragStart: (e: React.DragEvent, courseId: string) => void;
   onDragEnd: (e: React.DragEvent) => void;
+  onHoverStart?: (courseId: string) => void;
+  onHoverEnd?: () => void;
+  prereqColors?: Map<string, string>;
 }
 
-export default function Semester({ semester, onDrop, onDragOver, onCourseClick, onDragStart, onDragEnd }: SemesterProps) {
+export default function Semester({ semester, onDrop, onDragOver, onCourseClick, onDragStart, onDragEnd, onHoverStart, onHoverEnd, prereqColors }: SemesterProps) {
   const { t } = useTranslation();
   const { dispatch, findCourseData } = useCoursePlanner();
   const [isDragOver, setIsDragOver] = useState(false);
@@ -141,6 +144,9 @@ export default function Semester({ semester, onDrop, onDragOver, onCourseClick, 
                 onDragStart={onDragStart}
                 onDragEnd={onDragEnd}
                 onClick={onCourseClick}
+                onHoverStart={onHoverStart}
+                onHoverEnd={onHoverEnd}
+                highlightColor={prereqColors?.get(courseState.id)}
               />
             </div>
           </React.Fragment>

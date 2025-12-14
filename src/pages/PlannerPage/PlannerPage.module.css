@@ -218,7 +218,7 @@
 }
 
 .semesterCard {
-    display: flex;;
+  display: flex;
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(20px);
   border-radius: 6px;
@@ -226,7 +226,7 @@
   padding: 0.25rem;
   transition: all 0.3s ease;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   flex: 0 0 auto;
   width: 130px;
   min-height: 80px;

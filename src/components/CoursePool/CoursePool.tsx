@@ -13,6 +13,9 @@ interface CoursePoolProps {
   onClose: () => void;
   onCreateCourse: () => void;
   isVisible: boolean;
+  onHoverStart?: (courseId: string) => void;
+  onHoverEnd?: () => void;
+  prereqColors?: Map<string, string>;
 }
 
 export default function CoursePool({
@@ -23,6 +26,9 @@ export default function CoursePool({
   onDragEnd,
   onCreateCourse,
   isVisible,
+  onHoverStart,
+  onHoverEnd,
+  prereqColors,
 }: CoursePoolProps) {
   const { t } = useTranslation();
   const { state, findCourseData } = useCoursePlanner();
@@ -162,6 +168,9 @@ export default function CoursePool({
                     onDragStart={onDragStart}
                     onDragEnd={onDragEnd}
                     onClick={onCourseClick}
+                    onHoverStart={onHoverStart}
+                    onHoverEnd={onHoverEnd}
+                    highlightColor={prereqColors?.get(courseState.id)}
                   />
                 </div>
               ))}

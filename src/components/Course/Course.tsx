@@ -11,20 +11,39 @@ interface CourseProps {
   onDragStart?: (e: React.DragEvent, courseId: string) => void;
   onDragEnd?: (e: React.DragEvent) => void;
   onClick?: (courseId: string) => void;
+  onHoverStart?: (courseId: string) => void;
+  onHoverEnd?: () => void;
+  highlightColor?: string;
 }
 
-export default function Course({ 
-  courseState, 
-  courseData, 
-  onDragStart, 
-  onDragEnd, 
-  onClick 
+export default function Course({
+  courseState,
+  courseData,
+  onDragStart,
+  onDragEnd,
+  onClick,
+  onHoverStart,
+  onHoverEnd,
+  highlightColor
 }: CourseProps) {
   const { t, i18n } = useTranslation();
   const { findCourseData, getCurrentPalette } = useCoursePlanner();
-  
+  const courseRef = React.useRef<HTMLDivElement>(null);
+
   const course = courseData || findCourseData(courseState.id);
   const currentPalette = getCurrentPalette();
+
+  const handleMouseEnter = () => {
+    if (onHoverStart && course?.prereq) {
+      onHoverStart(courseState.id);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (onHoverEnd) {
+      onHoverEnd();
+    }
+  };
   
   if (!course) {
     return null;
@@ -37,18 +56,13 @@ export default function Course({
     return course.name_stylized || course.name;
   };
   
-  const formatPrerequisites = (prereq: string | null): string => {
-    if (!prereq) return t('noPrerequisites');
-    return prereq;
-  };
-  
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     if (onClick) {
       onClick(courseState.id);
     }
   };
-  
+
   const handleDragStart = (e: React.DragEvent) => {
     if (onDragStart) {
       onDragStart(e, courseState.id);
@@ -83,17 +97,27 @@ export default function Course({
   
   return (
     <div
+      ref={courseRef}
       className={clsx(
         styles.course,
         courseState.taken && styles.taken
       )}
-      style={{ 
-        background: getBackgroundColor()
+      style={{
+        background: getBackgroundColor(),
+        ...(highlightColor && {
+          border: `3px solid ${highlightColor}`,
+          boxShadow: `0 0 10px ${highlightColor}40`,
+          transform: 'scale(1.05)',
+          zIndex: 1000
+        })
       }}
       draggable
       onClick={handleClick}
       onDragStart={handleDragStart}
       onDragEnd={onDragEnd}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      data-course-id={courseState.id}
     >
       <div className={styles.courseContent}>
         <div className={styles.courseName}>
@@ -104,13 +128,6 @@ export default function Course({
         </div>
         <div className={styles.credits}>
           {course.cred} {t('credits')}
-        </div>
-        
-        <div className={styles.prereqTooltip}>
-          <div className={styles.tooltipPrereq}>
-            <strong>{i18n.language === 'en' ? 'Prerequisites:' : 'Prerrequisitos:'}</strong><br />
-            {formatPrerequisites(course.prereq)}
-          </div>
         </div>
       </div>
     </div>
