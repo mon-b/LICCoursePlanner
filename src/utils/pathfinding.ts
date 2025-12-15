@@ -1,4 +1,4 @@
-// Pathfinding utility for drawing lines that avoid obstacles
+// Pathfinding utility for drawing lines that avoid obstacles using A* on a Hanan Grid
 
 export interface Point {
   x: number;
@@ -21,9 +21,39 @@ export interface Bounds {
   maxY: number;
 }
 
-const PADDING = 2; // Minimal padding - just enough to not touch course borders
-const MARGIN = 10; // Margin from viewport edges
-const GAP_DETECTION_THRESHOLD = 8; // Minimum gap size to consider as passable (even small gaps)
+const PADDING = 10; // Padding around obstacles for the grid lines
+const TURN_PENALTY = 10; // Cost penalty for making a turn to encourage straight lines
+const NON_CENTER_PENALTY_MULTIPLIER = 50; // Penalty for lines not in gap centers (both vertical and horizontal)
+
+// Min-Heap Priority Queue for A*
+class PriorityQueue<T> {
+  private items: { element: T; priority: number }[] = [];
+
+  enqueue(element: T, priority: number) {
+    const item = { element, priority };
+    let contained = false;
+
+    for (let i = 0; i < this.items.length; i++) {
+      if (this.items[i].priority > item.priority) {
+        this.items.splice(i, 0, item);
+        contained = true;
+        break;
+      }
+    }
+
+    if (!contained) {
+      this.items.push(item);
+    }
+  }
+
+  dequeue(): T | undefined {
+    return this.items.shift()?.element;
+  }
+
+  isEmpty(): boolean {
+    return this.items.length === 0;
+  }
+}
 
 export function calculateOrthogonalPath(
   start: Point,
@@ -31,460 +61,360 @@ export function calculateOrthogonalPath(
   obstacles: Rect[],
   bounds?: Bounds
 ): Point[] {
-  // Expand obstacles with padding
-  const expandedObstacles = obstacles.map(obs => ({
-    left: obs.left - PADDING,
-    top: obs.top - PADDING,
-    right: obs.right + PADDING,
-    bottom: obs.bottom + PADDING,
-    width: obs.width + PADDING * 2,
-    height: obs.height + PADDING * 2
+  // 0. Round inputs to integers to avoid float precision issues
+  const rStart = { x: Math.round(start.x), y: Math.round(start.y) };
+  const rEnd = { x: Math.round(end.x), y: Math.round(end.y) };
+  
+  const rObstacles = obstacles.map(o => ({
+    left: Math.round(o.left),
+    top: Math.round(o.top),
+    right: Math.round(o.right),
+    bottom: Math.round(o.bottom),
+    width: Math.round(o.width),
+    height: Math.round(o.height)
   }));
+  
+  const rBounds = bounds ? {
+    minX: Math.round(bounds.minX),
+    maxX: Math.round(bounds.maxX),
+    minY: Math.round(bounds.minY),
+    maxY: Math.round(bounds.maxY)
+  } : undefined;
 
-  // Simple orthogonal routing using waypoints
-  // Strategy: Move horizontally first, then vertically, avoiding obstacles
+  // 1. Generate Grid Coordinates
+  // Collect all unique X and Y coordinates from start, end, and obstacle boundaries
+  const xCoords = new Set<number>();
+  const yCoords = new Set<number>();
 
-  const path: Point[] = [start];
+  xCoords.add(rStart.x);
+  xCoords.add(rEnd.x);
+  yCoords.add(rStart.y);
+  yCoords.add(rEnd.y);
 
-  // Always use orthogonal routing (no diagonal lines)
-  const waypoints = findWaypoints(start, end, expandedObstacles, bounds);
-  path.push(...waypoints);
-  path.push(end);
+  if (rBounds) {
+      xCoords.add(rBounds.minX);
+      xCoords.add(rBounds.maxX);
+      yCoords.add(rBounds.minY);
+      yCoords.add(rBounds.maxY);
+  }
 
-  // Validate that the entire path doesn't intersect obstacles
-  if (!isPathValid(path, expandedObstacles)) {
-    // If path is invalid, try to find ANY valid path by testing more offsets
-    const emergencyPath = findEmergencyPath(start, end, expandedObstacles, bounds);
-    if (emergencyPath) {
-      return emergencyPath;
+  rObstacles.forEach(obs => {
+    xCoords.add(obs.left - PADDING);
+    xCoords.add(obs.right + PADDING);
+    yCoords.add(obs.top - PADDING);
+    yCoords.add(obs.bottom + PADDING);
+  });
+
+  // Calculate and add gap centers (highways)
+  // Note: Centers might be .5, which is fine, but they are deterministic now.
+  const gapCentersX = findVerticalGapCenters(rObstacles);
+  gapCentersX.forEach(x => xCoords.add(x));
+
+  const gapCentersY = findHorizontalGapCenters(rObstacles);
+  gapCentersY.forEach(y => yCoords.add(y));
+
+  const sortedX = Array.from(xCoords).sort((a, b) => a - b);
+  const sortedY = Array.from(yCoords).sort((a, b) => a - b);
+
+  // Map coordinates to grid indices for faster lookup
+  const xToIndex = new Map<number, number>();
+  const yToIndex = new Map<number, number>();
+  sortedX.forEach((x, i) => xToIndex.set(x, i));
+  sortedY.forEach((y, i) => yToIndex.set(y, i));
+
+  // Identify which indices are "Gap Centers"
+  const isGapCenterX = new Set<number>();
+  gapCentersX.forEach(x => {
+      const idx = xToIndex.get(x);
+      if (idx !== undefined) isGapCenterX.add(idx);
+  });
+
+  const isGapCenterY = new Set<number>();
+  gapCentersY.forEach(y => {
+      const idx = yToIndex.get(y);
+      if (idx !== undefined) isGapCenterY.add(idx);
+  });
+
+  const startNode = { xIdx: xToIndex.get(rStart.x)!, yIdx: yToIndex.get(rStart.y)! };
+  const endNode = { xIdx: xToIndex.get(rEnd.x)!, yIdx: yToIndex.get(rEnd.y)! };
+
+  // 2. A* Search
+  const openSet = new PriorityQueue<{ xIdx: number; yIdx: number; dir?: 'H' | 'V' }>();
+  openSet.enqueue(startNode, 0);
+
+  const cameFrom = new Map<string, { xIdx: number; yIdx: number; dir?: 'H' | 'V' }>();
+  const gScore = new Map<string, number>();
+  
+  const startKey = `${startNode.xIdx},${startNode.yIdx}`;
+  gScore.set(startKey, 0);
+
+  // Directions: Right, Left, Down, Up
+  const dx = [1, -1, 0, 0];
+  const dy = [0, 0, 1, -1];
+  const directionTypes: ('H' | 'V')[] = ['H', 'H', 'V', 'V'];
+
+  let found = false;
+  let finalNodeKey: string | null = null;
+
+  while (!openSet.isEmpty()) {
+    const current = openSet.dequeue()!;
+    const currentKey = `${current.xIdx},${current.yIdx}`;
+
+    if (current.xIdx === endNode.xIdx && current.yIdx === endNode.yIdx) {
+      found = true;
+      finalNodeKey = currentKey;
+      break; // Path found
     }
-    // As absolute last resort, return just start and end (line won't render well but won't crash)
+
+    const currentX = sortedX[current.xIdx];
+    const currentY = sortedY[current.yIdx];
+    const currentG = gScore.get(currentKey) ?? Infinity;
+
+    // Explore neighbors
+    for (let i = 0; i < 4; i++) {
+      const nextXIdx = current.xIdx + dx[i];
+      const nextYIdx = current.yIdx + dy[i];
+
+      // Check grid bounds
+      if (nextXIdx < 0 || nextXIdx >= sortedX.length || nextYIdx < 0 || nextYIdx >= sortedY.length) {
+        continue;
+      }
+
+      const nextX = sortedX[nextXIdx];
+      const nextY = sortedY[nextYIdx];
+
+      // Check explicit bounds provided by caller
+      if (rBounds) {
+        if (nextX < rBounds.minX || nextX > rBounds.maxX || nextY < rBounds.minY || nextY > rBounds.maxY) {
+           continue;
+        }
+      }
+
+      // Check collision with obstacles for the segment
+      const segment = {
+        start: { x: currentX, y: currentY },
+        end: { x: nextX, y: nextY }
+      };
+      
+      if (segmentIntersectsObstacles(segment, rObstacles)) {
+        continue;
+      }
+
+      const moveDist = Math.abs(nextX - currentX) + Math.abs(nextY - currentY);
+      const newDir = directionTypes[i];
+      const turnCost = (current.dir && current.dir !== newDir) ? TURN_PENALTY : 0;
+      
+      // Calculate Cost
+      let stepCost = moveDist;
+
+      // Apply penalty for lines NOT on a gap center
+      if (newDir === 'V') {
+          // Moving vertically: X is constant. Check if X is a gap center.
+          if (!isGapCenterX.has(current.xIdx)) {
+              stepCost *= NON_CENTER_PENALTY_MULTIPLIER;
+          }
+      } else {
+          // Moving horizontally: Y is constant. Check if Y is a gap center.
+          if (!isGapCenterY.has(current.yIdx)) {
+              stepCost *= NON_CENTER_PENALTY_MULTIPLIER;
+          }
+      }
+      
+      const tentativeG = currentG + stepCost + turnCost;
+      const nextKey = `${nextXIdx},${nextYIdx}`;
+
+      if (tentativeG < (gScore.get(nextKey) ?? Infinity)) {
+        cameFrom.set(nextKey, { ...current, dir: current.dir }); // Save parent
+        gScore.set(nextKey, tentativeG);
+        
+        const h = Math.abs(rEnd.x - nextX) + Math.abs(rEnd.y - nextY);
+        openSet.enqueue({ xIdx: nextXIdx, yIdx: nextYIdx, dir: newDir }, tentativeG + h);
+      }
+    }
+  }
+
+  if (!found) {
     return [start, end];
   }
 
-  return path;
+  // 3. Reconstruct Path
+  const path: Point[] = [];
+  let curr: { xIdx: number; yIdx: number; dir?: 'H' | 'V' } | undefined = { xIdx: endNode.xIdx, yIdx: endNode.yIdx };
+  
+  while (curr) {
+    path.unshift({ x: sortedX[curr.xIdx], y: sortedY[curr.yIdx] });
+    const key = `${curr.xIdx},${curr.yIdx}`;
+    const parent = cameFrom.get(key);
+    
+    if (!parent && (curr.xIdx !== startNode.xIdx || curr.yIdx !== startNode.yIdx)) {
+        break;
+    }
+    if (curr.xIdx === startNode.xIdx && curr.yIdx === startNode.yIdx) {
+        break;
+    }
+    curr = parent;
+  }
+  
+  // 4. Simplify Path (remove collinear points)
+  return simplifyPath(path);
 }
 
-function isPathValid(path: Point[], obstacles: Rect[]): boolean {
-  // Check all segments of the path
-  for (let i = 0; i < path.length - 1; i++) {
-    const segment = { start: path[i], end: path[i + 1] };
+function findVerticalGapCenters(obstacles: Rect[]): number[] {
+  // Project obstacles onto X-axis to find vertical gaps (columns)
+  if (obstacles.length === 0) return [];
 
-    // Check if this segment intersects any obstacle
-    for (const obs of obstacles) {
-      if (lineIntersectsRect(segment, obs)) {
-        return false;
-      }
+  const intervals = obstacles
+    .map(o => ({ start: o.left, end: o.right }))
+    .sort((a, b) => a.start - b.start);
+
+  const merged: { start: number; end: number }[] = [];
+  let curr = intervals[0];
+
+  for (let i = 1; i < intervals.length; i++) {
+    const next = intervals[i];
+    if (next.start < curr.end) { // Overlapping or adjacent
+      curr.end = Math.max(curr.end, next.end);
+    } else {
+      merged.push(curr);
+      curr = next;
     }
   }
-  return true;
+  merged.push(curr);
+
+  const centers: number[] = [];
+  // Find gaps between merged intervals
+  // We use a threshold to ignore small gaps (e.g. slight misalignments)
+  const MIN_GAP_WIDTH = 5; 
+
+  for (let i = 0; i < merged.length - 1; i++) {
+    const gapStart = merged[i].end;
+    const gapEnd = merged[i + 1].start;
+    const gapSize = gapEnd - gapStart;
+
+    if (gapSize > MIN_GAP_WIDTH) {
+      centers.push(gapStart + gapSize / 2);
+    }
+  }
+
+  return centers;
 }
 
-function findEmergencyPath(start: Point, end: Point, obstacles: Rect[], bounds?: Bounds): Point[] | null {
-  // Try more extreme offsets to find ANY valid path
-  const largeOffsets = [100, -100, 150, -150, 200, -200, 300, -300, 400, -400];
+function findHorizontalGapCenters(obstacles: Rect[]): number[] {
+  // Project obstacles onto Y-axis to find horizontal gaps (rows)
+  if (obstacles.length === 0) return [];
 
-  // Try horizontal routing with large offsets
-  for (const offset of largeOffsets) {
-    const p1 = { x: start.x, y: start.y + offset };
-    const p2 = { x: end.x, y: start.y + offset };
+  const intervals = obstacles
+    .map(o => ({ start: o.top, end: o.bottom }))
+    .sort((a, b) => a.start - b.start);
 
-    // Check bounds
-    if (bounds && (p1.y < bounds.minY || p1.y > bounds.maxY)) {
-      continue;
+  const merged: { start: number; end: number }[] = [];
+  let curr = intervals[0];
+
+  for (let i = 1; i < intervals.length; i++) {
+    const next = intervals[i];
+    if (next.start < curr.end) { // Overlapping or adjacent
+      curr.end = Math.max(curr.end, next.end);
+    } else {
+      merged.push(curr);
+      curr = next;
     }
+  }
+  merged.push(curr);
 
-    const path = [start, p1, p2, end];
-    if (isPathValid(path, obstacles)) {
-      return path;
+  const centers: number[] = [];
+  const MIN_GAP_WIDTH = 5; // Slightly smaller threshold for horizontal gaps
+
+  for (let i = 0; i < merged.length - 1; i++) {
+    const gapStart = merged[i].end;
+    const gapEnd = merged[i + 1].start;
+    const gapSize = gapEnd - gapStart;
+
+    if (gapSize > MIN_GAP_WIDTH) {
+      centers.push(gapStart + gapSize / 2);
     }
   }
 
-  // Try vertical routing with large offsets
-  for (const offset of largeOffsets) {
-    const p1 = { x: start.x + offset, y: start.y };
-    const p2 = { x: start.x + offset, y: end.y };
-
-    const path = [start, p1, p2, end];
-    if (isPathValid(path, obstacles)) {
-      return path;
-    }
-  }
-
-  return null;
+  return centers;
 }
 
-function findWaypoints(start: Point, end: Point, obstacles: Rect[], bounds?: Bounds): Point[] {
-  const waypoints: Point[] = [];
+function simplifyPath(path: Point[]): Point[] {
+  if (path.length <= 2) return path;
 
-  // Determine if we should go up/down first or left/right first
-  const dx = end.x - start.x;
-  const dy = end.y - start.y;
+  const simplified: Point[] = [path[0]];
+  
+  for (let i = 1; i < path.length - 1; i++) {
+    const prev = simplified[simplified.length - 1];
+    const curr = path[i];
+    const next = path[i + 1];
 
-  // Try vertical-first route
-  const verticalFirst = tryVerticalFirstRoute(start, end, obstacles, bounds);
-  const horizontalFirst = tryHorizontalFirstRoute(start, end, obstacles, bounds);
+    // Check if points are collinear
+    const isVertical = prev.x === curr.x && curr.x === next.x;
+    const isHorizontal = prev.y === curr.y && curr.y === next.y;
 
-  // Choose the route with fewer waypoints
-  if (verticalFirst && horizontalFirst) {
-    return verticalFirst.length <= horizontalFirst.length ? verticalFirst : horizontalFirst;
-  } else if (verticalFirst) {
-    return verticalFirst;
-  } else if (horizontalFirst) {
-    return horizontalFirst;
+    if (!isVertical && !isHorizontal) {
+      simplified.push(curr);
+    }
   }
 
-  // Fallback: use corner waypoints that respect bounds
-  let midX = start.x + dx / 2;
-  let midY = start.y + dy / 2;
-
-  // Ensure midpoints are within bounds
-  if (bounds) {
-    midX = Math.max(bounds.minX, Math.min(bounds.maxX, midX));
-    midY = Math.max(bounds.minY, Math.min(bounds.maxY, midY));
-  }
-
-  // Create L-shaped path (horizontal then vertical)
-  const point1: Point = { x: midX, y: start.y };
-  const point2: Point = { x: midX, y: end.y };
-
-  // Only add points if they're within bounds
-  if (!bounds || (point1.y >= bounds.minY && point1.y <= bounds.maxY)) {
-    waypoints.push(point1);
-  }
-  if (!bounds || (point2.y >= bounds.minY && point2.y <= bounds.maxY)) {
-    waypoints.push(point2);
-  }
-
-  return waypoints;
+  simplified.push(path[path.length - 1]);
+  return simplified;
 }
 
-function tryVerticalFirstRoute(start: Point, end: Point, obstacles: Rect[], bounds?: Bounds): Point[] | null {
-  const waypoints: Point[] = [];
-  let current = { ...start };
-
-  // Move vertically to end.y
-  const verticalTarget = { x: current.x, y: end.y };
-  const verticalSegment = { start: current, end: verticalTarget };
-
-  // Ensure vertical target is within bounds
-  if (bounds && (verticalTarget.y < bounds.minY || verticalTarget.y > bounds.maxY)) {
-    return null;
-  }
-
-  if (!obstacles.some(obs => lineIntersectsRect(verticalSegment, obs))) {
-    waypoints.push(verticalTarget);
-    current = verticalTarget;
-  } else {
-    // Find a horizontal offset to avoid obstacles
-    const offset = findHorizontalOffset(current, end.y, obstacles, bounds);
-    if (offset === null) return null;
-
-    const p1 = { x: current.x + offset, y: current.y };
-    const p2 = { x: current.x + offset, y: end.y };
-
-    // Validate both segments
-    const seg1 = { start: current, end: p1 };
-    const seg2 = { start: p1, end: p2 };
-
-    if (obstacles.some(obs => lineIntersectsRect(seg1, obs)) ||
-        obstacles.some(obs => lineIntersectsRect(seg2, obs))) {
-      return null;
-    }
-
-    waypoints.push(p1);
-    waypoints.push(p2);
-    current = p2;
-  }
-
-  // Move horizontally to end.x
-  const horizontalTarget = { x: end.x, y: current.y };
-  const horizontalSegment = { start: current, end: horizontalTarget };
-
-  if (obstacles.some(obs => lineIntersectsRect(horizontalSegment, obs))) {
-    return null;
-  }
-
-  return waypoints;
-}
-
-function tryHorizontalFirstRoute(start: Point, end: Point, obstacles: Rect[], bounds?: Bounds): Point[] | null {
-  const waypoints: Point[] = [];
-  let current = { ...start };
-
-  // Move horizontally to end.x
-  const horizontalTarget = { x: end.x, y: current.y };
-  const horizontalSegment = { start: current, end: horizontalTarget };
-
-  if (!obstacles.some(obs => lineIntersectsRect(horizontalSegment, obs))) {
-    waypoints.push(horizontalTarget);
-    current = horizontalTarget;
-  } else {
-    // Find a vertical offset to avoid obstacles
-    const offset = findVerticalOffset(current, end.x, obstacles, bounds);
-    if (offset === null) return null;
-
-    const p1 = { x: current.x, y: current.y + offset };
-    const p2 = { x: end.x, y: current.y + offset };
-
-    // Ensure points are within bounds
-    if (bounds && (p1.y < bounds.minY || p1.y > bounds.maxY ||
-                   p2.y < bounds.minY || p2.y > bounds.maxY)) {
-      return null;
-    }
-
-    // Validate both segments
-    const seg1 = { start: current, end: p1 };
-    const seg2 = { start: p1, end: p2 };
-
-    if (obstacles.some(obs => lineIntersectsRect(seg1, obs)) ||
-        obstacles.some(obs => lineIntersectsRect(seg2, obs))) {
-      return null;
-    }
-
-    waypoints.push(p1);
-    waypoints.push(p2);
-    current = p2;
-  }
-
-  // Move vertically to end.y
-  const verticalTarget = { x: current.x, y: end.y };
-  const verticalSegment = { start: current, end: verticalTarget };
-
-  // Ensure vertical target is within bounds
-  if (bounds && (verticalTarget.y < bounds.minY || verticalTarget.y > bounds.maxY)) {
-    return null;
-  }
-
-  if (obstacles.some(obs => lineIntersectsRect(verticalSegment, obs))) {
-    return null;
-  }
-
-  return waypoints;
-}
-
-function findGapsBetweenObstacles(obstacles: Rect[], bounds: Bounds, region?: { minX: number, maxX: number, minY: number, maxY: number }): { vertical: number[], horizontal: number[] } {
-  const verticalGaps: number[] = [];
-  const horizontalGaps: number[] = [];
-
-  // Find vertical gaps (X positions between obstacles)
-  const sortedByX = [...obstacles].sort((a, b) => a.left - b.left);
-  for (let i = 0; i < sortedByX.length - 1; i++) {
-    const gap = sortedByX[i + 1].left - sortedByX[i].right;
-    if (gap >= GAP_DETECTION_THRESHOLD) {
-      const gapCenter = sortedByX[i].right + gap / 2;
-
-      // If region is specified, only include gaps in that region
-      if (!region || (gapCenter >= region.minX && gapCenter <= region.maxX)) {
-        verticalGaps.push(gapCenter);
-      }
+function segmentIntersectsObstacles(segment: { start: Point; end: Point }, obstacles: Rect[]): boolean {
+  // Check if the segment intersects any obstacle
+  // Note: We use a slightly smaller rectangle for intersection checks to allow 
+  // lines to graze the edges of the padding (which is what we want)
+  // But wait, the grid lines are AT PADDING distance.
+  // So a grid line runs exactly along the edge of the expanded obstacle.
+  // We want to allow this.
+  // So we check if the segment is STRICTLY INSIDE the obstacle.
+  
+  // Actually, standard A* on grid checks against the ORIGINAL obstacles.
+  // If the segment intersects the original obstacle, it's invalid.
+  
+  for (const obs of obstacles) {
+    if (lineIntersectsRect(segment, obs)) {
+      return true;
     }
   }
-
-  // Find horizontal gaps (Y positions between obstacles)
-  const sortedByY = [...obstacles].sort((a, b) => a.top - b.top);
-  for (let i = 0; i < sortedByY.length - 1; i++) {
-    const gap = sortedByY[i + 1].top - sortedByY[i].bottom;
-    if (gap >= GAP_DETECTION_THRESHOLD) {
-      const gapCenter = sortedByY[i].bottom + gap / 2;
-
-      // If region is specified, only include gaps in that region
-      if (!region || (gapCenter >= region.minY && gapCenter <= region.maxY)) {
-        horizontalGaps.push(gapCenter);
-      }
-    }
-  }
-
-  return { vertical: verticalGaps, horizontal: horizontalGaps };
-}
-
-function findHorizontalOffset(point: Point, targetY: number, obstacles: Rect[], bounds?: Bounds): number | null {
-  // First, try to find gaps between obstacles in the relevant region
-  if (bounds) {
-    const minY = Math.min(point.y, targetY);
-    const maxY = Math.max(point.y, targetY);
-    const region = {
-      minX: bounds.minX,
-      maxX: bounds.maxX,
-      minY: minY - 50, // Add some buffer
-      maxY: maxY + 50
-    };
-
-    const gaps = findGapsBetweenObstacles(obstacles, bounds, region);
-
-    // Try using gap positions
-    for (const gapX of gaps.vertical) {
-      const offset = gapX - point.x;
-      const p1 = { x: gapX, y: point.y };
-      const p2 = { x: gapX, y: targetY };
-
-      // Check if points are within bounds
-      if (p1.y < bounds.minY || p1.y > bounds.maxY || p2.y < bounds.minY || p2.y > bounds.maxY) {
-        continue;
-      }
-
-      const segment1 = { start: point, end: p1 };
-      const segment2 = { start: p1, end: p2 };
-
-      if (
-        !obstacles.some(obs => lineIntersectsRect(segment1, obs)) &&
-        !obstacles.some(obs => lineIntersectsRect(segment2, obs))
-      ) {
-        return offset;
-      }
-    }
-  }
-
-  // Fallback to trying regular offsets
-  const offsets = [5, -5, 10, -10, 15, -15, 25, -25, 40, -40, 60, -60, 80, -80, 100, -100, 150, -150, 200, -200];
-
-  for (const offset of offsets) {
-    const p1 = { x: point.x + offset, y: point.y };
-    const p2 = { x: point.x + offset, y: targetY };
-
-    // Check if points are within bounds
-    if (bounds) {
-      if (p1.x < bounds.minX || p1.x > bounds.maxX || p1.y < bounds.minY || p1.y > bounds.maxY) {
-        continue;
-      }
-      if (p2.x < bounds.minX || p2.x > bounds.maxX || p2.y < bounds.minY || p2.y > bounds.maxY) {
-        continue;
-      }
-    }
-
-    const segment1 = { start: point, end: p1 };
-    const segment2 = { start: p1, end: p2 };
-
-    if (
-      !obstacles.some(obs => lineIntersectsRect(segment1, obs)) &&
-      !obstacles.some(obs => lineIntersectsRect(segment2, obs))
-    ) {
-      return offset;
-    }
-  }
-
-  return null;
-}
-
-function findVerticalOffset(point: Point, targetX: number, obstacles: Rect[], bounds?: Bounds): number | null {
-  // First, try to find gaps between obstacles in the relevant region
-  if (bounds) {
-    const minX = Math.min(point.x, targetX);
-    const maxX = Math.max(point.x, targetX);
-    const region = {
-      minX: minX - 50, // Add some buffer
-      maxX: maxX + 50,
-      minY: bounds.minY,
-      maxY: bounds.maxY
-    };
-
-    const gaps = findGapsBetweenObstacles(obstacles, bounds, region);
-
-    // Try using horizontal gap positions (Y coordinates)
-    for (const gapY of gaps.horizontal) {
-      const offset = gapY - point.y;
-      const p1 = { x: point.x, y: gapY };
-      const p2 = { x: targetX, y: gapY };
-
-      // Check if points are within bounds
-      if (gapY < bounds.minY || gapY > bounds.maxY) {
-        continue;
-      }
-
-      const segment1 = { start: point, end: p1 };
-      const segment2 = { start: p1, end: p2 };
-
-      if (
-        !obstacles.some(obs => lineIntersectsRect(segment1, obs)) &&
-        !obstacles.some(obs => lineIntersectsRect(segment2, obs))
-      ) {
-        return offset;
-      }
-    }
-  }
-
-  // Fallback to trying regular offsets
-  const offsets = [5, -5, 10, -10, 15, -15, 25, -25, 40, -40, 60, -60, 80, -80, 100, -100, 150, -150, 200, -200];
-
-  for (const offset of offsets) {
-    const p1 = { x: point.x, y: point.y + offset };
-    const p2 = { x: targetX, y: point.y + offset };
-
-    // Check if points are within bounds
-    if (bounds) {
-      if (p1.x < bounds.minX || p1.x > bounds.maxX || p1.y < bounds.minY || p1.y > bounds.maxY) {
-        continue;
-      }
-      if (p2.x < bounds.minX || p2.x > bounds.maxX || p2.y < bounds.minY || p2.y > bounds.maxY) {
-        continue;
-      }
-    }
-
-    const segment1 = { start: point, end: p1 };
-    const segment2 = { start: p1, end: p2 };
-
-    if (
-      !obstacles.some(obs => lineIntersectsRect(segment1, obs)) &&
-      !obstacles.some(obs => lineIntersectsRect(segment2, obs))
-    ) {
-      return offset;
-    }
-  }
-
-  return null;
-}
-
-function getLineSegments(start: Point, end: Point): Array<{ start: Point; end: Point }> {
-  return [{ start, end }];
+  return false;
 }
 
 function lineIntersectsRect(
   line: { start: Point; end: Point },
   rect: Rect
 ): boolean {
-  // Check if line segment intersects with rectangle
+  // We define "intersects" as entering the INTERIOR of the rectangle.
+  // Touching the edge is allowed.
+  
+  // 1. Check if both points are strictly inside (shouldn't happen with grid logic usually)
+  // 2. Check intersection with edges
+  
   const { start, end } = line;
-
-  // Check if either endpoint is inside the rectangle
-  if (pointInRect(start, rect) || pointInRect(end, rect)) {
-    return true;
+  
+  // Expand rect slightly negatively to check for *interior* intersection?
+  // Or just use standard geometry.
+  // If we are strictly vertical or horizontal:
+  
+  if (start.x === end.x) { // Vertical line
+    if (start.x > rect.left && start.x < rect.right) {
+       // X is inside. Check Y range overlap.
+       const minY = Math.min(start.y, end.y);
+       const maxY = Math.max(start.y, end.y);
+       if (maxY > rect.top && minY < rect.bottom) {
+         return true;
+       }
+    }
+  } else if (start.y === end.y) { // Horizontal line
+    if (start.y > rect.top && start.y < rect.bottom) {
+        // Y is inside. Check X range overlap.
+        const minX = Math.min(start.x, end.x);
+        const maxX = Math.max(start.x, end.x);
+        if (maxX > rect.left && minX < rect.right) {
+            return true;
+        }
+    }
   }
-
-  // Check if line crosses any edge of the rectangle
-  const edges = [
-    { start: { x: rect.left, y: rect.top }, end: { x: rect.right, y: rect.top } },
-    { start: { x: rect.right, y: rect.top }, end: { x: rect.right, y: rect.bottom } },
-    { start: { x: rect.right, y: rect.bottom }, end: { x: rect.left, y: rect.bottom } },
-    { start: { x: rect.left, y: rect.bottom }, end: { x: rect.left, y: rect.top } }
-  ];
-
-  return edges.some(edge => linesIntersect(line, edge));
-}
-
-function pointInRect(point: Point, rect: Rect): boolean {
-  return (
-    point.x >= rect.left &&
-    point.x <= rect.right &&
-    point.y >= rect.top &&
-    point.y <= rect.bottom
-  );
-}
-
-function linesIntersect(
-  line1: { start: Point; end: Point },
-  line2: { start: Point; end: Point }
-): boolean {
-  const { start: p1, end: p2 } = line1;
-  const { start: p3, end: p4 } = line2;
-
-  const denom = (p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y);
-
-  if (denom === 0) {
-    return false; // Parallel lines
-  }
-
-  const ua = ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) / denom;
-  const ub = ((p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)) / denom;
-
-  return ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1;
+  
+  return false;
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { useCoursePlanner } from '../../context/CoursePlannerContext';
 import { calculateOrthogonalPath, Point, Rect, Bounds } from '../../utils/pathfinding';
@@ -30,13 +30,19 @@ const PREREQ_COLORS = [
 export default function PrerequisiteLines({ hoveredCourseId, onPrereqColorsChange }: PrerequisiteLinesProps) {
   const { findCourseData, state } = useCoursePlanner();
   const [lines, setLines] = React.useState<LineData[]>([]);
+  const lastHoveredRectRef = useRef<DOMRect | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
 
   React.useEffect(() => {
     if (!hoveredCourseId) {
       setLines([]);
-      // Clear prerequisite colors
+      lastHoveredRectRef.current = null;
       if (onPrereqColorsChange) {
         onPrereqColorsChange(new Map());
+      }
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+        animationFrameRef.current = null;
       }
       return;
     }
@@ -44,7 +50,6 @@ export default function PrerequisiteLines({ hoveredCourseId, onPrereqColorsChang
     const hoveredCourse = findCourseData(hoveredCourseId);
     if (!hoveredCourse?.prereq) {
       setLines([]);
-      // Clear prerequisite colors
       if (onPrereqColorsChange) {
         onPrereqColorsChange(new Map());
       }
@@ -54,112 +59,138 @@ export default function PrerequisiteLines({ hoveredCourseId, onPrereqColorsChang
     // Parse prerequisites
     const prereqList = parsePrerequisites(hoveredCourse.prereq);
 
-    // Get all course elements and their positions
-    const hoveredElement = document.querySelector(`[data-course-id="${hoveredCourseId}"]`);
-    if (!hoveredElement) {
-      setLines([]);
-      return;
-    }
+    const updateLines = () => {
+      const hoveredElement = document.querySelector(`[data-course-id="${hoveredCourseId}"]`);
+      if (!hoveredElement) {
+        setLines([]);
+        return;
+      }
 
-    const hoveredRect = hoveredElement.getBoundingClientRect();
+      const hoveredRect = hoveredElement.getBoundingClientRect();
 
-    // Collect all course elements as obstacles
-    const allCourseElements = document.querySelectorAll('[data-course-id]');
-    const obstacles: Rect[] = [];
-    let minY = Infinity;
-    let maxY = -Infinity;
-    let minX = Infinity;
-    let maxX = -Infinity;
+      // Check if position changed
+      const lastRect = lastHoveredRectRef.current;
+      const hasChanged = !lastRect ||
+        Math.abs(lastRect.top - hoveredRect.top) > 0.5 ||
+        Math.abs(lastRect.left - hoveredRect.left) > 0.5 ||
+        Math.abs(lastRect.width - hoveredRect.width) > 0.5 ||
+        Math.abs(lastRect.height - hoveredRect.height) > 0.5;
 
-    allCourseElements.forEach(el => {
-      const rect = el.getBoundingClientRect();
-      obstacles.push({
-        left: rect.left,
-        top: rect.top,
-        right: rect.right,
-        bottom: rect.bottom,
-        width: rect.width,
-        height: rect.height
-      });
+      if (!hasChanged) {
+        animationFrameRef.current = requestAnimationFrame(updateLines);
+        return;
+      }
 
-      // Track bounds
-      minY = Math.min(minY, rect.top);
-      maxY = Math.max(maxY, rect.bottom);
-      minX = Math.min(minX, rect.left);
-      maxX = Math.max(maxX, rect.right);
-    });
+      lastHoveredRectRef.current = hoveredRect;
 
-    // Create bounds with some margin
-    const bounds: Bounds = {
-      minX: Math.max(0, minX - 50),
-      maxX: Math.min(window.innerWidth, maxX + 50),
-      minY: minY, // No margin at top - lines should never go above the topmost course
-      maxY: Math.min(window.innerHeight, maxY + 50)
-    };
+      // Collect all course elements as obstacles
+      const allCourseElements = document.querySelectorAll('[data-course-id]');
+      const obstacles: Rect[] = [];
+      let minY = Infinity;
+      let maxY = -Infinity;
+      let minX = Infinity;
+      let maxX = -Infinity;
 
-    const newLines: LineData[] = [];
-
-    prereqList.forEach((prereqId, index) => {
-      const prereqElement = document.querySelector(`[data-course-id="${prereqId}"]`);
-      if (prereqElement) {
-        const prereqRect = prereqElement.getBoundingClientRect();
-
-        // Determine which side to use based on relative positions
-        const prereqIsLeft = prereqRect.left < hoveredRect.left;
-
-        // Small offset to ensure points are outside the course rectangles
-        const edgeOffset = 5;
-
-        // Calculate start point (slightly outside the right or left edge of prerequisite course)
-        let startX = prereqIsLeft ? prereqRect.right + edgeOffset : prereqRect.left - edgeOffset;
-        let startY = prereqRect.top + prereqRect.height / 2;
-
-        // Calculate end point (slightly outside the left or right edge of hovered course)
-        let endX = prereqIsLeft ? hoveredRect.left - edgeOffset : hoveredRect.right + edgeOffset;
-        let endY = hoveredRect.top + hoveredRect.height / 2;
-
-        // Ensure points are within bounds (especially Y coordinate)
-        startY = Math.max(bounds.minY, Math.min(bounds.maxY, startY));
-        endY = Math.max(bounds.minY, Math.min(bounds.maxY, endY));
-
-        const start: Point = { x: startX, y: startY };
-        const end: Point = { x: endX, y: endY };
-
-        // Use all courses as obstacles EXCEPT the source and destination
-        // This prevents false collision detection at the start/end points
-        const filteredObstacles = obstacles.filter((obs, index) => {
-          const el = allCourseElements[index];
-          const courseId = el.getAttribute('data-course-id');
-          return courseId !== prereqId && courseId !== hoveredCourseId;
+      allCourseElements.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        obstacles.push({
+          left: rect.left,
+          top: rect.top,
+          right: rect.right,
+          bottom: rect.bottom,
+          width: rect.width,
+          height: rect.height
         });
 
-        const path = calculateOrthogonalPath(start, end, filteredObstacles, bounds);
-
-        // Assign color based on index (cycle through colors if more prerequisites than colors)
-        const color = PREREQ_COLORS[index % PREREQ_COLORS.length];
-
-        // Only add the line if it has a valid path with waypoints
-        // This prevents showing lines that pass through courses
-        if (path.length >= 2) {
-          newLines.push({
-            path,
-            prereqId,
-            color
-          });
-        }
-      }
-    });
-
-    setLines(newLines);
-
-    // Notify parent of prerequisite colors
-    if (onPrereqColorsChange) {
-      const colorMap = new Map<string, string>();
-      newLines.forEach(line => {
-        colorMap.set(line.prereqId, line.color);
+        // Track bounds
+        minY = Math.min(minY, rect.top);
+        maxY = Math.max(maxY, rect.bottom);
+        minX = Math.min(minX, rect.left);
+        maxX = Math.max(maxX, rect.right);
       });
-      onPrereqColorsChange(colorMap);
-    }
+
+      // Create bounds with some margin
+      const bounds: Bounds = {
+        minX: Math.max(0, minX - 50),
+        maxX: Math.min(window.innerWidth, maxX + 50),
+        minY: minY + 20, // Add offset to prevent lines from going above the top courses
+        maxY: Math.min(window.innerHeight, maxY + 50)
+      };
+
+      const newLines: LineData[] = [];
+
+      prereqList.forEach((prereqId, index) => {
+        const prereqElement = document.querySelector(`[data-course-id="${prereqId}"]`);
+        if (prereqElement) {
+          const prereqRect = prereqElement.getBoundingClientRect();
+
+          // Determine which side to use based on relative positions
+          const prereqIsLeft = prereqRect.left < hoveredRect.left;
+
+          // Small offset to ensure points are outside the course rectangles
+          const edgeOffset = 5;
+
+          // Calculate start point (slightly outside the right or left edge of prerequisite course)
+          let startX = prereqIsLeft ? prereqRect.right + edgeOffset : prereqRect.left - edgeOffset;
+          let startY = prereqRect.top + prereqRect.height / 2;
+
+          // Calculate end point (slightly outside the left or right edge of hovered course)
+          let endX = prereqIsLeft ? hoveredRect.left - edgeOffset : hoveredRect.right + edgeOffset;
+          let endY = hoveredRect.top + hoveredRect.height / 2;
+
+          // Ensure points are within bounds (especially Y coordinate)
+          startY = Math.max(bounds.minY, Math.min(bounds.maxY, startY));
+          endY = Math.max(bounds.minY, Math.min(bounds.maxY, endY));
+
+          const start: Point = { x: startX, y: startY };
+          const end: Point = { x: endX, y: endY };
+
+          // Use all courses as obstacles EXCEPT the source and destination
+          // This prevents false collision detection at the start/end points
+          const filteredObstacles = obstacles.filter((obs, index) => {
+            const el = allCourseElements[index];
+            const courseId = el.getAttribute('data-course-id');
+            return courseId !== prereqId && courseId !== hoveredCourseId;
+          });
+
+          const path = calculateOrthogonalPath(start, end, filteredObstacles, bounds);
+
+          // Assign color based on index (cycle through colors if more prerequisites than colors)
+          const color = PREREQ_COLORS[index % PREREQ_COLORS.length];
+
+          // Only add the line if it has a valid path with waypoints
+          // This prevents showing lines that pass through courses
+          if (path.length >= 2) {
+            newLines.push({
+              path,
+              prereqId,
+              color
+            });
+          }
+        }
+      });
+
+      setLines(newLines);
+
+      // Notify parent of prerequisite colors
+      if (onPrereqColorsChange) {
+        const colorMap = new Map<string, string>();
+        newLines.forEach(line => {
+          colorMap.set(line.prereqId, line.color);
+        });
+        onPrereqColorsChange(colorMap);
+      }
+      
+      animationFrameRef.current = requestAnimationFrame(updateLines);
+    };
+
+    updateLines();
+
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
   }, [hoveredCourseId, findCourseData, state, onPrereqColorsChange]);
 
   if (lines.length === 0) {

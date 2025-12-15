@@ -105,9 +105,8 @@ export default function Course({
       style={{
         background: getBackgroundColor(),
         ...(highlightColor && {
-          border: `3px solid ${highlightColor}`,
-          boxShadow: `0 0 10px ${highlightColor}40`,
-          transform: 'scale(1.05)',
+          // Replaced border with box-shadow to prevent text shift
+          boxShadow: `0 0 0 3px ${highlightColor}, 0 0 10px ${highlightColor}40`,
           zIndex: 1000
         })
       }}

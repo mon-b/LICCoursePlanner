@@ -245,7 +245,6 @@
 }
 
 .semesterCard:hover {
-  transform: translateY(-4px);
   box-shadow: 0 15px 35px rgba(139, 69, 255, 0.2);
   border-color: rgba(139, 69, 255, 0.4);
 }
