@@ -1,0 +1,15 @@
+.dragLayer {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 10000;
+  pointer-events: none;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.dragGhost {
+  transform: rotate(3deg) scale(1.05);
+  filter: drop-shadow(0 15px 30px rgba(0,0,0,0.3));
+  transition: transform 0.1s cubic-bezier(0.2, 0, 0.2, 1);
+}

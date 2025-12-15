@@ -11,7 +11,7 @@
   flex-direction: column;
   justify-content: center;
   cursor: grab;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  /* Removed border: 1px solid rgba(255, 255, 255, 0.2); */
   transition: all 0.2s ease;
   user-select: none;
   -webkit-user-select: none;

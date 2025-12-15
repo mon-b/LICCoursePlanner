@@ -5,30 +5,28 @@ import Course from '../Course/Course';
 import styles from './CoursePool.module.css';
 
 interface CoursePoolProps {
-  onDrop: (e: React.DragEvent, containerId: string) => void;
-  onDragOver: (e: React.DragEvent) => void;
   onCourseClick: (courseId: string) => void;
-  onDragStart: (e: React.DragEvent, courseId: string) => void;
-  onDragEnd: (e: React.DragEvent) => void;
+  onMouseDown: (e: React.MouseEvent, courseId: string) => void;
   onClose: () => void;
   onCreateCourse: () => void;
   isVisible: boolean;
   onHoverStart?: (courseId: string) => void;
   onHoverEnd?: () => void;
   prereqColors?: Map<string, string>;
+  activeDropTarget: { containerId: string; index: number } | null;
+  onUpdateDropTarget: (containerId: string | null, index?: number) => void;
+  draggedCourseId: string | null;
 }
 
 export default function CoursePool({
-  onDrop,
-  onDragOver,
   onCourseClick,
-  onDragStart,
-  onDragEnd,
+  onMouseDown,
   onCreateCourse,
   isVisible,
   onHoverStart,
   onHoverEnd,
   prereqColors,
+  onUpdateDropTarget
 }: CoursePoolProps) {
   const { t } = useTranslation();
   const { state, findCourseData } = useCoursePlanner();
@@ -38,7 +36,6 @@ export default function CoursePool({
   const [shouldRender, setShouldRender] = useState(isVisible);
   const containerRef = useRef<HTMLDivElement>(null);
   
-  // animation hehe
   useEffect(() => {
     if (isVisible) {
       setShouldRender(true);
@@ -76,8 +73,11 @@ export default function CoursePool({
     });
   }, [state.coursePool, findCourseData, searchTerm, activeCategory, categories]);
   
-  const handleDrop = (e: React.DragEvent) => {
-    onDrop(e, 'course-pool');
+  const handleMouseMove = () => {
+    onUpdateDropTarget('course-pool');
+  };
+
+  const handleMouseLeave = () => {
   };
   
   const coursesByType = useMemo(() => {
@@ -103,13 +103,13 @@ export default function CoursePool({
     <div 
       ref={containerRef}
       className={`${styles.container} ${isAnimating ? styles.visible : styles.hidden}`}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
     >
-      {/* Header */}
       <div className={styles.header}>
         <h2 className={styles.title}>{t('availableCourses', 'Available Courses')}</h2>
       </div>
       
-      {/* Search */}
       <div className={styles.searchSection}>
         <div className={styles.searchWrapper}>
           <span className={styles.searchIcon}>🔍</span>
@@ -123,7 +123,6 @@ export default function CoursePool({
         </div>
       </div>
       
-      {/* Categories */}
       <div className={styles.categorySection}>
         <div className={styles.categoryTabs}>
           {categories.map(category => (
@@ -139,13 +138,7 @@ export default function CoursePool({
       </div>
       
       
-      {/* Course List */}
-      <div 
-        className={styles.courseList}
-        onDrop={handleDrop}
-        onDragOver={onDragOver}
-      >
-        {/* Add Course Button */}
+      <div className={styles.courseList}>
         <div className={styles.addCourseSection}>
           <button 
             className={styles.addButton}
@@ -156,7 +149,6 @@ export default function CoursePool({
           </button>
         </div>
         
-        {/* Courses grouped by type */}
         {Object.entries(coursesByType).map(([typeLabel, courses]) => (
           <div key={typeLabel} className={styles.courseGroup}>
             <h3 className={styles.groupTitle}>{typeLabel}</h3>
@@ -165,8 +157,7 @@ export default function CoursePool({
                 <div key={courseState.id} className={styles.courseWrapper}>
                   <Course
                     courseState={courseState}
-                    onDragStart={onDragStart}
-                    onDragEnd={onDragEnd}
+                    onMouseDown={onMouseDown}
                     onClick={onCourseClick}
                     onHoverStart={onHoverStart}
                     onHoverEnd={onHoverEnd}

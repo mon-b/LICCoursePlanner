@@ -17,7 +17,6 @@ export default function CourseCreationModal({ isOpen, onClose, onCreateCourse }:
   const [credits, setCredits] = useState('');
   const [type, setType] = useState<CourseType | ''>('');
   
-  // Reset form when modal closes
   useEffect(() => {
     if (!isOpen) {
       setName('');

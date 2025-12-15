@@ -1,5 +1,3 @@
-// Pathfinding utility for drawing lines that avoid obstacles using A* on a Hanan Grid
-
 export interface Point {
   x: number;
   y: number;
@@ -21,11 +19,10 @@ export interface Bounds {
   maxY: number;
 }
 
-const PADDING = 10; // Padding around obstacles for the grid lines
-const TURN_PENALTY = 10; // Cost penalty for making a turn to encourage straight lines
-const NON_CENTER_PENALTY_MULTIPLIER = 50; // Penalty for lines not in gap centers (both vertical and horizontal)
+const PADDING = 10;
+const TURN_PENALTY = 10;
+const NON_CENTER_PENALTY_MULTIPLIER = 50;
 
-// Min-Heap Priority Queue for A*
 class PriorityQueue<T> {
   private items: { element: T; priority: number }[] = [];
 
@@ -61,7 +58,6 @@ export function calculateOrthogonalPath(
   obstacles: Rect[],
   bounds?: Bounds
 ): Point[] {
-  // 0. Round inputs to integers to avoid float precision issues
   const rStart = { x: Math.round(start.x), y: Math.round(start.y) };
   const rEnd = { x: Math.round(end.x), y: Math.round(end.y) };
   
@@ -81,8 +77,6 @@ export function calculateOrthogonalPath(
     maxY: Math.round(bounds.maxY)
   } : undefined;
 
-  // 1. Generate Grid Coordinates
-  // Collect all unique X and Y coordinates from start, end, and obstacle boundaries
   const xCoords = new Set<number>();
   const yCoords = new Set<number>();
 
@@ -105,8 +99,6 @@ export function calculateOrthogonalPath(
     yCoords.add(obs.bottom + PADDING);
   });
 
-  // Calculate and add gap centers (highways)
-  // Note: Centers might be .5, which is fine, but they are deterministic now.
   const gapCentersX = findVerticalGapCenters(rObstacles);
   gapCentersX.forEach(x => xCoords.add(x));
 
@@ -116,13 +108,11 @@ export function calculateOrthogonalPath(
   const sortedX = Array.from(xCoords).sort((a, b) => a - b);
   const sortedY = Array.from(yCoords).sort((a, b) => a - b);
 
-  // Map coordinates to grid indices for faster lookup
   const xToIndex = new Map<number, number>();
   const yToIndex = new Map<number, number>();
   sortedX.forEach((x, i) => xToIndex.set(x, i));
   sortedY.forEach((y, i) => yToIndex.set(y, i));
 
-  // Identify which indices are "Gap Centers"
   const isGapCenterX = new Set<number>();
   gapCentersX.forEach(x => {
       const idx = xToIndex.get(x);
@@ -138,7 +128,6 @@ export function calculateOrthogonalPath(
   const startNode = { xIdx: xToIndex.get(rStart.x)!, yIdx: yToIndex.get(rStart.y)! };
   const endNode = { xIdx: xToIndex.get(rEnd.x)!, yIdx: yToIndex.get(rEnd.y)! };
 
-  // 2. A* Search
   const openSet = new PriorityQueue<{ xIdx: number; yIdx: number; dir?: 'H' | 'V' }>();
   openSet.enqueue(startNode, 0);
 
@@ -148,7 +137,6 @@ export function calculateOrthogonalPath(
   const startKey = `${startNode.xIdx},${startNode.yIdx}`;
   gScore.set(startKey, 0);
 
-  // Directions: Right, Left, Down, Up
   const dx = [1, -1, 0, 0];
   const dy = [0, 0, 1, -1];
   const directionTypes: ('H' | 'V')[] = ['H', 'H', 'V', 'V'];
@@ -163,19 +151,17 @@ export function calculateOrthogonalPath(
     if (current.xIdx === endNode.xIdx && current.yIdx === endNode.yIdx) {
       found = true;
       finalNodeKey = currentKey;
-      break; // Path found
+      break;
     }
 
     const currentX = sortedX[current.xIdx];
     const currentY = sortedY[current.yIdx];
     const currentG = gScore.get(currentKey) ?? Infinity;
 
-    // Explore neighbors
     for (let i = 0; i < 4; i++) {
       const nextXIdx = current.xIdx + dx[i];
       const nextYIdx = current.yIdx + dy[i];
 
-      // Check grid bounds
       if (nextXIdx < 0 || nextXIdx >= sortedX.length || nextYIdx < 0 || nextYIdx >= sortedY.length) {
         continue;
       }
@@ -183,14 +169,12 @@ export function calculateOrthogonalPath(
       const nextX = sortedX[nextXIdx];
       const nextY = sortedY[nextYIdx];
 
-      // Check explicit bounds provided by caller
       if (rBounds) {
         if (nextX < rBounds.minX || nextX > rBounds.maxX || nextY < rBounds.minY || nextY > rBounds.maxY) {
            continue;
         }
       }
 
-      // Check collision with obstacles for the segment
       const segment = {
         start: { x: currentX, y: currentY },
         end: { x: nextX, y: nextY }
@@ -204,17 +188,13 @@ export function calculateOrthogonalPath(
       const newDir = directionTypes[i];
       const turnCost = (current.dir && current.dir !== newDir) ? TURN_PENALTY : 0;
       
-      // Calculate Cost
       let stepCost = moveDist;
 
-      // Apply penalty for lines NOT on a gap center
       if (newDir === 'V') {
-          // Moving vertically: X is constant. Check if X is a gap center.
           if (!isGapCenterX.has(current.xIdx)) {
               stepCost *= NON_CENTER_PENALTY_MULTIPLIER;
           }
       } else {
-          // Moving horizontally: Y is constant. Check if Y is a gap center.
           if (!isGapCenterY.has(current.yIdx)) {
               stepCost *= NON_CENTER_PENALTY_MULTIPLIER;
           }
@@ -224,7 +204,7 @@ export function calculateOrthogonalPath(
       const nextKey = `${nextXIdx},${nextYIdx}`;
 
       if (tentativeG < (gScore.get(nextKey) ?? Infinity)) {
-        cameFrom.set(nextKey, { ...current, dir: current.dir }); // Save parent
+        cameFrom.set(nextKey, { ...current, dir: current.dir });
         gScore.set(nextKey, tentativeG);
         
         const h = Math.abs(rEnd.x - nextX) + Math.abs(rEnd.y - nextY);
@@ -237,7 +217,6 @@ export function calculateOrthogonalPath(
     return [start, end];
   }
 
-  // 3. Reconstruct Path
   const path: Point[] = [];
   let curr: { xIdx: number; yIdx: number; dir?: 'H' | 'V' } | undefined = { xIdx: endNode.xIdx, yIdx: endNode.yIdx };
   
@@ -255,12 +234,10 @@ export function calculateOrthogonalPath(
     curr = parent;
   }
   
-  // 4. Simplify Path (remove collinear points)
   return simplifyPath(path);
 }
 
 function findVerticalGapCenters(obstacles: Rect[]): number[] {
-  // Project obstacles onto X-axis to find vertical gaps (columns)
   if (obstacles.length === 0) return [];
 
   const intervals = obstacles
@@ -272,7 +249,7 @@ function findVerticalGapCenters(obstacles: Rect[]): number[] {
 
   for (let i = 1; i < intervals.length; i++) {
     const next = intervals[i];
-    if (next.start < curr.end) { // Overlapping or adjacent
+    if (next.start < curr.end) {
       curr.end = Math.max(curr.end, next.end);
     } else {
       merged.push(curr);
@@ -282,8 +259,6 @@ function findVerticalGapCenters(obstacles: Rect[]): number[] {
   merged.push(curr);
 
   const centers: number[] = [];
-  // Find gaps between merged intervals
-  // We use a threshold to ignore small gaps (e.g. slight misalignments)
   const MIN_GAP_WIDTH = 5; 
 
   for (let i = 0; i < merged.length - 1; i++) {
@@ -300,7 +275,6 @@ function findVerticalGapCenters(obstacles: Rect[]): number[] {
 }
 
 function findHorizontalGapCenters(obstacles: Rect[]): number[] {
-  // Project obstacles onto Y-axis to find horizontal gaps (rows)
   if (obstacles.length === 0) return [];
 
   const intervals = obstacles
@@ -312,7 +286,7 @@ function findHorizontalGapCenters(obstacles: Rect[]): number[] {
 
   for (let i = 1; i < intervals.length; i++) {
     const next = intervals[i];
-    if (next.start < curr.end) { // Overlapping or adjacent
+    if (next.start < curr.end) {
       curr.end = Math.max(curr.end, next.end);
     } else {
       merged.push(curr);
@@ -322,7 +296,7 @@ function findHorizontalGapCenters(obstacles: Rect[]): number[] {
   merged.push(curr);
 
   const centers: number[] = [];
-  const MIN_GAP_WIDTH = 5; // Slightly smaller threshold for horizontal gaps
+  const MIN_GAP_WIDTH = 5;
 
   for (let i = 0; i < merged.length - 1; i++) {
     const gapStart = merged[i].end;
@@ -347,7 +321,6 @@ function simplifyPath(path: Point[]): Point[] {
     const curr = path[i];
     const next = path[i + 1];
 
-    // Check if points are collinear
     const isVertical = prev.x === curr.x && curr.x === next.x;
     const isHorizontal = prev.y === curr.y && curr.y === next.y;
 
@@ -361,17 +334,6 @@ function simplifyPath(path: Point[]): Point[] {
 }
 
 function segmentIntersectsObstacles(segment: { start: Point; end: Point }, obstacles: Rect[]): boolean {
-  // Check if the segment intersects any obstacle
-  // Note: We use a slightly smaller rectangle for intersection checks to allow 
-  // lines to graze the edges of the padding (which is what we want)
-  // But wait, the grid lines are AT PADDING distance.
-  // So a grid line runs exactly along the edge of the expanded obstacle.
-  // We want to allow this.
-  // So we check if the segment is STRICTLY INSIDE the obstacle.
-  
-  // Actually, standard A* on grid checks against the ORIGINAL obstacles.
-  // If the segment intersects the original obstacle, it's invalid.
-  
   for (const obs of obstacles) {
     if (lineIntersectsRect(segment, obs)) {
       return true;
@@ -384,30 +346,24 @@ function lineIntersectsRect(
   line: { start: Point; end: Point },
   rect: Rect
 ): boolean {
-  // We define "intersects" as entering the INTERIOR of the rectangle.
-  // Touching the edge is allowed.
-  
-  // 1. Check if both points are strictly inside (shouldn't happen with grid logic usually)
-  // 2. Check intersection with edges
   
   const { start, end } = line;
   
-  // Expand rect slightly negatively to check for *interior* intersection?
-  // Or just use standard geometry.
-  // If we are strictly vertical or horizontal:
+  if (Math.max(start.x, end.x) < rect.left || Math.min(start.x, end.x) > rect.right ||
+      Math.max(start.y, end.y) < rect.top || Math.min(start.y, end.y) > rect.bottom) {
+      return false;
+  }
   
-  if (start.x === end.x) { // Vertical line
+  if (start.x === end.x) {
     if (start.x > rect.left && start.x < rect.right) {
-       // X is inside. Check Y range overlap.
        const minY = Math.min(start.y, end.y);
        const maxY = Math.max(start.y, end.y);
        if (maxY > rect.top && minY < rect.bottom) {
          return true;
        }
     }
-  } else if (start.y === end.y) { // Horizontal line
+  } else if (start.y === end.y) {
     if (start.y > rect.top && start.y < rect.bottom) {
-        // Y is inside. Check X range overlap.
         const minX = Math.min(start.x, end.x);
         const maxX = Math.max(start.x, end.x);
         if (maxX > rect.left && minX < rect.right) {

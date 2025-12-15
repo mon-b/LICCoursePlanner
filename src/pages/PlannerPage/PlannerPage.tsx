@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useCoursePlanner } from '../../context/CoursePlannerContext';
@@ -9,78 +9,183 @@ import CourseCreationModal from '../../components/CourseCreationModal/CourseCrea
 import LanguageToggle from '../../components/LanguageToggle/LanguageToggle';
 import PaletteToggle from '../../components/PaletteToggle/PaletteToggle';
 import PrerequisiteLines from '../../components/PrerequisiteLines/PrerequisiteLines';
+import DragLayer from '../../components/DragLayer/DragLayer';
 import styles from './PlannerPage.module.css';
+
+interface DragState {
+  courseId: string | null;
+  x: number;
+  y: number;
+  offset: { x: number; y: number };
+}
+
+interface DropTarget {
+  containerId: string;
+  index: number;
+}
 
 export default function PlannerPage() {
   const { t } = useTranslation();
   const { state, dispatch, findCourseData } = useCoursePlanner();
-  const [draggedCourse, setDraggedCourse] = useState<string | null>(null);
+  
+  const [dragState, setDragState] = useState<DragState>({
+    courseId: null,
+    x: 0,
+    y: 0,
+    offset: { x: 0, y: 0 }
+  });
+  
+  const [activeDropTarget, setActiveDropTarget] = useState<DropTarget | null>(null);
+  
   const [showCourseModal, setShowCourseModal] = useState(false);
   const [hoveredCourseId, setHoveredCourseId] = useState<string | null>(null);
   const [prereqColors, setPrereqColors] = useState<Map<string, string>>(new Map());
 
-  const handleDragStart = (e: React.DragEvent, courseId: string) => {
-    setDraggedCourse(courseId);
-    e.dataTransfer.setData('text/plain', courseId);
-    e.dataTransfer.effectAllowed = 'move';
-  };
+  const dragStateRef = useRef(dragState);
+  const activeDropTargetRef = useRef(activeDropTarget);
+  
+  const dragStartRef = useRef<{ x: number, y: number, courseId: string | null, offset: { x: number, y: number } } | null>(null);
 
-  const handleDragEnd = (_e: React.DragEvent) => {
-    setDraggedCourse(null);
-  };
+  useEffect(() => {
+    dragStateRef.current = dragState;
+  }, [dragState]);
 
-  const handleDragOver = (e: React.DragEvent) => {
+  useEffect(() => {
+    activeDropTargetRef.current = activeDropTarget;
+  }, [activeDropTarget]);
+
+
+  const handleMouseDown = useCallback((e: React.MouseEvent, courseId: string) => {
     e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-  };
+    
+    const element = e.currentTarget as HTMLElement;
+    const rect = element.getBoundingClientRect();
+    const offsetX = e.clientX - rect.left;
+    const offsetY = e.clientY - rect.top;
 
-  const handleDrop = (e: React.DragEvent, containerId: string, toIndex?: number) => {
-    e.preventDefault();
+    
+    dragStartRef.current = {
+      x: e.clientX,
+      y: e.clientY,
+      courseId,
+      offset: { x: offsetX, y: offsetY }
+    };
 
-    const courseId = e.dataTransfer.getData('text/plain');
-    if (!courseId || !draggedCourse) return;
+    window.addEventListener('mousemove', handleWindowMouseMove);
+    window.addEventListener('mouseup', handleWindowMouseUp);
+  }, []);
 
-    const courseData = findCourseData(courseId);
-    if (!courseData) return;
-
-    // Find source container
-    let fromContainer = 'course-pool';
-    for (const semester of state.semesters) {
-      if (semester.courses.some(c => c.id === courseId)) {
-        fromContainer = `sem${semester.number}`;
-        break;
-      }
+  const handleWindowMouseMove = useCallback((e: MouseEvent) => {
+    const start = dragStartRef.current;
+    
+    
+    if (dragStateRef.current.courseId) {
+      setDragState(prev => ({
+        ...prev,
+        x: e.clientX - prev.offset.x,
+        y: e.clientY - prev.offset.y
+      }));
+      return;
     }
 
-    // Validate semester-specific constraints
-    if (containerId.startsWith('sem')) {
-      const semesterNumber = parseInt(containerId.replace('sem', ''));
+    
+    if (start && start.courseId) {
+      const dist = Math.sqrt(
+        Math.pow(e.clientX - start.x, 2) + Math.pow(e.clientY - start.y, 2)
+      );
 
-      if (!isParityValid(courseData, semesterNumber)) {
-        alert(t('parityError'));
-        return;
-      }
-
-      if (!validatePrerequisites(courseId, semesterNumber, state, findCourseData)) {
-        const prereqMessage = getPrerequisiteErrorMessage(courseData, t);
-        alert(prereqMessage);
-        return;
+      if (dist > 5) { 
+        
+        document.body.classList.add('globalGrabbing');
+        document.body.style.cursor = 'grabbing';
+        
+        setDragState({
+          courseId: start.courseId,
+          x: e.clientX - start.offset.x, 
+          y: e.clientY - start.offset.y,
+          offset: start.offset
+        });
       }
     }
+  }, []);
 
-    dispatch({
-      type: 'MOVE_COURSE',
-      payload: {
-        courseId,
-        fromContainer,
-        toContainer: containerId,
-        toIndex
+  const handleWindowMouseUp = useCallback((e: MouseEvent) => {
+    const currentDrag = dragStateRef.current;
+    const currentTarget = activeDropTargetRef.current;
+    const start = dragStartRef.current;
+
+    window.removeEventListener('mousemove', handleWindowMouseMove);
+    window.removeEventListener('mouseup', handleWindowMouseUp);
+
+    
+    if (currentDrag.courseId && currentTarget) {
+      const courseId = currentDrag.courseId;
+      const { containerId, index } = currentTarget;
+      
+      const courseData = findCourseData(courseId);
+      
+      if (courseData) {
+        let isValid = true;
+        
+        if (containerId.startsWith('sem')) {
+          const semesterNumber = parseInt(containerId.replace('sem', ''));
+
+          if (!isParityValid(courseData, semesterNumber)) {
+            alert(t('parityError'));
+            isValid = false;
+          } else if (!validatePrerequisites(courseId, semesterNumber, state, findCourseData)) {
+            const prereqMessage = getPrerequisiteErrorMessage(courseData, t);
+            alert(prereqMessage);
+            isValid = false;
+          }
+        }
+
+        if (isValid) {
+          let fromContainer = 'course-pool';
+          for (const semester of state.semesters) {
+            if (semester.courses.some(c => c.id === courseId)) {
+              fromContainer = `sem${semester.number}`;
+              break;
+            }
+          }
+
+          dispatch({
+            type: 'MOVE_COURSE',
+            payload: {
+              courseId,
+              fromContainer,
+              toContainer: containerId,
+              toIndex: index
+            }
+          });
+        }
       }
-    });
-  };
+    } else if (!currentDrag.courseId && start && start.courseId) {
+      
+      dispatch({ type: 'TOGGLE_COURSE_TAKEN', payload: { courseId: start.courseId } });
+    }
+
+    
+    setDragState({ courseId: null, x: 0, y: 0, offset: { x: 0, y: 0 } });
+    setActiveDropTarget(null);
+    dragStartRef.current = null;
+    
+    
+    document.body.classList.remove('globalGrabbing');
+    document.body.style.cursor = '';
+  }, [state, findCourseData, dispatch, t]);
+
+  const handleUpdateDropTarget = useCallback((containerId: string | null, index?: number) => {
+    if (containerId) {
+      setActiveDropTarget({ containerId, index: index ?? 0 });
+    } else {
+      setActiveDropTarget(null);
+    }
+  }, []);
+
 
   const handleCourseClick = (courseId: string) => {
-    dispatch({ type: 'TOGGLE_COURSE_TAKEN', payload: { courseId } });
+    
   };
 
   const handleAddSemester = () => {
@@ -126,7 +231,6 @@ export default function PlannerPage() {
         </div>
       </header>
 
-      {/* Course Pool Toggle Button */}
       <div className={styles.coursePoolToggleWrapper}>
         <button
           className={`${styles.showCoursesButton} ${state.coursePoolVisible ? styles.connected : ''}`}
@@ -137,20 +241,19 @@ export default function PlannerPage() {
         </button>
       </div>
 
-      {/* Animated Course Pool */}
       <div className={styles.coursePoolWrapper}>
         <CoursePool
           isVisible={state.coursePoolVisible}
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
           onCourseClick={handleCourseClick}
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
+          onMouseDown={handleMouseDown}
           onClose={() => dispatch({ type: 'TOGGLE_COURSE_POOL' })}
           onCreateCourse={() => setShowCourseModal(true)}
           onHoverStart={setHoveredCourseId}
           onHoverEnd={() => setHoveredCourseId(null)}
           prereqColors={prereqColors}
+          draggedCourseId={dragState.courseId}
+          activeDropTarget={activeDropTarget}
+          onUpdateDropTarget={handleUpdateDropTarget}
         />
       </div>
 
@@ -165,21 +268,20 @@ export default function PlannerPage() {
               >
                 <Semester
                   semester={semester}
-                  onDrop={handleDrop}
-                  onDragOver={handleDragOver}
                   onCourseClick={handleCourseClick}
-                  onDragStart={handleDragStart}
-                  onDragEnd={handleDragEnd}
+                  onMouseDown={handleMouseDown}
                   onHoverStart={setHoveredCourseId}
                   onHoverEnd={() => setHoveredCourseId(null)}
                   prereqColors={prereqColors}
+                  draggedCourseId={dragState.courseId}
+                  activeDropTarget={activeDropTarget}
+                  onUpdateDropTarget={handleUpdateDropTarget}
                 />
               </div>
             ))}
         </div>
       </div>
 
-      {/* Course Creation Modal */}
       <CourseCreationModal
         isOpen={showCourseModal}
         onClose={() => setShowCourseModal(false)}
@@ -212,10 +314,14 @@ export default function PlannerPage() {
         </div>
       </footer>
 
-      {/* Prerequisite Lines Overlay */}
       <PrerequisiteLines
-        hoveredCourseId={hoveredCourseId}
+        hoveredCourseId={dragState.courseId ? null : hoveredCourseId}
         onPrereqColorsChange={setPrereqColors}
+      />
+      
+      <DragLayer 
+        courseId={dragState.courseId} 
+        position={{ x: dragState.x, y: dragState.y }} 
       />
     </div>
   );

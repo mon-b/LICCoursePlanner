@@ -31,6 +31,18 @@
   position: relative;
 }
 
+.coursesContainerDragging::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: transparent;
+  z-index: 10;
+}
+
+
 .deleteSemesterBtn {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
@@ -69,8 +81,34 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
+.hiddenDragSource {
+  display: none;
+}
+
+.draggedSourceWrapper {
+  height: 0 !important;
+  margin: 0 !important;
+  overflow: hidden;
+  padding: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.collapsedCourseWrapper {
+  max-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  opacity: 0 !important;
+  overflow: hidden;
+  border: none !important;
+  transition: all 0.3s ease-out;
+}
+
 .courseWrapper {
-  transition: transform 0.2s ease, margin 0.2s ease;
+  max-height: 150px;
+  opacity: 1;
+  transition: all 0.4s ease, max-height 0s linear;
 }
 
 .insertIndicator {
@@ -79,20 +117,26 @@
   background: linear-gradient(90deg, #8b45ff 0%, #3b82f6 100%);
   border-radius: 2px;
   margin: 3px 0;
+  pointer-events: none;
 }
 
 .coursePlaceholder {
-  width: 110px; 
-  height: 85px; 
+  width: 110px;
+  height: 0;
+  margin: 0;
+  opacity: 0;
+  background: transparent;
+  border: none;
+  display: block;
+  overflow: hidden;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.2, 0, 0.2, 1);
+}
+
+.placeholderOpen {
+  height: 85px;
   margin: 7px 0;
-  border: 2px dashed rgba(139, 69, 255, 0.6);
-  border-radius: 8px; 
-  background: rgba(139, 69, 255, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0.8;
-  animation: placeholderPulse 1s ease-in-out infinite alternate;
+  opacity: 1;
 }
 
 .placeholderContent {
@@ -100,15 +144,6 @@
   color: rgba(255, 255, 255, 0.7);
   font-weight: 500;
   text-align: center;
-}
-
-@keyframes placeholderPulse {
-  from {
-    opacity: 0.6;
-  }
-  to {
-    opacity: 0.9;
-  }
 }
 
 .emptyMessage {

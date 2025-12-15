@@ -8,8 +8,7 @@ import clsx from 'clsx';
 interface CourseProps {
   courseState: CourseState;
   courseData?: CourseType;
-  onDragStart?: (e: React.DragEvent, courseId: string) => void;
-  onDragEnd?: (e: React.DragEvent) => void;
+  onMouseDown?: (e: React.MouseEvent, courseId: string) => void;
   onClick?: (courseId: string) => void;
   onHoverStart?: (courseId: string) => void;
   onHoverEnd?: () => void;
@@ -19,8 +18,7 @@ interface CourseProps {
 export default function Course({
   courseState,
   courseData,
-  onDragStart,
-  onDragEnd,
+  onMouseDown,
   onClick,
   onHoverStart,
   onHoverEnd,
@@ -63,9 +61,9 @@ export default function Course({
     }
   };
 
-  const handleDragStart = (e: React.DragEvent) => {
-    if (onDragStart) {
-      onDragStart(e, courseState.id);
+  const handleMouseDownHandler = (e: React.MouseEvent) => {
+    if (onMouseDown) {
+      onMouseDown(e, courseState.id);
     }
   };
   
@@ -105,15 +103,12 @@ export default function Course({
       style={{
         background: getBackgroundColor(),
         ...(highlightColor && {
-          // Replaced border with box-shadow to prevent text shift
-          boxShadow: `0 0 0 3px ${highlightColor}, 0 0 10px ${highlightColor}40`,
+          boxShadow: `0 0 0 2px ${highlightColor}, 0 0 20px 2px ${highlightColor}80`,
           zIndex: 1000
         })
       }}
-      draggable
+      onMouseDown={handleMouseDownHandler}
       onClick={handleClick}
-      onDragStart={handleDragStart}
-      onDragEnd={onDragEnd}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       data-course-id={courseState.id}

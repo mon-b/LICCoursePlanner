@@ -3,25 +3,24 @@
 }
 
 .line {
-  /* Animation for the flow effect */
   animation: flow 3s linear infinite;
-  /* Ensure smooth rendering */
   vector-effect: non-scaling-stroke;
 }
 
 .lineGlow {
-  /* Matches the flow animation but with pulse for the glow */
   animation: flow 3s linear infinite, glowPulse 2s ease-in-out infinite;
   vector-effect: non-scaling-stroke;
+  mix-blend-mode: screen;
 }
 
 .lineShadow {
-  opacity: 0.5;
+  opacity: 0.6;
+  filter: blur(1px);
 }
 
 @keyframes flow {
   to {
-    stroke-dashoffset: -18; /* Should match a multiple of the dasharray pattern (6+3)*2 = 18 */
+    stroke-dashoffset: -18;
   }
 }
 
@@ -38,11 +37,13 @@
 
 @keyframes glowPulse {
   0%, 100% {
-    opacity: 0.3;
-    stroke-width: 5;
+    opacity: 0.4;
+    stroke-width: 6;
+    filter: blur(4px);
   }
   50% {
-    opacity: 0.6;
-    stroke-width: 7;
+    opacity: 0.8;
+    stroke-width: 9;
+    filter: blur(6px);
   }
 }

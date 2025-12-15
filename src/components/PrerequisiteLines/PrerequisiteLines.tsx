@@ -15,16 +15,15 @@ interface LineData {
   color: string;
 }
 
-// Array of distinct colors for multiple prerequisites
 const PREREQ_COLORS = [
-  '#8b5cf6', // Purple
-  '#ec4899', // Pink
-  '#3b82f6', // Blue
-  '#10b981', // Green
-  '#f59e0b', // Amber
-  '#ef4444', // Red
-  '#14b8a6', // Teal
-  '#f97316', // Orange
+  '#8b5cf6',
+  '#ec4899',
+  '#3b82f6',
+  '#10b981',
+  '#f59e0b',
+  '#ef4444',
+  '#14b8a6',
+  '#f97316',
 ];
 
 export default function PrerequisiteLines({ hoveredCourseId, onPrereqColorsChange }: PrerequisiteLinesProps) {
@@ -56,7 +55,6 @@ export default function PrerequisiteLines({ hoveredCourseId, onPrereqColorsChang
       return;
     }
 
-    // Parse prerequisites
     const prereqList = parsePrerequisites(hoveredCourse.prereq);
 
     const updateLines = () => {
@@ -68,7 +66,6 @@ export default function PrerequisiteLines({ hoveredCourseId, onPrereqColorsChang
 
       const hoveredRect = hoveredElement.getBoundingClientRect();
 
-      // Check if position changed
       const lastRect = lastHoveredRectRef.current;
       const hasChanged = !lastRect ||
         Math.abs(lastRect.top - hoveredRect.top) > 0.5 ||
@@ -83,7 +80,6 @@ export default function PrerequisiteLines({ hoveredCourseId, onPrereqColorsChang
 
       lastHoveredRectRef.current = hoveredRect;
 
-      // Collect all course elements as obstacles
       const allCourseElements = document.querySelectorAll('[data-course-id]');
       const obstacles: Rect[] = [];
       let minY = Infinity;
@@ -102,18 +98,16 @@ export default function PrerequisiteLines({ hoveredCourseId, onPrereqColorsChang
           height: rect.height
         });
 
-        // Track bounds
         minY = Math.min(minY, rect.top);
         maxY = Math.max(maxY, rect.bottom);
         minX = Math.min(minX, rect.left);
         maxX = Math.max(maxX, rect.right);
       });
 
-      // Create bounds with some margin
       const bounds: Bounds = {
         minX: Math.max(0, minX - 50),
         maxX: Math.min(window.innerWidth, maxX + 50),
-        minY: minY + 20, // Add offset to prevent lines from going above the top courses
+        minY: minY + 20,
         maxY: Math.min(window.innerHeight, maxY + 50)
       };
 
@@ -124,29 +118,22 @@ export default function PrerequisiteLines({ hoveredCourseId, onPrereqColorsChang
         if (prereqElement) {
           const prereqRect = prereqElement.getBoundingClientRect();
 
-          // Determine which side to use based on relative positions
           const prereqIsLeft = prereqRect.left < hoveredRect.left;
 
-          // Small offset to ensure points are outside the course rectangles
           const edgeOffset = 5;
 
-          // Calculate start point (slightly outside the right or left edge of prerequisite course)
           let startX = prereqIsLeft ? prereqRect.right + edgeOffset : prereqRect.left - edgeOffset;
           let startY = prereqRect.top + prereqRect.height / 2;
 
-          // Calculate end point (slightly outside the left or right edge of hovered course)
           let endX = prereqIsLeft ? hoveredRect.left - edgeOffset : hoveredRect.right + edgeOffset;
           let endY = hoveredRect.top + hoveredRect.height / 2;
 
-          // Ensure points are within bounds (especially Y coordinate)
           startY = Math.max(bounds.minY, Math.min(bounds.maxY, startY));
           endY = Math.max(bounds.minY, Math.min(bounds.maxY, endY));
 
           const start: Point = { x: startX, y: startY };
           const end: Point = { x: endX, y: endY };
 
-          // Use all courses as obstacles EXCEPT the source and destination
-          // This prevents false collision detection at the start/end points
           const filteredObstacles = obstacles.filter((obs, index) => {
             const el = allCourseElements[index];
             const courseId = el.getAttribute('data-course-id');
@@ -155,11 +142,8 @@ export default function PrerequisiteLines({ hoveredCourseId, onPrereqColorsChang
 
           const path = calculateOrthogonalPath(start, end, filteredObstacles, bounds);
 
-          // Assign color based on index (cycle through colors if more prerequisites than colors)
           const color = PREREQ_COLORS[index % PREREQ_COLORS.length];
 
-          // Only add the line if it has a valid path with waypoints
-          // This prevents showing lines that pass through courses
           if (path.length >= 2) {
             newLines.push({
               path,
@@ -172,7 +156,6 @@ export default function PrerequisiteLines({ hoveredCourseId, onPrereqColorsChang
 
       setLines(newLines);
 
-      // Notify parent of prerequisite colors
       if (onPrereqColorsChange) {
         const colorMap = new Map<string, string>();
         newLines.forEach(line => {
@@ -211,14 +194,12 @@ export default function PrerequisiteLines({ hoveredCourseId, onPrereqColorsChang
       }}
     >
       {lines.map((line, index) => {
-        // Convert path points to SVG path string
         const pathString = line.path.map((point, i) =>
           `${i === 0 ? 'M' : 'L'} ${point.x} ${point.y}`
         ).join(' ');
 
         return (
           <g key={`${line.prereqId}-${index}`}>
-            {/* Shadow path */}
             <path
               d={pathString}
               stroke="rgba(0, 0, 0, 0.2)"
@@ -227,7 +208,6 @@ export default function PrerequisiteLines({ hoveredCourseId, onPrereqColorsChang
               fill="none"
               className={styles.lineShadow}
             />
-            {/* Main path with individual color */}
             <path
               d={pathString}
               stroke={line.color}
@@ -236,7 +216,6 @@ export default function PrerequisiteLines({ hoveredCourseId, onPrereqColorsChang
               fill="none"
               className={styles.line}
             />
-            {/* Glow effect with color */}
             <path
               d={pathString}
               stroke={line.color}
@@ -256,18 +235,14 @@ export default function PrerequisiteLines({ hoveredCourseId, onPrereqColorsChang
 }
 
 function parsePrerequisites(prereq: string): string[] {
-  // Parse prerequisite string like "MAT1610 y MAT1620" or "IIC1103" or "MAT1610 o MAT1620"
   const result: string[] = [];
 
-  // Split by "o" (or) to get alternatives
   const alternatives = prereq.split(' o ');
 
   alternatives.forEach(alt => {
-    // For each alternative, split by "y" (and)
     const andParts = alt.split(' y ');
     andParts.forEach(part => {
       const cleaned = part.replace(/[()]/g, '').trim();
-      // Remove (c) marker for corequisites
       const courseId = cleaned.replace('(c)', '').trim();
       if (courseId && !result.includes(courseId)) {
         result.push(courseId);
