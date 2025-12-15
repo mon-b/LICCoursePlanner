@@ -376,7 +376,6 @@
   filter: brightness(1.2);
 }
 
-/* Responsive Design */
 @media (max-width: 1200px) {
   .container {
     width: 95%;
