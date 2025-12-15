@@ -11,7 +11,6 @@
   flex-direction: column;
   justify-content: center;
   cursor: grab;
-  border: 1px solid rgba(255, 255, 255, 0.2);
   transition: all 0.2s ease;
   user-select: none;
   -webkit-user-select: none;
@@ -22,10 +21,8 @@
 }
 
 .course:hover {
-  transform: scale(1.05);
   z-index: 1000;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
-  filter: brightness(1.1);
 }
 
 .course:active {
@@ -46,7 +43,7 @@
 }
 
 .courseName {
-  font-weight: bold;
+  font-weight: 600;
   line-height: 1.1;
   font-size: 10px;
   margin-bottom: 4px;
@@ -73,55 +70,4 @@
 .taken {
   opacity: 0.65;
   position: relative;
-}
-
-.prereqTooltip {
-  position: absolute;
-  z-index: 9999;
-  pointer-events: none;
-  visibility: hidden;
-  opacity: 0;
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%);
-  color: #ffffff;
-  text-align: center;
-  width: 220px;
-  padding: 12px;
-  left: 50%;
-  bottom: 90%;
-  transform: translateX(-50%);
-  border-radius: 8px;
-  font-size: 11px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
-}
-
-.prereqTooltip::after {
-  content: '';
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border-width: 8px;
-  border-style: solid;
-  border-color: rgba(0, 0, 0, 0.95) transparent transparent transparent;
-}
-
-.course:hover .prereqTooltip {
-  visibility: visible;
-  opacity: 1;
-  transition-delay: 0.6s;
-  transform: translateX(-50%) translateY(-4px);
-}
-
-.course:active .prereqTooltip,
-.course.dragging .prereqTooltip {
-  visibility: hidden !important;
-  opacity: 0 !important;
-}
-
-.taken .prereqTooltip {
-  visibility: hidden;
-  opacity: 0;
 }

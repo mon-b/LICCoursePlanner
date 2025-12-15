@@ -1,99 +1,85 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SemesterState } from '../../types/course';
 import { useCoursePlanner } from '../../context/CoursePlannerContext';
 import Course from '../Course/Course';
 import styles from './Semester.module.css';
+import clsx from 'clsx';
 
 interface SemesterProps {
   semester: SemesterState;
-  onDrop: (e: React.DragEvent, semesterId: string, toIndex?: number) => void;
-  onDragOver: (e: React.DragEvent) => void;
   onCourseClick: (courseId: string) => void;
-  onDragStart: (e: React.DragEvent, courseId: string) => void;
-  onDragEnd: (e: React.DragEvent) => void;
+  onMouseDown: (e: React.MouseEvent, courseId: string) => void;
+  onHoverStart?: (courseId: string) => void;
+  onHoverEnd?: () => void;
+  prereqColors?: Map<string, string>;
+  draggedCourseId: string | null;
+  activeDropTarget: { containerId: string; index: number } | null;
+  onUpdateDropTarget: (containerId: string | null, index?: number) => void;
 }
 
-export default function Semester({ semester, onDrop, onDragOver, onCourseClick, onDragStart, onDragEnd }: SemesterProps) {
+export default function Semester({
+  semester,
+  onCourseClick,
+  onMouseDown,
+  onHoverStart,
+  onHoverEnd,
+  prereqColors,
+  draggedCourseId,
+  activeDropTarget,
+  onUpdateDropTarget
+}: SemesterProps) {
   const { t } = useTranslation();
   const { dispatch, findCourseData } = useCoursePlanner();
-  const [isDragOver, setIsDragOver] = useState(false);
-  const [insertIndex, setInsertIndex] = useState<number | null>(null);
-  const [draggedCourseId, setDraggedCourseId] = useState<string | null>(null);
 
-  React.useEffect(() => {
-    const handleGlobalDragStart = (e: DragEvent) => {
-      const courseId = e.dataTransfer?.getData('text/plain');
-      if (courseId) {
-        setDraggedCourseId(courseId);
-      }
-    };
-
-    const handleGlobalDragEnd = () => {
-      setDraggedCourseId(null);
-    };
-
-    document.addEventListener('dragstart', handleGlobalDragStart);
-    document.addEventListener('dragend', handleGlobalDragEnd);
-
-    return () => {
-      document.removeEventListener('dragstart', handleGlobalDragStart);
-      document.removeEventListener('dragend', handleGlobalDragEnd);
-    };
-  }, []);
-
-  const calculateInsertIndex = (e: React.DragEvent, containerElement: HTMLElement): number => {
+  const calculateInsertIndex = (e: React.MouseEvent, containerElement: HTMLElement): number => {
     const rect = containerElement.getBoundingClientRect();
     const y = e.clientY - rect.top;
     
-    const courseElements = containerElement.querySelectorAll('[data-course-element]');
+    const SLOT_HEIGHT = 99;
     
-    for (let i = 0; i < courseElements.length; i++) {
-      const courseRect = courseElements[i].getBoundingClientRect();
-      const courseMiddle = courseRect.top + courseRect.height / 2 - rect.top;
-      
-      if (y < courseMiddle) {
-        return i;
-      }
-    }
+    const isInternalDrag = semester.courses.some(c => c.id === draggedCourseId);
+    const maxIndex = semester.courses.length - (isInternalDrag ? 1 : 0);
     
-    return courseElements.length;
+    let index = Math.round(y / SLOT_HEIGHT);
+    return Math.max(0, Math.min(index, maxIndex));
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(true);
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!draggedCourseId) return;
     
     const containerElement = e.currentTarget as HTMLElement;
-    const newInsertIndex = calculateInsertIndex(e, containerElement);
-    setInsertIndex(newInsertIndex);
+    const index = calculateInsertIndex(e, containerElement);
     
-    onDragOver(e);
+    onUpdateDropTarget(`sem${semester.number}`, index);
   };
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
-    
-    const containerElement = e.currentTarget as HTMLElement;
-    const dropIndex = calculateInsertIndex(e, containerElement);
-    setInsertIndex(null);
-    
-    onDrop(e, `sem${semester.number}`, dropIndex);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX;
-    const y = e.clientY;
-    
-    if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
-      setIsDragOver(false);
-      setInsertIndex(null);
+  const handleMouseLeave = () => {
+    if (draggedCourseId) {
     }
   };
 
   const draggedCourseData = draggedCourseId ? findCourseData(draggedCourseId) : null;
+  
+  const isTarget = activeDropTarget?.containerId === `sem${semester.number}`;
+  const insertIndex = isTarget ? activeDropTarget.index : null;
+
+  const draggedCourseIndex = semester.courses.findIndex(c => c.id === draggedCourseId);
+  
+  let renderInsertIndex = insertIndex;
+  
+  if (insertIndex !== null && isTarget) {
+    if (draggedCourseIndex !== -1 && insertIndex >= draggedCourseIndex) {
+       renderInsertIndex = insertIndex + 1;
+    } else {
+       renderInsertIndex = insertIndex;
+    }
+  } else {
+    renderInsertIndex = null;
+  }
+
+  
+  const isDragOver = isTarget;
 
   return (
     <div className={styles.semester}>
@@ -114,62 +100,54 @@ export default function Semester({ semester, onDrop, onDragOver, onCourseClick, 
       </div>
 
       <div
-        className={`${styles.coursesContainer} ${isDragOver ? styles.dragOver : ''}`}
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
-        onDragLeave={handleDragLeave}
+        className={clsx(styles.coursesContainer, draggedCourseId && styles.coursesContainerDragging)}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
       >
-        {semester.courses.map((courseState, index) => (
-          <React.Fragment key={courseState.id}>
-            {isDragOver && insertIndex === index && (
-              <>
-                {draggedCourseData ? (
-                  <div className={styles.coursePlaceholder}>
-                    <div className={styles.placeholderContent}>
-                      {draggedCourseData.id}
-                    </div>
-                  </div>
-                ) : (
-                  <div className={styles.insertIndicator} />
-                )}
-              </>
-            )}
-            
-            <div data-course-element className={styles.courseWrapper}>
-              <Course
-                courseState={courseState}
-                onDragStart={onDragStart}
-                onDragEnd={onDragEnd}
-                onClick={onCourseClick}
-              />
-            </div>
-          </React.Fragment>
-        ))}
-        
-        {isDragOver && insertIndex === semester.courses.length && (
-          <>
-            {draggedCourseData ? (
-              <div className={styles.coursePlaceholder}>
-                <div className={styles.placeholderContent}>
-                  {draggedCourseData.id}
-                </div>
-              </div>
-            ) : (
-              <div className={styles.insertIndicator} />
-            )}
-          </>
-        )}
+        {semester.courses.map((courseState, index) => {
+          const isBeingDragged = courseState.id === draggedCourseId;
+          const showPlaceholder = isDragOver && renderInsertIndex === index;
 
-        {semester.courses.length === 0 && !isDragOver && (
+          return (
+            <React.Fragment key={courseState.id}>
+              <div 
+                className={clsx(styles.coursePlaceholder, showPlaceholder && styles.placeholderOpen)} 
+              />
+              
+              <div 
+                {...(!isBeingDragged ? { 'data-course-element': true } : {})}
+                className={clsx(styles.courseWrapper, isBeingDragged && styles.collapsedCourseWrapper)}
+              >
+                <Course
+                  courseState={courseState}
+                  onMouseDown={onMouseDown}
+                  onClick={onCourseClick}
+                  onHoverStart={onHoverStart}
+                  onHoverEnd={onHoverEnd}
+                  highlightColor={prereqColors?.get(courseState.id)}
+                />
+              </div>
+            </React.Fragment>
+          );
+        })}
+        
+        <div 
+          className={clsx(
+            styles.coursePlaceholder, 
+            (isDragOver && renderInsertIndex === semester.courses.length) && styles.placeholderOpen
+          )} 
+        />
+
+        {semester.courses.length === 0 && !draggedCourseId && (
           <div className={styles.emptyMessage}>
             {t('dropCoursesHere')}
           </div>
         )}
         
-        {semester.courses.length === 0 && isDragOver && (
-          <div className={styles.emptyDropIndicator}>
-            {t('dropCoursesHere')}
-          </div>
+        {semester.courses.length === 0 && draggedCourseId && !renderInsertIndex && (
+           <div className={styles.emptyMessage}>
+             {t('dropCoursesHere')}
+           </div>
         )}
       </div>
     </div>

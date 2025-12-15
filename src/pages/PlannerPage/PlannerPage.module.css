@@ -5,6 +5,8 @@
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   position: relative;
   overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .backgroundGradient {
@@ -202,6 +204,7 @@
   padding: 0.25rem;
   display: flex;
   justify-content: center;
+  flex: 1;
 }
 
 .semesterGrid {
@@ -211,11 +214,12 @@
   justify-content: center;
   margin: 0;
   padding: 0;
-  max-width: fit-content;
+  width: 100%;
+  max-width: 1400px;
 }
 
 .semesterCard {
-    display: flex;;
+  display: flex;
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(20px);
   border-radius: 6px;
@@ -223,7 +227,7 @@
   padding: 0.25rem;
   transition: all 0.3s ease;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   flex: 0 0 auto;
   width: 130px;
   min-height: 80px;
@@ -242,7 +246,6 @@
 }
 
 .semesterCard:hover {
-  transform: translateY(-4px);
   box-shadow: 0 15px 35px rgba(139, 69, 255, 0.2);
   border-color: rgba(139, 69, 255, 0.4);
 }
@@ -288,7 +291,11 @@
   border-top: 1px solid rgba(139, 69, 255, 0.2);
   padding: 1.5rem;
   text-align: center;
-  margin-top: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+  margin-top: auto;
 }
 
 .footerContent {
@@ -296,6 +303,23 @@
   margin: 0 auto;
   color: rgba(255, 255, 255, 0.7);
 }
+
+.footerLink {
+  color: #8b45ff;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.footerLink:hover {
+  transform: translateY(-2px);
+  text-decoration: none;
+  text-shadow: 0 0 15px rgba(139, 69, 255, 0.5);
+  filter: brightness(1.2);
+}
+
+
 
 @keyframes gradientShift {
   0%, 100% { 
@@ -318,7 +342,6 @@
   }
 }
 
-/* Responsive Design */
 @media (max-width: 1200px) {
   .semesterGrid {
     gap: 0.2rem;

@@ -1,19 +1,21 @@
 .languageToggle {
-  background-color: #25292c;
-  color: #ededed;
-  border: 1px solid #c2c2c2;
+  background: rgba(139, 69, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(139, 69, 255, 0.3);
   border-radius: 6px;
   padding: 6px 10px;
   cursor: pointer;
   font-size: 12px;
+  font-weight: 500;
   transition: all 0.3s ease;
   white-space: nowrap;
   flex-shrink: 0;
 }
 
 .languageToggle:hover {
-  background-color: #ffffff;
-  border: 1px solid #131313;
-  color: #131313;
+  background: rgba(139, 69, 255, 0.2);
+  border-color: rgba(139, 69, 255, 0.5);
+  color: white;
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 69, 255, 0.2);
 }

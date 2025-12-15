@@ -1,0 +1,49 @@
+.svgOverlay {
+  pointer-events: none;
+}
+
+.line {
+  animation: flow 3s linear infinite;
+  vector-effect: non-scaling-stroke;
+}
+
+.lineGlow {
+  animation: flow 3s linear infinite, glowPulse 2s ease-in-out infinite;
+  vector-effect: non-scaling-stroke;
+  mix-blend-mode: screen;
+}
+
+.lineShadow {
+  opacity: 0.6;
+  filter: blur(1px);
+}
+
+@keyframes flow {
+  to {
+    stroke-dashoffset: -18;
+  }
+}
+
+@keyframes linePulse {
+  0%, 100% {
+    opacity: 1;
+    stroke-width: 3;
+  }
+  50% {
+    opacity: 0.7;
+    stroke-width: 4;
+  }
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    opacity: 0.4;
+    stroke-width: 6;
+    filter: blur(4px);
+  }
+  50% {
+    opacity: 0.8;
+    stroke-width: 9;
+    filter: blur(6px);
+  }
+}
