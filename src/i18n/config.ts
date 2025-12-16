@@ -1,4 +1,4 @@
-import i18n from 'i18next';
+import i18n, { t } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 const resources = {
   en: {
@@ -60,9 +60,13 @@ const resources = {
           title: "Course Prerequisites",
           description: "Visualize the prerequisites for each course."
         },
-        classification: {
-          title: "Course Classification",
-          description: "Courses separated by area of interest."
+        edit: {
+          title: "Edit Available OPR and OPT",
+          description: "Customize the list of elective courses according to your own interests and plan."
+        },
+        create : {
+          title: "Create Custom Courses",
+          description: "Add your own custom courses to the planner."
         }
       },
       disclaimer: "The planner is still under development. Prerequisites or specific course details may be incorrect. Always verify official university information.",
@@ -146,9 +150,13 @@ const resources = {
           title: "Prerrequisitos de Ramos",
           description: "Visualiza los prerrequisitos de cada ramo."
         },
-        classification: {
-          title: "Clasificación de Ramos",
-          description: "Ramos separados por área de interés."
+        edit: {
+          title: "Edita OPR y OPT disponibles",
+          description: "Personaliza la lista de ramos optativos según tus propios intereses y plan."
+        },
+        create : {
+          title: "Crear Ramos Personalizados",
+          description: "Agrega tus propios ramos personalizados al planner."
         }
       },
       disclaimer: "El planner aún está en desarrollo. Los prerrequisitos o detalles de los ramos pueden ser incorrectos. Verifica siempre la información oficial de la universidad.",
