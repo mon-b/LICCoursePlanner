@@ -32,6 +32,11 @@ export function validatePrerequisites(
   
   for (const orGroup of prereqGroups) {
     const orGroupSatisfied = orGroup.some(prereq => {
+      if (prereq.type === 'credits') {
+        const totalCredits = calculateCompletedCredits(targetSemesterNumber, state, findCourseData);
+        return totalCredits >= prereq.minCredits;
+      }
+
       if (prereq.isCoreq) {
         return isInPreviousSemester(prereq.id, targetSemesterNumber, state, findCourseData) ||
                isInSameSemester(prereq.id, targetSemesterNumber, state, findCourseData);
@@ -49,10 +54,9 @@ export function validatePrerequisites(
   return true;
 }
 
-interface PrerequisiteItem {
-  id: string;
-  isCoreq: boolean;
-}
+type PrerequisiteItem = 
+  | { type: 'course'; id: string; isCoreq: boolean }
+  | { type: 'credits'; minCredits: number };
 
 function parsePrerequisites(prereqString: string): PrerequisiteItem[][] {
   if (!prereqString) return [];
@@ -63,20 +67,31 @@ function parsePrerequisites(prereqString: string): PrerequisiteItem[][] {
     const orGroup = group.split(' o ');
     return orGroup.map(course => {
       const trimmedCourse = course.trim();
+
+      const creditsMatch = trimmedCourse.match(/créditos\s*>=\s*(\d+)/i);
+      if (creditsMatch) {
+        return {
+          type: 'credits',
+          minCredits: parseInt(creditsMatch[1], 10)
+        } as PrerequisiteItem;
+      }
+
       const coreqMatch = trimmedCourse.match(/([A-Z]+\d+)\(c\)/);
       if (coreqMatch) {
         return {
+          type: 'course',
           id: coreqMatch[1],
           isCoreq: true
-        };
+        } as PrerequisiteItem;
       }
       
       const normalMatch = trimmedCourse.match(/([A-Z]+\d+)/);
       if (normalMatch) {
         return {
+          type: 'course',
           id: normalMatch[1],
           isCoreq: false
-        };
+        } as PrerequisiteItem;
       }
       
       return null;
@@ -84,6 +99,25 @@ function parsePrerequisites(prereqString: string): PrerequisiteItem[][] {
   });
   
   return groups;
+}
+
+function calculateCompletedCredits(
+  targetSemesterNumber: number,
+  state: AppState,
+  findCourseData: (id: string) => Course | undefined
+): number {
+  let total = 0;
+  for (const semester of state.semesters) {
+    if (semester.number < targetSemesterNumber) {
+      for (const courseState of semester.courses) {
+        const course = findCourseData(courseState.id);
+        if (course && course.cred) {
+          total += parseInt(course.cred, 10) || 0;
+        }
+      }
+    }
+  }
+  return total;
 }
 
 function isInPreviousSemester(targetCourseId: string, targetSemesterNumber: number, state: AppState, findCourseData: (id: string) => Course | undefined): boolean {
