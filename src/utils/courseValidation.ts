@@ -33,10 +33,10 @@ export function validatePrerequisites(
   for (const orGroup of prereqGroups) {
     const orGroupSatisfied = orGroup.some(prereq => {
       if (prereq.isCoreq) {
-        return isInPreviousSemester(prereq.id, targetSemesterNumber, state) ||
-               isInSameSemester(prereq.id, targetSemesterNumber, state);
+        return isInPreviousSemester(prereq.id, targetSemesterNumber, state, findCourseData) ||
+               isInSameSemester(prereq.id, targetSemesterNumber, state, findCourseData);
       } else {
-        return isInPreviousSemester(prereq.id, targetSemesterNumber, state) &&
+        return isInPreviousSemester(prereq.id, targetSemesterNumber, state, findCourseData) &&
                validatePrerequisites(prereq.id, targetSemesterNumber, state, findCourseData, checkedCourses);
       }
     });
@@ -62,7 +62,8 @@ function parsePrerequisites(prereqString: string): PrerequisiteItem[][] {
   const groups = andGroups.map(group => {
     const orGroup = group.split(' o ');
     return orGroup.map(course => {
-      const coreqMatch = course.match(/([A-Z]+\d+)\(c\)/);
+      const trimmedCourse = course.trim();
+      const coreqMatch = trimmedCourse.match(/([A-Z]+\d+)\(c\)/);
       if (coreqMatch) {
         return {
           id: coreqMatch[1],
@@ -70,7 +71,7 @@ function parsePrerequisites(prereqString: string): PrerequisiteItem[][] {
         };
       }
       
-      const normalMatch = course.match(/([A-Z]+\d+)/);
+      const normalMatch = trimmedCourse.match(/([A-Z]+\d+)/);
       if (normalMatch) {
         return {
           id: normalMatch[1],
@@ -85,20 +86,31 @@ function parsePrerequisites(prereqString: string): PrerequisiteItem[][] {
   return groups;
 }
 
-function isInPreviousSemester(courseId: string, targetSemesterNumber: number, state: AppState): boolean {
+function isInPreviousSemester(targetCourseId: string, targetSemesterNumber: number, state: AppState, findCourseData: (id: string) => Course | undefined): boolean {
   for (const semester of state.semesters) {
     if (semester.number < targetSemesterNumber) {
-      if (semester.courses.some(c => c.id === courseId)) {
-        return true;
+      for (const courseState of semester.courses) {
+        const courseData = findCourseData(courseState.id);
+        const resolvedId = courseData ? courseData.id : courseState.id;
+        if (resolvedId === targetCourseId) {
+          return true;
+        }
       }
     }
   }
   return false;
 }
 
-function isInSameSemester(courseId: string, targetSemesterNumber: number, state: AppState): boolean {
+function isInSameSemester(targetCourseId: string, targetSemesterNumber: number, state: AppState, findCourseData: (id: string) => Course | undefined): boolean {
   const targetSemester = state.semesters.find(s => s.number === targetSemesterNumber);
   if (!targetSemester) return false;
   
-  return targetSemester.courses.some(c => c.id === courseId);
+  for (const courseState of targetSemester.courses) {
+    const courseData = findCourseData(courseState.id);
+    const resolvedId = courseData ? courseData.id : courseState.id;
+    if (resolvedId === targetCourseId) {
+      return true;
+    }
+  }
+  return false;
 }

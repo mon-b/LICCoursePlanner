@@ -19,7 +19,7 @@ const PALETTES: Record<string, PaletteConfig> = {
       'opt-mat': '#e879f9',
       optlet: '#f87171',
       econ: '#ec4899',
-      'opt-ast': '#1e293b',
+      'opt-ast': '#818cf8',
       optbio: '#34d399',
       optcom: '#fbbf24',
     }
@@ -63,6 +63,7 @@ type CoursePlannerAction =
   | { type: 'RESET_PLANNER' }
   | { type: 'TOGGLE_COURSE_POOL' }
   | { type: 'CREATE_CUSTOM_COURSE'; payload: Course }
+  | { type: 'UPDATE_COURSE'; payload: { originalId: string; course: Course } }
   | { type: 'LOAD_STATE'; payload: AppState }
   | { type: 'SET_PALETTE'; payload: { paletteId: string } };
 
@@ -74,6 +75,7 @@ const initialState: AppState = {
   semesters: [],
   coursePool: [],
   customCourses: [],
+  modifiedCourses: {},
   semesterCount: 8,
   coursePoolVisible: false,
   currentPalette: 'soft-pastel'
@@ -198,6 +200,17 @@ function coursePlannerReducer(state: AppState, action: CoursePlannerAction): App
         ]
       };
     }
+
+    case 'UPDATE_COURSE': {
+      const { originalId, course } = action.payload;
+      return {
+        ...state,
+        modifiedCourses: {
+          ...state.modifiedCourses,
+          [originalId]: course
+        }
+      };
+    }
     
     case 'LOAD_STATE': {
       return action.payload;
@@ -244,6 +257,7 @@ function initializeDefaultState(): AppState {
     semesters,
     coursePool,
     customCourses: [],
+    modifiedCourses: {},
     semesterCount: 8,
     coursePoolVisible: false,
     currentPalette: 'soft-pastel'
@@ -268,6 +282,9 @@ function loadStateFromStorage(): AppState | null {
     ) {
       if (!parsedState.currentPalette) {
         parsedState.currentPalette = 'soft-pastel';
+      }
+      if (!parsedState.modifiedCourses) {
+        parsedState.modifiedCourses = {};
       }
       return parsedState;
     }
@@ -313,8 +330,11 @@ export function CoursePlannerProvider({ children }: { children: ReactNode }) {
   }, [state.customCourses]);
   
   const findCourseData = useCallback((courseId: string): Course | undefined => {
+    if (state.modifiedCourses[courseId]) {
+      return state.modifiedCourses[courseId];
+    }
     return allCourses.find(course => course.id === courseId);
-  }, [allCourses]);
+  }, [allCourses, state.modifiedCourses]);
 
   const getCurrentPalette = useCallback((): PaletteConfig => {
     return PALETTES[state.currentPalette] || PALETTES['soft-pastel'];

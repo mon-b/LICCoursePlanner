@@ -12,6 +12,7 @@ interface CourseProps {
   onClick?: (courseId: string) => void;
   onHoverStart?: (courseId: string) => void;
   onHoverEnd?: () => void;
+  onEdit?: (courseId: string) => void;
   highlightColor?: string;
 }
 
@@ -22,26 +23,64 @@ export default function Course({
   onClick,
   onHoverStart,
   onHoverEnd,
+  onEdit,
   highlightColor
 }: CourseProps) {
   const { t, i18n } = useTranslation();
   const { findCourseData, getCurrentPalette } = useCoursePlanner();
   const courseRef = React.useRef<HTMLDivElement>(null);
+  const hoverTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [showEditIcon, setShowEditIcon] = React.useState(false);
 
   const course = courseData || findCourseData(courseState.id);
   const currentPalette = getCurrentPalette();
 
   const handleMouseEnter = () => {
-    if (onHoverStart && course?.prereq) {
-      onHoverStart(courseState.id);
-    }
+    hoverTimeoutRef.current = setTimeout(() => {
+      if (onHoverStart && course?.prereq) {
+        onHoverStart(courseState.id);
+      }
+      
+      const electiveTypes = [
+        'opt', 'opt-cien', 'optcomp', 'opt-mat', 'optlet', 'econ', 'optcom', 'opt-ast', 'optbio'
+      ];
+
+      if (
+        (course?.type === 'ofg' && course.id !== 'FIL2001') ||
+        (course?.type && electiveTypes.includes(course.type)) ||
+        course?.id === 'OPTC1'
+      ) {
+        setShowEditIcon(true);
+      }
+    }, 200);
   };
 
   const handleMouseLeave = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+    setShowEditIcon(false);
     if (onHoverEnd) {
       onHoverEnd();
     }
   };
+  
+  const handleEditClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (onEdit) {
+      onEdit(courseState.id);
+    }
+  };
+  
+  React.useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) {
+        clearTimeout(hoverTimeoutRef.current);
+      }
+    };
+  }, []);
   
   if (!course) {
     return null;
@@ -56,6 +95,7 @@ export default function Course({
   
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
+    // If edit button was clicked, this handler won't be reached due to stopPropagation in handleEditClick.
     if (onClick) {
       onClick(courseState.id);
     }
@@ -89,7 +129,7 @@ export default function Course({
   };
 
   const getBackgroundColor = (): string => {
-    const typeKey = getTypeClassName(courseState.type) as keyof typeof currentPalette.colors;
+    const typeKey = getTypeClassName(course.type) as keyof typeof currentPalette.colors;
     return currentPalette.colors[typeKey] || currentPalette.colors.opt;
   };
   
@@ -112,7 +152,18 @@ export default function Course({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       data-course-id={courseState.id}
+      data-course-code={course.id}
     >
+      {showEditIcon && onEdit && (
+        <button 
+          className={styles.editButton} 
+          onClick={handleEditClick} 
+          onMouseDown={(e) => e.stopPropagation()}
+          title={t('editCourse')}
+        >
+          ✎
+        </button>
+      )}
       <div className={styles.courseContent}>
         <div className={styles.courseName}>
           {getCourseName()}

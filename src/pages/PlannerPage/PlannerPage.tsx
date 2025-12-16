@@ -5,6 +5,8 @@ import { useCoursePlanner } from '../../context/CoursePlannerContext';
 import { validatePrerequisites, isParityValid } from '../../utils/courseValidation';
 import Semester from '../../components/Semester/Semester';
 import CoursePool from '../../components/CoursePool/CoursePool';
+import CourseEditor from '../../components/CourseEditor/CourseEditor';
+import CourseSelector from '../../components/CourseSelector/CourseSelector';
 import CourseCreationModal from '../../components/CourseCreationModal/CourseCreationModal';
 import LanguageToggle from '../../components/LanguageToggle/LanguageToggle';
 import PaletteToggle from '../../components/PaletteToggle/PaletteToggle';
@@ -39,6 +41,8 @@ export default function PlannerPage() {
   
   const [showCourseModal, setShowCourseModal] = useState(false);
   const [hoveredCourseId, setHoveredCourseId] = useState<string | null>(null);
+  const [editingCourseId, setEditingCourseId] = useState<string | null>(null);
+  const [selectingCourseId, setSelectingCourseId] = useState<string | null>(null);
   const [prereqColors, setPrereqColors] = useState<Map<string, string>>(new Map());
 
   const dragStateRef = useRef(dragState);
@@ -188,6 +192,34 @@ export default function PlannerPage() {
     
   };
 
+  const handleCourseEdit = (courseId: string) => {
+    const course = findCourseData(courseId);
+    
+    if (state.coursePoolVisible) {
+        dispatch({ type: 'TOGGLE_COURSE_POOL' });
+    }
+
+    const electiveTypes = [
+        'opt', 'opt-cien', 'optcomp', 'opt-mat', 'optlet', 'econ', 'optcom', 'opt-ast', 'optbio'
+    ];
+
+    if (course && (electiveTypes.includes(course.type) || courseId === 'OPTC1')) {
+        if (selectingCourseId === courseId) {
+            setSelectingCourseId(null);
+        } else {
+            setSelectingCourseId(courseId);
+            setEditingCourseId(null);
+        }
+    } else if (course && course.type === 'ofg' && course.id !== 'FIL2001') {
+        if (editingCourseId === courseId) {
+            setEditingCourseId(null);
+        } else {
+            setEditingCourseId(courseId);
+            setSelectingCourseId(null);
+        }
+    }
+  };
+
   const handleAddSemester = () => {
     if (window.confirm(t('confirmAddSemester'))) {
       dispatch({ type: 'ADD_SEMESTER' });
@@ -199,6 +231,8 @@ export default function PlannerPage() {
       dispatch({ type: 'RESET_PLANNER' });
     }
   };
+
+  const sidePanelOpen = state.coursePoolVisible || !!editingCourseId || !!selectingCourseId;
 
   return (
     <div className={styles.container}>
@@ -231,54 +265,139 @@ export default function PlannerPage() {
         </div>
       </header>
 
-      <div className={styles.coursePoolToggleWrapper}>
-        <button
-          className={`${styles.showCoursesButton} ${state.coursePoolVisible ? styles.connected : ''}`}
-          onClick={() => dispatch({ type: 'TOGGLE_COURSE_POOL' })}
+      <div className={styles.mainLayout}>
+        <div className={styles.contentContainer}>
+          <div className={styles.semesterArea}>
+            <div className={styles.semesterGrid}>
+              {state.semesters
+                .sort((a, b) => a.number - b.number)
+                .map(semester => (
+                  <div
+                    key={semester.number}
+                    className={styles.semesterCard}
+                  >
+                    <Semester
+                      semester={semester}
+                      onCourseClick={handleCourseClick}
+                      onMouseDown={handleMouseDown}
+                      onHoverStart={setHoveredCourseId}
+                      onHoverEnd={() => setHoveredCourseId(null)}
+                      onEdit={handleCourseEdit}
+                      prereqColors={prereqColors}
+                      draggedCourseId={dragState.courseId}
+                      activeDropTarget={activeDropTarget}
+                      onUpdateDropTarget={handleUpdateDropTarget}
+                    />
+                  </div>
+                ))}
+            </div>
+          </div>
+        </div>
+
+        <div 
+          className={styles.toggleHandle}
+          onClick={() => {
+            if (editingCourseId) setEditingCourseId(null);
+            else if (selectingCourseId) setSelectingCourseId(null);
+            else dispatch({ type: 'TOGGLE_COURSE_POOL' });
+          }}
+          title={
+            editingCourseId || selectingCourseId
+              ? t('closeEditor')
+              : (state.coursePoolVisible ? t('hideCoursePool') : t('showCoursePool'))
+          }
         >
-          <span className={styles.buttonIcon}>📚</span>
-          {state.coursePoolVisible ? t('hideCoursePool') : t('showCoursePool')}
-        </button>
-      </div>
+          <span className={styles.toggleArrow}>
+            {sidePanelOpen ? '▶' : '◀'}
+          </span>
+        </div>
 
-      <div className={styles.coursePoolWrapper}>
-        <CoursePool
-          isVisible={state.coursePoolVisible}
-          onCourseClick={handleCourseClick}
-          onMouseDown={handleMouseDown}
-          onClose={() => dispatch({ type: 'TOGGLE_COURSE_POOL' })}
-          onCreateCourse={() => setShowCourseModal(true)}
-          onHoverStart={setHoveredCourseId}
-          onHoverEnd={() => setHoveredCourseId(null)}
-          prereqColors={prereqColors}
-          draggedCourseId={dragState.courseId}
-          activeDropTarget={activeDropTarget}
-          onUpdateDropTarget={handleUpdateDropTarget}
-        />
-      </div>
+        <div className={`${styles.sidePanel} ${sidePanelOpen ? styles.open : ''}`}>
+          {editingCourseId ? (
+            <CourseEditor
+              course={findCourseData(editingCourseId) || null}
+              isOpen={!!editingCourseId}
+              onClose={() => setEditingCourseId(null)}
+              onSave={(originalId, updatedCourse) => {
+                dispatch({ 
+                  type: 'UPDATE_COURSE', 
+                  payload: { originalId, course: updatedCourse } 
+                });
+                setEditingCourseId(null);
+              }}
+            />
+          ) : selectingCourseId ? (
+            <CourseSelector
+              isOpen={!!selectingCourseId}
+              onClose={() => setSelectingCourseId(null)}
+              filterType={
+                selectingCourseId === 'OPTC1' 
+                  ? 'opt-cien' 
+                  : ['optcomp', 'optlet', 'econ', 'optcom', 'opt-ast', 'optbio', 'opt-mat']
+              }
+              enableCategories={selectingCourseId !== 'OPTC1'}
+              onSelect={(course) => {
+                let semesterNumber = 0;
+                for (const sem of state.semesters) {
+                  if (sem.courses.some(c => c.id === selectingCourseId)) {
+                    semesterNumber = sem.number;
+                    break;
+                  }
+                }
 
-      <div className={styles.semesterArea}>
-        <div className={styles.semesterGrid}>
-          {state.semesters
-            .sort((a, b) => a.number - b.number)
-            .map(semester => (
-              <div
-                key={semester.number}
-                className={styles.semesterCard}
-              >
-                <Semester
-                  semester={semester}
-                  onCourseClick={handleCourseClick}
-                  onMouseDown={handleMouseDown}
-                  onHoverStart={setHoveredCourseId}
-                  onHoverEnd={() => setHoveredCourseId(null)}
-                  prereqColors={prereqColors}
-                  draggedCourseId={dragState.courseId}
-                  activeDropTarget={activeDropTarget}
-                  onUpdateDropTarget={handleUpdateDropTarget}
-                />
-              </div>
-            ))}
+                if (semesterNumber > 0) {
+                   if (!validatePrerequisites(course.id, semesterNumber, state, findCourseData)) {
+                      const msg = getPrerequisiteErrorMessage(course, t);
+                      alert(msg);
+                      return;
+                   }
+                }
+
+                if (course.type === 'optcomp') {
+                  let optCompCount = 0;
+                  state.semesters.forEach(sem => {
+                    sem.courses.forEach(c => {
+                      const courseData = findCourseData(c.id);
+                      if (courseData?.type === 'optcomp') {
+                        optCompCount++;
+                      }
+                    });
+                  });
+                  
+                  const currentSlotCourse = selectingCourseId ? findCourseData(selectingCourseId) : null;
+                  const isReplacingOptComp = currentSlotCourse?.type === 'optcomp';
+                  
+                  if (!isReplacingOptComp && optCompCount >= 2) {
+                    alert("Como máximo solamente se pueden tener 2 cursos OPT de computación");
+                    return;
+                  }
+                }
+
+                dispatch({
+                    type: 'UPDATE_COURSE',
+                    payload: {
+                        originalId: selectingCourseId,
+                        course: { ...course, id: course.id }
+                    }
+                });
+                setSelectingCourseId(null);
+              }}
+            />
+          ) : (
+            <CoursePool
+              isVisible={state.coursePoolVisible}
+              onCourseClick={handleCourseClick}
+              onMouseDown={handleMouseDown}
+              onClose={() => dispatch({ type: 'TOGGLE_COURSE_POOL' })}
+              onCreateCourse={() => setShowCourseModal(true)}
+              onHoverStart={setHoveredCourseId}
+              onHoverEnd={() => setHoveredCourseId(null)}
+              prereqColors={prereqColors}
+              draggedCourseId={dragState.courseId}
+              activeDropTarget={activeDropTarget}
+              onUpdateDropTarget={handleUpdateDropTarget}
+            />
+          )}
         </div>
       </div>
 
@@ -315,7 +434,7 @@ export default function PlannerPage() {
       </footer>
 
       <PrerequisiteLines
-        hoveredCourseId={dragState.courseId ? null : hoveredCourseId}
+        hoveredCourseId={hoveredCourseId}
         onPrereqColorsChange={setPrereqColors}
       />
       

@@ -70,6 +70,7 @@ export interface AppState {
   semesters: SemesterState[];
   coursePool: CourseState[];
   customCourses: Course[];
+  modifiedCourses: Record<string, Course>;
   semesterCount: number;
   coursePoolVisible: boolean;
   currentPalette: string;

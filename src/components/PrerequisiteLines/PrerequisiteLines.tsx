@@ -57,8 +57,12 @@ export default function PrerequisiteLines({ hoveredCourseId, onPrereqColorsChang
 
     const prereqList = parsePrerequisites(hoveredCourse.prereq);
 
+    const findElement = (id: string) => 
+      document.querySelector(`[data-course-id="${id}"]`) || 
+      document.querySelector(`[data-course-code="${id}"]`);
+
     const updateLines = () => {
-      const hoveredElement = document.querySelector(`[data-course-id="${hoveredCourseId}"]`);
+      const hoveredElement = findElement(hoveredCourseId);
       if (!hoveredElement) {
         setLines([]);
         return;
@@ -114,8 +118,13 @@ export default function PrerequisiteLines({ hoveredCourseId, onPrereqColorsChang
       const newLines: LineData[] = [];
 
       prereqList.forEach((prereqId, index) => {
-        const prereqElement = document.querySelector(`[data-course-id="${prereqId}"]`);
+        const prereqElement = findElement(prereqId);
+        
         if (prereqElement) {
+          if (prereqElement.closest('[data-region="course-pool"]')) {
+            return;
+          }
+
           const prereqRect = prereqElement.getBoundingClientRect();
 
           const prereqIsLeft = prereqRect.left < hoveredRect.left;
@@ -137,7 +146,9 @@ export default function PrerequisiteLines({ hoveredCourseId, onPrereqColorsChang
           const filteredObstacles = obstacles.filter((obs, index) => {
             const el = allCourseElements[index];
             const courseId = el.getAttribute('data-course-id');
-            return courseId !== prereqId && courseId !== hoveredCourseId;
+            const courseCode = el.getAttribute('data-course-code');
+            return (courseId !== prereqId && courseCode !== prereqId) && 
+                   (courseId !== hoveredCourseId && courseCode !== hoveredCourseId);
           });
 
           const path = calculateOrthogonalPath(start, end, filteredObstacles, bounds);
