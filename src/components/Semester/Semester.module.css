@@ -130,6 +130,10 @@
   display: block;
   overflow: hidden;
   pointer-events: none;
+  transition: none;
+}
+
+.coursesContainerDragging .coursePlaceholder {
   transition: all 0.3s cubic-bezier(0.2, 0, 0.2, 1);
 }
 
