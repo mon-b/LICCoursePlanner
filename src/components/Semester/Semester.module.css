@@ -170,3 +170,21 @@
   color: rgba(255, 255, 255, 0.8);
   background: rgba(139, 69, 255, 0.1);
 }
+
+.semesterFooter {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 8px;
+  margin-top: auto;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.creditsValue {
+  color: #a78bfa;
+  font-weight: 600;
+  margin-right: 3px;
+}

@@ -1,16 +1,16 @@
 .container {
-  min-height: 100vh;
+  height: 100vh;
   background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
   color: white;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   position: relative;
-  overflow-x: hidden;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
 .backgroundGradient {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -26,7 +26,7 @@
 }
 
 .backgroundOrbs {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -71,17 +71,15 @@
 }
 
 .header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  flex-shrink: 0;
   width: 100%;
   z-index: 1000;
   backdrop-filter: blur(20px);
   background: rgba(15, 15, 35, 0.9);
   border-bottom: 1px solid rgba(139, 69, 255, 0.2);
-  padding: 20px;
+  padding: 10px 20px;
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
 }
 
 .headerContent {
@@ -94,7 +92,7 @@
 }
 
 .title {
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 700;
   background: linear-gradient(135deg, #8b45ff 0%, #3b82f6 100%);
   -webkit-background-clip: text;
@@ -148,74 +146,94 @@
   font-size: 14px;
 }
 
-.coursePoolToggleWrapper {
-  max-width: 100%;
-  padding: 0 0.25rem;
-  margin-top: 120px;
+.mainLayout {
   display: flex;
-  justify-content: center;
+  flex: 1;
+  width: 100%;
+  padding-top: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  height: 100%;
 }
 
-.coursePoolWrapper {
-  max-width: 100%;
-  margin: 0;
+.contentContainer {
+  flex: 1;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  min-width: 0;
+  transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  overflow: hidden;
+  padding-top: 20px; /* Add space above planner */
 }
 
-.showCoursesButton {
+.sidePanel {
+  width: 0;
+  transition: width 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  flex-shrink: 0;
+  height: 100%;
+  position: relative;
+  top: 0;
+}
+
+.sidePanel.open {
+  width: 420px;
+}
+
+.toggleHandle {
+  width: 18px;
   background: rgba(139, 69, 255, 0.15);
-  border: 2px dashed rgba(139, 69, 255, 0.4);
-  color: rgba(255, 255, 255, 0.8);
-  padding: 12px 20px;
-  border-radius: 12px;
+  border-left: 1px solid rgba(139, 69, 255, 0.3);
+  backdrop-filter: blur(10px);
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  width: 90%;
-  max-width: 1200px;
-  position: relative;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+  height: 100%;
+  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  height: calc(100% - 20px);
 }
 
-.showCoursesButton.connected {
-  border-radius: 12px 12px 0 0;
+.toggleHandle:hover {
+  background: rgba(139, 69, 255, 0.3);
+  box-shadow: -2px 0 10px rgba(139, 69, 255, 0.2);
 }
 
-.showCoursesButton:hover {
-  background: rgba(139, 69, 255, 0.25);
-  border-color: rgba(139, 69, 255, 0.6);
+.toggleArrow {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 10px;
+  transition: transform 0.3s ease;
+}
+
+.toggleHandle:hover .toggleArrow {
   color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(139, 69, 255, 0.2);
-}
-
-.buttonIcon {
-  font-size: 16px;
+  transform: scale(1.2);
 }
 
 .semesterArea {
   max-width: 100%;
-  margin-top: 20px;
-  padding: 0.25rem;
+  margin: 0;
+  padding: 0 10px 80px 10px;
   display: flex;
-  justify-content: center;
   flex: 1;
+  overflow-x: auto; /* Enable horizontal scroll */
+  overflow-y: hidden; 
+  align-items: center; 
 }
 
 .semesterGrid {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap; /* No wrapping */
   gap: 0.75rem;
-  justify-content: center;
-  margin: 0;
+  justify-content: flex-start;
+  margin: 0 auto; /* Center horizontally */
   padding: 0;
-  width: 100%;
-  max-width: 1400px;
+  width: max-content; /* Allow growing */
+  max-width: none;
 }
 
 .semesterCard {
@@ -289,13 +307,14 @@
   background: rgba(15, 15, 35, 0.8);
   backdrop-filter: blur(20px);
   border-top: 1px solid rgba(139, 69, 255, 0.2);
-  padding: 1.5rem;
+  padding: 0.8rem; /* Reduced padding */
   text-align: center;
   width: 100%;
   box-sizing: border-box;
   position: relative;
   z-index: 1;
   margin-top: auto;
+  flex-shrink: 0; /* Don't shrink footer */
 }
 
 .footerContent {
@@ -354,26 +373,46 @@
   .actionCard {
     width: 110px;
   }
-  
-  .showCoursesButton {
-    min-width: 110px;
-  }
 }
 
 @media (max-width: 768px) {
   .header {
-    padding: 15px;
+    padding: 10px;
   }
   
-  .coursePoolToggleWrapper {
-    margin-top: 100px;
-  }
-  
-  .coursePoolWrapper,
   .semesterArea {
     padding: 0.2rem;
   }
   
+  .toggleHandle {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 60px; /* Compact handle on mobile */
+    width: 24px;
+    border-radius: 8px 0 0 8px; /* Rounded left only */
+    background: rgba(139, 69, 255, 0.6);
+    z-index: 950;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-right: none;
+    margin: 0; /* Reset margins */
+  }
+  
+  .sidePanel {
+    position: fixed;
+    right: 0;
+    top: 0; 
+    z-index: 900;
+    height: 100%;
+    background: rgba(15, 15, 35, 0.98); 
+  }
+  
+  .sidePanel.open {
+    width: 85%;
+    box-shadow: -5px 0 20px rgba(0,0,0,0.5);
+  }
+
   .semesterGrid {
     gap: 0.15rem;
   }
@@ -391,7 +430,7 @@
   }
   
   .title {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
   }
   
   .actionCard {
@@ -404,22 +443,11 @@
     font-size: 1.3rem;
     margin-bottom: 0.2rem;
   }
-  
-  .showCoursesButton {
-    width: 90%;
-    max-width: 1200px;
-    padding: 10px 16px;
-    font-size: 13px;
-  }
 }
 
 @media (max-width: 480px) {
   .header {
-    padding: 12px;
-  }
-  
-  .coursePoolToggleWrapper {
-    margin-top: 90px;
+    padding: 8px;
   }
   
   .semesterCard {
@@ -439,10 +467,7 @@
     margin-bottom: 0.1rem;
   }
   
-  .showCoursesButton {
-    width: 90%;
-    max-width: 1200px;
-    padding: 8px 12px;
-    font-size: 12px;
+  .sidePanel.open {
+    width: 100%;
   }
 }

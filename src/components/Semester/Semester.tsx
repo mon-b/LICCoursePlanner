@@ -12,6 +12,7 @@ interface SemesterProps {
   onMouseDown: (e: React.MouseEvent, courseId: string) => void;
   onHoverStart?: (courseId: string) => void;
   onHoverEnd?: () => void;
+  onEdit?: (courseId: string) => void;
   prereqColors?: Map<string, string>;
   draggedCourseId: string | null;
   activeDropTarget: { containerId: string; index: number } | null;
@@ -24,6 +25,7 @@ export default function Semester({
   onMouseDown,
   onHoverStart,
   onHoverEnd,
+  onEdit,
   prereqColors,
   draggedCourseId,
   activeDropTarget,
@@ -81,6 +83,13 @@ export default function Semester({
   
   const isDragOver = isTarget;
 
+  const totalCredits = useMemo(() => {
+    return semester.courses.reduce((sum, courseState) => {
+      const course = findCourseData(courseState.id);
+      return sum + (course ? parseInt(course.cred || '0', 10) : 0);
+    }, 0);
+  }, [semester.courses, findCourseData]);
+
   return (
     <div className={styles.semester}>
       <div className={styles.semesterHead}>
@@ -107,6 +116,9 @@ export default function Semester({
         {semester.courses.map((courseState, index) => {
           const isBeingDragged = courseState.id === draggedCourseId;
           const showPlaceholder = isDragOver && renderInsertIndex === index;
+          const courseData = findCourseData(courseState.id);
+          const resolvedId = courseData ? courseData.id : courseState.id;
+          const highlight = prereqColors?.get(resolvedId) || prereqColors?.get(courseState.id);
 
           return (
             <React.Fragment key={courseState.id}>
@@ -124,7 +136,8 @@ export default function Semester({
                   onClick={onCourseClick}
                   onHoverStart={onHoverStart}
                   onHoverEnd={onHoverEnd}
-                  highlightColor={prereqColors?.get(courseState.id)}
+                  onEdit={onEdit}
+                  highlightColor={highlight}
                 />
               </div>
             </React.Fragment>
@@ -149,6 +162,10 @@ export default function Semester({
              {t('dropCoursesHere')}
            </div>
         )}
+      </div>
+      
+      <div className={styles.semesterFooter}>
+        <span className={styles.creditsValue}>{totalCredits}</span> {t('courseCredits')}
       </div>
     </div>
   );

@@ -20,6 +20,9 @@ const resources = {
       searchPlaceholder: "Search by name or code",
       createCourse: "Create Course",
       createCustomCourse: "Create Custom Course",
+      editCourse: "Edit Course",
+      closeEditor: "Close Editor",
+      save: "Save",
       courseName: "Course Name",
       courseCode: "Course Code",
       courseCredits: "Credits",
@@ -42,7 +45,7 @@ const resources = {
       },
       categories: {
         all: "All Courses",
-        core: "Core CS",
+        core: "Curriculum Courses",
         math: "Mathematics",
         electives: "Electives",
         general: "General"
@@ -102,6 +105,9 @@ const resources = {
       searchPlaceholder: "Buscar por nombre o sigla",
       createCourse: "Crear Curso",
       createCustomCourse: "Crear Curso Personalizado",
+      editCourse: "Editar Curso",
+      closeEditor: "Cerrar Editor",
+      save: "Guardar",
       courseName: "Nombre del curso",
       courseCode: "Sigla del curso",
       courseCredits: "Créditos",
@@ -124,7 +130,7 @@ const resources = {
       },
       categories: {
         all: "Todos los Cursos",
-        core: "Computación Centrales",
+        core: "Cursos Malla",
         math: "Matemáticos",
         electives: "Electivos",
         general: "Formación General"

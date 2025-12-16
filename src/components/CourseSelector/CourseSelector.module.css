@@ -1,0 +1,173 @@
+.container {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border-left: 1px solid rgba(139, 69, 255, 0.4);
+  height: calc(100% - 20px);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.header {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(139, 69, 255, 0.2);
+  flex-shrink: 0;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #8b45ff 0%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.closeButton:hover {
+  color: white;
+}
+
+.courseList {
+  padding: 10px;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.courseItem {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.courseItem:hover {
+  background: rgba(139, 69, 255, 0.2);
+  border-color: #8b45ff;
+}
+
+.courseName {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: white;
+}
+
+.courseInfo {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: space-between;
+}
+
+.categorySection {
+  padding: 0 15px;
+  border-bottom: 1px solid rgba(139, 69, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.categoryTabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap; /* Wrap to next line */
+  padding-bottom: 8px;
+  padding-top: 8px;
+}
+
+.categoryTabs::-webkit-scrollbar {
+  height: 0px;
+  background: transparent;
+}
+
+.categoryTab {
+  padding: 6px 10px;
+  border: none;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7);
+  border-radius: 6px 6px 0 0;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+}
+
+.categoryTab:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.categoryTab.active {
+  background: rgba(139, 69, 255, 0.2);
+  color: white;
+  border-bottom-color: #8b45ff;
+}
+
+.searchSection {
+  padding: 10px 15px;
+  border-bottom: 1px solid rgba(139, 69, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.searchWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 8px 8px 8px 30px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 13px;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.searchInput:focus {
+  border-color: rgba(139, 69, 255, 0.5);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.searchInput::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}

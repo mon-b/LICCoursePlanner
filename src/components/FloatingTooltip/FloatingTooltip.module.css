@@ -1,0 +1,23 @@
+.tooltip {
+  position: fixed;
+  background: rgba(10, 10, 25, 0.98);
+  color: white;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 11px;
+  white-space: pre-wrap;
+  z-index: 9999;
+  width: max-content;
+  max-width: 250px;
+  border: 1px solid rgba(139, 69, 255, 0.4);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.visible {
+  opacity: 1;
+}
