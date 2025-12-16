@@ -59,26 +59,6 @@ export default function PlannerPage() {
   }, [activeDropTarget]);
 
 
-  const handleMouseDown = useCallback((e: React.MouseEvent, courseId: string) => {
-    e.preventDefault();
-    
-    const element = e.currentTarget as HTMLElement;
-    const rect = element.getBoundingClientRect();
-    const offsetX = e.clientX - rect.left;
-    const offsetY = e.clientY - rect.top;
-
-    
-    dragStartRef.current = {
-      x: e.clientX,
-      y: e.clientY,
-      courseId,
-      offset: { x: offsetX, y: offsetY }
-    };
-
-    window.addEventListener('mousemove', handleWindowMouseMove);
-    window.addEventListener('mouseup', handleWindowMouseUp);
-  }, []);
-
   const handleWindowMouseMove = useCallback((e: MouseEvent) => {
     const start = dragStartRef.current;
     
@@ -177,7 +157,27 @@ export default function PlannerPage() {
     
     document.body.classList.remove('globalGrabbing');
     document.body.style.cursor = '';
-  }, [state, findCourseData, dispatch, t]);
+  }, [state, findCourseData, dispatch, t, handleWindowMouseMove]);
+
+  const handleMouseDown = useCallback((e: React.MouseEvent, courseId: string) => {
+    e.preventDefault();
+    
+    const element = e.currentTarget as HTMLElement;
+    const rect = element.getBoundingClientRect();
+    const offsetX = e.clientX - rect.left;
+    const offsetY = e.clientY - rect.top;
+
+    
+    dragStartRef.current = {
+      x: e.clientX,
+      y: e.clientY,
+      courseId,
+      offset: { x: offsetX, y: offsetY }
+    };
+
+    window.addEventListener('mousemove', handleWindowMouseMove);
+    window.addEventListener('mouseup', handleWindowMouseUp);
+  }, [handleWindowMouseMove, handleWindowMouseUp]);
 
   const handleUpdateDropTarget = useCallback((containerId: string | null, index?: number) => {
     if (containerId) {
@@ -453,6 +453,11 @@ function getPrerequisiteErrorMessage(course: any, t: any): string {
     const mainAlternatives = course.prereq.split(' o ');
 
     const prereqMessages = mainAlternatives.map((alternative: string) => {
+      const creditsMatch = alternative.match(/créditos\s*>=\s*(\d+)/i);
+      if (creditsMatch) {
+        return `• ${t('prerequisiteCredits', { credits: creditsMatch[1] })}`;
+      }
+
       if (alternative.includes(' y ')) {
         const courses = alternative.split(' y ');
         const cleanCourses = courses.map((c: string) => c.replace(/[()]/g, '').trim());

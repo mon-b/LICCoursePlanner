@@ -1,7 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCoursePlanner } from '../../context/CoursePlannerContext';
 import { Course } from '../../types/course';
+import FloatingTooltip from '../FloatingTooltip/FloatingTooltip';
 import styles from './CourseSelector.module.css';
 
 interface CourseSelectorProps {
@@ -17,6 +18,22 @@ export default function CourseSelector({ isOpen, onClose, onSelect, filterType, 
   const { allCourses, state, findCourseData, getCurrentPalette } = useCoursePlanner();
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
+  
+  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [tooltip, setTooltip] = useState<{ content: string; rect: DOMRect | null; visible: boolean }>({
+    content: '',
+    rect: null,
+    visible: false
+  });
+
+  // Clean up timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) {
+        clearTimeout(hoverTimeoutRef.current);
+      }
+    };
+  }, []);
   
   const currentPalette = getCurrentPalette();
 
@@ -78,6 +95,48 @@ export default function CourseSelector({ isOpen, onClose, onSelect, filterType, 
     });
   }, [allCourses, filterType, enableCategories, activeCategory, filteredCategories, takenCourseIds, searchTerm]);
 
+  const getPrereqTooltip = (courseId: string) => {
+    const course = findCourseData(courseId);
+    if (!course || !course.prereq) return '';
+    
+    let displayString = course.prereq;
+    
+    const potentialCodes = course.prereq.match(/[A-Z]+[0-9]+[A-Z]*/g) || [];
+    const uniqueCodes = Array.from(new Set(potentialCodes));
+    
+    uniqueCodes.forEach(code => {
+      const prereqCourse = findCourseData(code);
+      if (prereqCourse) {
+        const regex = new RegExp(`\\b${code}\\b`, 'g');
+        displayString = displayString.replace(regex, `${prereqCourse.name_stylized} - ${prereqCourse.id}`);
+      }
+    });
+
+    displayString = displayString
+      .replace(/ o /g, '\n--- O ---\n')
+      .replace(/ y /g, '\n');
+
+    return `Prerrequisitos:\n${displayString}`;
+  };
+
+  const handleCourseEnter = (e: React.MouseEvent<HTMLDivElement>, courseId: string) => {
+    const content = getPrereqTooltip(courseId);
+    if (content) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      hoverTimeoutRef.current = setTimeout(() => {
+        setTooltip({ content, rect, visible: true });
+      }, 200);
+    }
+  };
+
+  const handleCourseLeave = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+    setTooltip(prev => ({ ...prev, visible: false }));
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -130,6 +189,8 @@ export default function CourseSelector({ isOpen, onClose, onSelect, filterType, 
                 onSelect(course);
                 onClose();
               }}
+              onMouseEnter={(e) => handleCourseEnter(e, course.id)}
+              onMouseLeave={handleCourseLeave}
             >
               <div className={styles.courseName}>{course.name_stylized || course.name}</div>
               <div className={styles.courseInfo}>
@@ -140,6 +201,11 @@ export default function CourseSelector({ isOpen, onClose, onSelect, filterType, 
           );
         })}
       </div>
+      <FloatingTooltip 
+        content={tooltip.content} 
+        targetRect={tooltip.rect} 
+        visible={tooltip.visible} 
+      />
     </div>
   );
 }
