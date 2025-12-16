@@ -95,7 +95,7 @@
 .categoryTabs {
   display: flex;
   gap: 6px;
-  flex-wrap: wrap; /* Wrap to next line */
+  flex-wrap: wrap;
   padding-bottom: 8px;
   padding-top: 8px;
 }

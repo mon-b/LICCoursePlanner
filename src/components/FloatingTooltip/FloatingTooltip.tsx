@@ -19,23 +19,19 @@ export default function FloatingTooltip({ content, targetRect, visible }: Floati
     const { width, height } = tooltip.getBoundingClientRect();
     const { top, left, width: targetWidth } = targetRect;
     
-    // Default position: centered above the target, 0px gap
     let newTop = top - height;
     let newLeft = left + (targetWidth / 2) - (width / 2);
 
-    // Check right edge
     if (newLeft + width > window.innerWidth - 10) {
       newLeft = window.innerWidth - width - 10;
     }
 
-    // Check left edge
     if (newLeft < 10) {
       newLeft = 10;
     }
 
-    // Check top edge (if runs off top, flip to bottom)
     if (newTop < 10) {
-      newTop = top + targetRect.height + 10; // Position below with 10px gap
+      newTop = top + targetRect.height + 10;
     }
 
     setPosition({ top: newTop, left: newLeft });

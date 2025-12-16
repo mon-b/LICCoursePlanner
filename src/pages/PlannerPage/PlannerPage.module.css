@@ -163,7 +163,7 @@
   min-width: 0;
   transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   overflow: hidden;
-  padding-top: 20px; /* Add space above planner */
+  padding-top: 20px;
 }
 
 .sidePanel {
@@ -220,19 +220,19 @@
   padding: 0 10px 80px 10px;
   display: flex;
   flex: 1;
-  overflow-x: auto; /* Enable horizontal scroll */
+  overflow-x: auto;
   overflow-y: hidden; 
   align-items: center; 
 }
 
 .semesterGrid {
   display: flex;
-  flex-wrap: nowrap; /* No wrapping */
+  flex-wrap: nowrap;
   gap: 0.75rem;
   justify-content: flex-start;
-  margin: 0 auto; /* Center horizontally */
+  margin: 0 auto;
   padding: 0;
-  width: max-content; /* Allow growing */
+  width: max-content;
   max-width: none;
 }
 
@@ -307,14 +307,14 @@
   background: rgba(15, 15, 35, 0.8);
   backdrop-filter: blur(20px);
   border-top: 1px solid rgba(139, 69, 255, 0.2);
-  padding: 0.8rem; /* Reduced padding */
+  padding: 0.8rem;
   text-align: center;
   width: 100%;
   box-sizing: border-box;
   position: relative;
   z-index: 1;
   margin-top: auto;
-  flex-shrink: 0; /* Don't shrink footer */
+  flex-shrink: 0;
 }
 
 .footerContent {
@@ -389,14 +389,14 @@
     right: 0;
     top: 50%;
     transform: translateY(-50%);
-    height: 60px; /* Compact handle on mobile */
+    height: 60px;
     width: 24px;
-    border-radius: 8px 0 0 8px; /* Rounded left only */
+    border-radius: 8px 0 0 8px;
     background: rgba(139, 69, 255, 0.6);
     z-index: 950;
     border: 1px solid rgba(255,255,255,0.2);
     border-right: none;
-    margin: 0; /* Reset margins */
+    margin: 0;
   }
   
   .sidePanel {

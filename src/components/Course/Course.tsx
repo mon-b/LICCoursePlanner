@@ -95,7 +95,6 @@ export default function Course({
   
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    // If edit button was clicked, this handler won't be reached due to stopPropagation in handleEditClick.
     if (onClick) {
       onClick(courseState.id);
     }

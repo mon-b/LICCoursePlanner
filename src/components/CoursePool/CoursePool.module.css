@@ -45,7 +45,7 @@ html {
 
 .header {
   background: rgba(255, 255, 255, 0.08);
-  padding: 10px 15px; /* Reduced padding */
+  padding: 10px 15px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -58,7 +58,7 @@ html {
 }
 
 .title {
-  font-size: 1rem; /* Slightly smaller */
+  font-size: 1rem;
   font-weight: 700;
   background: linear-gradient(135deg, #8b45ff 0%, #3b82f6 100%);
   -webkit-background-clip: text;
@@ -128,7 +128,7 @@ html {
 .categoryTabs {
   display: flex;
   gap: 6px;
-  flex-wrap: wrap; /* Wrap tabs */
+  flex-wrap: wrap;
   padding-bottom: 8px;
   padding-top: 8px;
 }
@@ -164,7 +164,7 @@ html {
 }
 
 .courseList {
-  padding: 10px; /* Minimal padding */
+  padding: 10px;
   overflow-y: auto;
   flex: 1;
   transition: opacity 0.35s ease 0.25s;
@@ -224,7 +224,6 @@ html {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  /* Removed sticky positioning */
 }
 
 .coursesGrid {
@@ -240,9 +239,9 @@ html {
 .courseWrapper {
   display: flex;
   justify-content: center;
-  flex: 1 1 auto; /* Allow items to grow and shrink */
-  min-width: 100px; /* Ensure minimum width but allow wrapping */
-  position: relative; /* Context for tooltip */
+  flex: 1 1 auto;
+  min-width: 100px;
+  position: relative;
 }
 
 

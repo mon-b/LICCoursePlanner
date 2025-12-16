@@ -56,7 +56,6 @@ export default function CoursePool({
     }
   }, [isVisible]);
 
-  // Clean up timeout on unmount
   useEffect(() => {
     return () => {
       if (hoverTimeoutRef.current) {
@@ -161,7 +160,7 @@ export default function CoursePool({
     uniqueCodes.forEach(code => {
       const prereqCourse = findCourseData(code);
       if (prereqCourse) {
-        const regex = new RegExp(`\\b${code}\\b`, 'g');
+        const regex = new RegExp(`\b${code}\b`, 'g');
         displayString = displayString.replace(regex, `${prereqCourse.name_stylized} - ${prereqCourse.id}`);
       }
     });
