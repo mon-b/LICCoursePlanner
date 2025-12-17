@@ -78,8 +78,8 @@ export default function HomePage() {
             className={styles.footerLink}
           >
             Mon 🌸
-          </a>{' '}
-          {t('footerAnd')}{' '}
+          </a>
+          {' '}
           <a
             href="https://www.instagram.com/fercooncha"
             target="_blank"
@@ -87,6 +87,15 @@ export default function HomePage() {
             className={styles.footerLink}
           >
             fña🧙‍♂️
+          </a>
+          {t('footerAnd')}{' '}
+          <a
+            href="https://www.instagram.com/esteban._.d._.luffy/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.footerLink}
+          >
+            estebankito 🎸
           </a>
         </div>
       </footer>
