@@ -8,47 +8,63 @@ export default function HomePage() {
   
   return (
     <div className={styles.body}>
-      <div className={styles.backgroundGradient}></div>
-      <div className={styles.backgroundOrbs}>
-        <div className={styles.orb1}></div>
-        <div className={styles.orb2}></div>
-        <div className={styles.orb3}></div>
+      {/* Elementos de fondo geométricos y luces */}
+      <div className={styles.ambientLight}></div>
+      <div className={styles.floatingShapes}>
+        <div className={styles.shapeCube}></div>
+        <div className={styles.shapeSphere}></div>
+        <div className={styles.shapePyramid}></div>
       </div>
 
-      <div className={styles.container}>
-        <div className={styles.languageContainer}>
-            <LanguageToggle />
+      <div className={styles.mainContainer}>
+        <header className={styles.header}>
+             <LanguageToggle />
+        </header>
+        
+        <div className={styles.contentGrid}>
+          {/* Sección Hero */}
+          <div className={styles.heroSection}>
+            <h1 className={styles.title}>
+              <span className={styles.titleGradient}>LICCourse</span>
+              Planner
+            </h1>
+            <p className={styles.subtitle}>{t('subtitle')}</p>
+            
+            <div className={styles.ctaWrapperDesktop}>
+                <Link to="/planner" className={styles.ctaButton}>
+                {t('goToPlanner')}
+                </Link>
+            </div>
+          </div>
+
+          {/* Sección de Características Desordenadas */}
+          <div className={styles.featuresWrapper}>
+            <div className={`${styles.featureCard} ${styles.card1}`}>
+              <h3>{t('features.dragDrop.title')}</h3>
+              <p>{t('features.dragDrop.description')}</p>
+            </div>
+            <div className={`${styles.featureCard} ${styles.card2}`}>
+              <h3>{t('features.prerequisites.title')}</h3>
+              <p>{t('features.prerequisites.description')}</p>
+            </div>
+            <div className={`${styles.featureCard} ${styles.card3}`}>
+              <h3>{t('features.edit.title')}</h3>
+              <p>{t('features.edit.description')}</p>
+            </div>
+            <div className={`${styles.featureCard} ${styles.card4}`}>
+              <h3>{t('features.create.title')}</h3>
+              <p>{t('features.create.description')}</p>
+            </div>
+          </div>
         </div>
         
-        <div className={styles.hero}>
-          <h1>{t('title')}</h1>
-          <p>{t('subtitle')}</p>
-        </div>
-
-        <div className={styles.features}>
-          <div className={styles.featureCard}>
-            <h3>{t('features.dragDrop.title')}</h3>
-            <p>{t('features.dragDrop.description')}</p>
-          </div>
-          <div className={styles.featureCard}>
-            <h3>{t('features.prerequisites.title')}</h3>
-            <p>{t('features.prerequisites.description')}</p>
-          </div>
-          <div className={styles.featureCard}>
-            <h3>{t('features.classification.title')}</h3>
-            <p>{t('features.classification.description')}</p>
-          </div>
-        </div>
-        
-        <Link to="/planner" className={styles.ctaButton}>
-          {t('goToPlanner')}
-        </Link>
-
-        <div className={styles.disclaimerContainer}>
-          <div className={styles.disclaimerContent}>
-            <span className={styles.disclaimerIcon}>⚠️</span>
-            <p>{t('disclaimer')}</p>
-          </div>
+        {/* CTA Móvil y Disclaimer */}
+        <div className={styles.bottomSection}>
+            <div className={styles.ctaWrapperMobile}>
+                <Link to="/planner" className={styles.ctaButton}>
+                {t('goToPlanner')}
+                </Link>
+            </div>
         </div>
       </div>
 
@@ -62,8 +78,8 @@ export default function HomePage() {
             className={styles.footerLink}
           >
             Mon 🌸
-          </a>{' '}
-          {t('footerAnd')}{' '}
+          </a>
+          {' '}
           <a
             href="https://www.instagram.com/fercooncha"
             target="_blank"
@@ -71,6 +87,15 @@ export default function HomePage() {
             className={styles.footerLink}
           >
             fña🧙‍♂️
+          </a>
+          {t('footerAnd')}{' '}
+          <a
+            href="https://www.instagram.com/esteban._.d._.luffy/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.footerLink}
+          >
+            estebankito 🎸
           </a>
         </div>
       </footer>
