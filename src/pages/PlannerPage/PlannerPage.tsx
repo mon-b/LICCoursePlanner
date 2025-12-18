@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import html2canvas from 'html2canvas';
 import { useCoursePlanner } from '../../context/CoursePlannerContext';
 import { validatePrerequisites, isParityValid } from '../../utils/courseValidation';
 import Semester from '../../components/Semester/Semester';
@@ -232,6 +233,48 @@ export default function PlannerPage() {
     }
   };
 
+  const handleExportToPNG = async () => {
+    const semesterGrid = document.querySelector(`.${styles.semesterGrid}`) as HTMLElement;
+    if (!semesterGrid) return;
+
+    const semesterCards = semesterGrid.querySelectorAll(`.${styles.semesterCard}`);
+    if (semesterCards.length === 0) return;
+
+    try {
+      const firstCard = semesterCards[0] as HTMLElement;
+      const lastCard = semesterCards[semesterCards.length - 1] as HTMLElement;
+
+      const firstRect = firstCard.getBoundingClientRect();
+      const lastRect = lastCard.getBoundingClientRect();
+      const gridRect = semesterGrid.getBoundingClientRect();
+
+      const padding = 30;
+      const x = firstRect.left - gridRect.left - padding;
+      const y = -padding;
+      const width = (lastRect.right - firstRect.left) + (padding * 2);
+      const height = gridRect.height + (padding * 2);
+
+      const canvas = await html2canvas(semesterGrid, {
+        backgroundColor: '#0f0f23',
+        scale: 2,
+        logging: false,
+        useCORS: true,
+        x: x,
+        y: y,
+        width: width,
+        height: height,
+      });
+
+      const link = document.createElement('a');
+      link.download = `planner-${new Date().toISOString().split('T')[0]}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } catch (error) {
+      console.error('Error exporting to PNG:', error);
+      alert('Error al exportar la imagen. Por favor, intenta de nuevo.');
+    }
+  };
+
   const sidePanelOpen = state.coursePoolVisible || !!editingCourseId || !!selectingCourseId;
 
   return (
@@ -257,6 +300,11 @@ export default function PlannerPage() {
             <button className={styles.headerButton} onClick={handleResetPlanner}>
               <span className={styles.headerIcon}>🔄</span>
               {t('resetPlan')}
+            </button>
+
+            <button className={styles.headerButton} onClick={handleExportToPNG}>
+              <span className={styles.headerIcon}>📸</span>
+              {t('exportPNG')}
             </button>
 
             <PaletteToggle />
