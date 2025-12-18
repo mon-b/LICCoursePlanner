@@ -19,6 +19,7 @@
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   overflow-x: hidden; /* Importante para elementos que se salen de la pantalla */
   position: relative;
+  padding-bottom: 3rem; /* Espacio para el footer */
 }
 
 /* --- Fondos y Elementos Flotantes --- */
@@ -44,7 +45,7 @@
 }
 
 /* Formas abstractas simples usando CSS */
-.shapeCube, .shapeSphere, .shapePyramid {
+.shapeCube, .shapeSphere, .shapePyramid, .shapeDiamond, .shapeRing, .shapeSquare, .shapeHexagon, .shapeCircle {
     position: absolute;
     opacity: 0.4;
 }
@@ -57,6 +58,7 @@
     background: linear-gradient(45deg, var(--accent-purple), transparent);
     transform: rotate(30deg) skew(10deg);
     filter: blur(2px);
+    animation: floatCube 8s ease-in-out infinite;
 }
 
 .shapeSphere {
@@ -67,6 +69,7 @@
     border-radius: 50%;
     background: radial-gradient(circle at 30% 30%, var(--accent-blue), transparent);
     filter: blur(5px);
+    animation: floatSphere 10s ease-in-out infinite;
 }
 
 .shapePyramid {
@@ -78,7 +81,175 @@
     border-right: 50px solid transparent;
     border-bottom: 100px solid rgba(214, 93, 177, 0.2); /* Pink tint */
     transform: rotate(-15deg);
-    filter: blur(1px);
+    filter: blur(2px);
+    animation: floatPyramid 12s ease-in-out infinite;
+}
+
+.shapeDiamond {
+    top: 35%;
+    right: 5%;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
+    transform: rotate(45deg);
+    filter: blur(3px);
+    animation: floatDiamond 9s ease-in-out infinite;
+}
+
+.shapeRing {
+    bottom: 15%;
+    right: 40%;
+    width: 90px;
+    height: 90px;
+    border: 8px solid rgba(86, 142, 250, 0.25);
+    border-radius: 50%;
+    filter: blur(2px);
+    animation: floatRing 11s ease-in-out infinite;
+}
+
+.shapeSquare {
+    top: 80%;
+    left: 15%;
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(225deg, var(--accent-blue), var(--accent-purple));
+    transform: rotate(15deg);
+    filter: blur(4px);
+    animation: floatSquare 10s ease-in-out infinite;
+}
+
+.shapeHexagon {
+    top: 8%;
+    left: 8%;
+    width: 90px;
+    height: 90px;
+    background: radial-gradient(circle, rgba(138, 86, 250, 0.4) 0%, rgba(59, 130, 246, 0.3) 70%);
+    border-radius: 50%;
+    filter: blur(4px);
+    animation: floatHexagon 13s ease-in-out infinite;
+}
+
+.shapeCircle {
+    top: 20%;
+    left: 50%;
+    width: 55px;
+    height: 55px;
+    background: radial-gradient(circle, rgba(214, 93, 177, 0.3) 0%, rgba(138, 86, 250, 0.15) 70%);
+    border-radius: 50%;
+    filter: blur(4px);
+    animation: floatCircle 9.5s ease-in-out infinite;
+}
+
+/* Animaciones para las formas flotantes */
+@keyframes floatCube {
+  0%, 100% {
+    transform: translate(0, 0) rotate(30deg) skew(10deg);
+  }
+  25% {
+    transform: translate(5px, -8px) rotate(32deg) skew(10deg);
+  }
+  50% {
+    transform: translate(8px, -3px) rotate(28deg) skew(10deg);
+  }
+  75% {
+    transform: translate(3px, -10px) rotate(31deg) skew(10deg);
+  }
+}
+
+@keyframes floatSphere {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  33% {
+    transform: translate(-7px, 5px);
+  }
+  66% {
+    transform: translate(-3px, -8px);
+  }
+}
+
+@keyframes floatPyramid {
+  0%, 100% {
+    transform: translate(0, 0) rotate(-15deg);
+  }
+  25% {
+    transform: translate(-6px, 4px) rotate(-13deg);
+  }
+  50% {
+    transform: translate(4px, 6px) rotate(-17deg);
+  }
+  75% {
+    transform: translate(-5px, -3px) rotate(-14deg);
+  }
+}
+
+@keyframes floatDiamond {
+  0%, 100% {
+    transform: translate(0, 0) rotate(45deg);
+  }
+  30% {
+    transform: translate(6px, -5px) rotate(47deg);
+  }
+  60% {
+    transform: translate(-4px, 7px) rotate(43deg);
+  }
+  80% {
+    transform: translate(5px, 3px) rotate(46deg);
+  }
+}
+
+@keyframes floatRing {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(-5px, 6px) scale(1.05);
+  }
+  66% {
+    transform: translate(4px, -4px) scale(0.98);
+  }
+}
+
+@keyframes floatSquare {
+  0%, 100% {
+    transform: translate(0, 0) rotate(15deg);
+  }
+  25% {
+    transform: translate(-7px, -4px) rotate(18deg);
+  }
+  50% {
+    transform: translate(5px, -6px) rotate(12deg);
+  }
+  75% {
+    transform: translate(-3px, 5px) rotate(16deg);
+  }
+}
+
+@keyframes floatHexagon {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  30% {
+    transform: translate(5px, 6px) rotate(3deg);
+  }
+  60% {
+    transform: translate(-6px, -4px) rotate(-2deg);
+  }
+  85% {
+    transform: translate(4px, -5px) rotate(2deg);
+  }
+}
+
+@keyframes floatCircle {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  35% {
+    transform: translate(-6px, 5px) scale(1.08);
+  }
+  70% {
+    transform: translate(5px, -6px) scale(0.95);
+  }
 }
 
 
@@ -89,9 +260,6 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  min-height: 90vh; /* Ajuste para el footer */
 }
 
 .header {
@@ -161,7 +329,14 @@
   padding: 2rem;
   border-radius: 24px;
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease;
+}
+
+.featureCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(138, 86, 250, 0.15);
+  border-color: rgba(138, 86, 250, 0.4);
+  background: rgba(50, 50, 90, 0.3);
 }
 
 .featureCard h3 {
@@ -181,6 +356,7 @@
   .featuresWrapper {
     display: block; /* Dejamos de usar flex para posicionamiento absoluto relativo */
     height: 500px; /* Altura arbitraria para contener las cartas flotantes */
+    position: relative; /* Las tarjetas absolutas se posicionan respecto a este contenedor */
   }
 
   .featureCard {
@@ -195,7 +371,7 @@
     transform: rotate(2deg);
     z-index: 3;
   }
-  
+
   /* Carta 2: Prerrequisitos - Centro izquierda, superpuesta, inclinada opuesta */
   .card4 {
     top: 150px;
@@ -222,9 +398,11 @@
   }
 
   .featureCard:hover {
-    transform: scale(1.02) rotate(0deg) !important; /* Al hacer hover se enderezan */
+    transform: scale(1.05) rotate(0deg) translateY(-5px) !important; /* Al hacer hover se enderezan y levantan */
     z-index: 10; /* Pasa al frente */
-    border-color: var(--accent-pink);
+    border-color: rgba(138, 86, 250, 0.4);
+    box-shadow: 0 20px 50px rgba(138, 86, 250, 0.2);
+    background: rgba(50, 50, 90, 0.35);
   }
 }
 
@@ -249,13 +427,13 @@
 
 .ctaButton {
   display: inline-block;
-  padding: 1rem 3rem;
+  padding: 1.3rem 4rem;
   background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue));
   color: white !important;
   text-decoration: none;
   font-weight: 700;
   border-radius: 50px;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   box-shadow: 0 4px 15px rgba(138, 86, 250, 0.4);
   transition: all 0.3s ease;
   position: relative;
@@ -265,12 +443,13 @@
 .ctaButton:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 25px rgba(138, 86, 250, 0.5);
+  text-decoration: none !important;
 }
 
 
 /* --- Disclaimer y Bottom Section --- */
 .bottomSection {
-    margin-top: auto;
+    margin-top: 3rem;
     padding-bottom: 2rem;
 }
 
@@ -304,19 +483,38 @@
 
 /* --- Footer --- */
 .footer {
-  margin-top: 1%;
-  padding: 2rem;
+  background: rgba(15, 15, 35, 0.8);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(139, 69, 255, 0.2);
+  padding: 0.8rem;
   text-align: center;
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  z-index: 2;
-  background: rgba(0,0,0,0.2); /* Ligeramente más oscuro */
+  width: 100%;
+  box-sizing: border-box;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.footerContent {
+  max-width: 1400px;
+  margin: 0 auto;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .footerLink {
-  color: var(--accent-pink);
+  color: #8b45ff;
   text-decoration: none;
   font-weight: 600;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.footerLink:hover {
+  transform: translateY(-2px);
+  text-decoration: none;
+  text-shadow: 0 0 15px rgba(139, 69, 255, 0.5);
+  filter: brightness(1.2);
 }
 
 /* --- Ajustes Responsivos adicionales --- */

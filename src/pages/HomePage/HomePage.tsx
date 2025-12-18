@@ -14,6 +14,11 @@ export default function HomePage() {
         <div className={styles.shapeCube}></div>
         <div className={styles.shapeSphere}></div>
         <div className={styles.shapePyramid}></div>
+        <div className={styles.shapeDiamond}></div>
+        <div className={styles.shapeRing}></div>
+        <div className={styles.shapeSquare}></div>
+        <div className={styles.shapeHexagon}></div>
+        <div className={styles.shapeCircle}></div>
       </div>
 
       <div className={styles.mainContainer}>
