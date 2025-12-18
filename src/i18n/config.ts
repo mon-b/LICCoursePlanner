@@ -105,7 +105,7 @@ const resources = {
       deleteSemester: "Eliminar Semestre",
       resetPlanner: "Reiniciar Planner",
       resetPlan: "Reiniciar Planner",
-      exportPNG: "Guardar como PNG",
+      exportPNG: "Guardar Como PNG",
       confirmAddSemester: "¿Añadir un nuevo semestre?",
       confirmDeleteSemester: "¿Quieres eliminar este semestre?",
       confirmReset: "¿Estás seguro que quieres reiniciar el planner? Todos los cambios se perderán.",
