@@ -445,6 +445,18 @@ export const optData: Array<{ courses: Course[] }> = [{
       "type": "optcomp",
       "name_stylized": "Fundamentos de Procesamiento de Imagenes",
       "number": 87
-    }
+    },
+    {
+      "id": "AST0112",
+      "name": "Astronomy",
+      "name_english": "Astronomy",
+      "prereq": "VRA2000 o VRA2010 o VRA3010 o VRA100I o VRA200I",
+      "cred": "10",
+      "hide": false,
+      "parity": "even",
+      "type": "opt-cien",
+      "name_stylized": "Astronomy",
+      "number": 88
+    },
   ]
 }];
