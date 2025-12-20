@@ -457,6 +457,6 @@ export const optData: Array<{ courses: Course[] }> = [{
       "type": "opt-cien",
       "name_stylized": "Astronomy",
       "number": 88
-    },
+    }
   ]
 }];
