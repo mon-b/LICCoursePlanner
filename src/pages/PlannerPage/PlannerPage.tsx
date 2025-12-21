@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import html2canvas from 'html2canvas';
 import { useCoursePlanner } from '../../context/CoursePlannerContext';
 import { validatePrerequisites, isParityValid } from '../../utils/courseValidation';
@@ -286,7 +287,13 @@ export default function PlannerPage() {
         <div className={styles.orb3}></div>
       </div>
 
-      <header className={styles.header}>
+      <motion.header
+        className={styles.header}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+      >
         <div className={styles.headerContent}>
           <Link to="/" className={styles.titleLink}>
             <h1 className={styles.title}>{t('title')}</h1>
@@ -311,38 +318,50 @@ export default function PlannerPage() {
             <LanguageToggle />
           </div>
         </div>
-      </header>
+      </motion.header>
 
       <div className={styles.mainLayout}>
-        <div className={styles.contentContainer}>
-          <div className={styles.semesterArea}>
-            <div className={styles.semesterGrid}>
-              {state.semesters
-                .sort((a, b) => a.number - b.number)
-                .map(semester => (
-                  <div
-                    key={semester.number}
-                    className={styles.semesterCard}
-                  >
-                    <Semester
-                      semester={semester}
-                      onCourseClick={handleCourseClick}
-                      onMouseDown={handleMouseDown}
-                      onHoverStart={setHoveredCourseId}
-                      onHoverEnd={() => setHoveredCourseId(null)}
-                      onEdit={handleCourseEdit}
-                      prereqColors={prereqColors}
-                      draggedCourseId={dragState.courseId}
-                      activeDropTarget={activeDropTarget}
-                      onUpdateDropTarget={handleUpdateDropTarget}
-                    />
-                  </div>
-                ))}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 1.05 }}
+          transition={{ duration: 0.5, ease: [0.43, 0.13, 0.23, 0.96] }}
+          style={{ transformOrigin: 'center center', position: 'relative', zIndex: 1, flex: 1, display: 'flex' }}
+        >
+          <div className={styles.contentContainer}>
+            <div className={styles.semesterArea}>
+              <div className={styles.semesterGrid}>
+                {state.semesters
+                  .sort((a, b) => a.number - b.number)
+                  .map(semester => (
+                    <div
+                      key={semester.number}
+                      className={styles.semesterCard}
+                    >
+                      <Semester
+                        semester={semester}
+                        onCourseClick={handleCourseClick}
+                        onMouseDown={handleMouseDown}
+                        onHoverStart={setHoveredCourseId}
+                        onHoverEnd={() => setHoveredCourseId(null)}
+                        onEdit={handleCourseEdit}
+                        prereqColors={prereqColors}
+                        draggedCourseId={dragState.courseId}
+                        activeDropTarget={activeDropTarget}
+                        onUpdateDropTarget={handleUpdateDropTarget}
+                      />
+                    </div>
+                  ))}
+              </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        <div 
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
           className={styles.toggleHandle}
           onClick={() => {
             if (editingCourseId) setEditingCourseId(null);
@@ -358,95 +377,101 @@ export default function PlannerPage() {
           <span className={styles.toggleArrow}>
             {sidePanelOpen ? '▶' : '◀'}
           </span>
-        </div>
+        </motion.div>
 
-        <div className={`${styles.sidePanel} ${sidePanelOpen ? styles.open : ''}`}>
-          {editingCourseId ? (
-            <CourseEditor
-              course={findCourseData(editingCourseId) || null}
-              isOpen={!!editingCourseId}
-              onClose={() => setEditingCourseId(null)}
-              onSave={(originalId, updatedCourse) => {
-                dispatch({ 
-                  type: 'UPDATE_COURSE', 
-                  payload: { originalId, course: updatedCourse } 
-                });
-                setEditingCourseId(null);
-              }}
-            />
-          ) : selectingCourseId ? (
-            <CourseSelector
-              isOpen={!!selectingCourseId}
-              onClose={() => setSelectingCourseId(null)}
-              filterType={
-                selectingCourseId === 'OPTC1' 
-                  ? 'opt-cien' 
-                  : ['optcomp', 'optlet', 'econ', 'optcom', 'opt-ast', 'optbio', 'opt-mat']
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+          className={`${styles.sidePanel} ${sidePanelOpen ? styles.open : ''}`}
+        >
+        {editingCourseId ? (
+          <CourseEditor
+            course={findCourseData(editingCourseId) || null}
+            isOpen={!!editingCourseId}
+            onClose={() => setEditingCourseId(null)}
+            onSave={(originalId, updatedCourse) => {
+              dispatch({
+                type: 'UPDATE_COURSE',
+                payload: { originalId, course: updatedCourse }
+              });
+              setEditingCourseId(null);
+            }}
+          />
+        ) : selectingCourseId ? (
+          <CourseSelector
+            isOpen={!!selectingCourseId}
+            onClose={() => setSelectingCourseId(null)}
+            filterType={
+              selectingCourseId === 'OPTC1'
+                ? 'opt-cien'
+                : ['optcomp', 'optlet', 'econ', 'optcom', 'opt-ast', 'optbio', 'opt-mat']
+            }
+            enableCategories={selectingCourseId !== 'OPTC1'}
+            onSelect={(course) => {
+              let semesterNumber = 0;
+              for (const sem of state.semesters) {
+                if (sem.courses.some(c => c.id === selectingCourseId)) {
+                  semesterNumber = sem.number;
+                  break;
+                }
               }
-              enableCategories={selectingCourseId !== 'OPTC1'}
-              onSelect={(course) => {
-                let semesterNumber = 0;
-                for (const sem of state.semesters) {
-                  if (sem.courses.some(c => c.id === selectingCourseId)) {
-                    semesterNumber = sem.number;
-                    break;
-                  }
-                }
 
-                if (semesterNumber > 0) {
-                   if (!validatePrerequisites(course.id, semesterNumber, state, findCourseData)) {
-                      const msg = getPrerequisiteErrorMessage(course, t);
-                      alert(msg);
-                      return;
-                   }
-                }
-
-                if (course.type === 'optcomp') {
-                  let optCompCount = 0;
-                  state.semesters.forEach(sem => {
-                    sem.courses.forEach(c => {
-                      const courseData = findCourseData(c.id);
-                      if (courseData?.type === 'optcomp') {
-                        optCompCount++;
-                      }
-                    });
-                  });
-                  
-                  const currentSlotCourse = selectingCourseId ? findCourseData(selectingCourseId) : null;
-                  const isReplacingOptComp = currentSlotCourse?.type === 'optcomp';
-                  
-                  if (!isReplacingOptComp && optCompCount >= 2) {
-                    alert("Como máximo solamente se pueden tener 2 cursos OPT de computación");
+              if (semesterNumber > 0) {
+                 if (!validatePrerequisites(course.id, semesterNumber, state, findCourseData)) {
+                    const msg = getPrerequisiteErrorMessage(course, t);
+                    alert(msg);
                     return;
-                  }
-                }
+                 }
+              }
 
-                dispatch({
-                    type: 'UPDATE_COURSE',
-                    payload: {
-                        originalId: selectingCourseId,
-                        course: { ...course, id: course.id }
+              if (course.type === 'optcomp') {
+                let optCompCount = 0;
+                state.semesters.forEach(sem => {
+                  sem.courses.forEach(c => {
+                    const courseData = findCourseData(c.id);
+                    if (courseData?.type === 'optcomp') {
+                      optCompCount++;
                     }
+                  });
                 });
-                setSelectingCourseId(null);
-              }}
-            />
-          ) : (
-            <CoursePool
-              isVisible={state.coursePoolVisible}
-              onCourseClick={handleCourseClick}
-              onMouseDown={handleMouseDown}
-              onClose={() => dispatch({ type: 'TOGGLE_COURSE_POOL' })}
-              onCreateCourse={() => setShowCourseModal(true)}
-              onHoverStart={setHoveredCourseId}
-              onHoverEnd={() => setHoveredCourseId(null)}
-              prereqColors={prereqColors}
-              draggedCourseId={dragState.courseId}
-              activeDropTarget={activeDropTarget}
-              onUpdateDropTarget={handleUpdateDropTarget}
-            />
-          )}
-        </div>
+
+                const currentSlotCourse = selectingCourseId ? findCourseData(selectingCourseId) : null;
+                const isReplacingOptComp = currentSlotCourse?.type === 'optcomp';
+
+                if (!isReplacingOptComp && optCompCount >= 2) {
+                  alert("Como máximo solamente se pueden tener 2 cursos OPT de computación");
+                  return;
+                }
+              }
+
+              dispatch({
+                  type: 'UPDATE_COURSE',
+                  payload: {
+                      originalId: selectingCourseId,
+                      course: { ...course, id: course.id }
+                  }
+              });
+              setSelectingCourseId(null);
+            }}
+          />
+        ) : (
+          <CoursePool
+            isVisible={state.coursePoolVisible}
+            onCourseClick={handleCourseClick}
+            onMouseDown={handleMouseDown}
+            onClose={() => dispatch({ type: 'TOGGLE_COURSE_POOL' })}
+            onCreateCourse={() => setShowCourseModal(true)}
+            onHoverStart={setHoveredCourseId}
+            onHoverEnd={() => setHoveredCourseId(null)}
+            prereqColors={prereqColors}
+            draggedCourseId={dragState.courseId}
+            activeDropTarget={activeDropTarget}
+            onUpdateDropTarget={handleUpdateDropTarget}
+          />
+        )}
+      </motion.div>
       </div>
 
       <CourseCreationModal
@@ -456,6 +481,16 @@ export default function PlannerPage() {
           dispatch({ type: 'CREATE_CUSTOM_COURSE', payload: course });
           setShowCourseModal(false);
         }}
+      />
+
+      <PrerequisiteLines
+        hoveredCourseId={hoveredCourseId}
+        onPrereqColorsChange={setPrereqColors}
+      />
+
+      <DragLayer
+        courseId={dragState.courseId}
+        position={{ x: dragState.x, y: dragState.y }}
       />
 
       <footer className={styles.footer}>
@@ -478,7 +513,7 @@ export default function PlannerPage() {
           >
             fña 🧙‍♂️
           </a>
-          {t('footerAnd')}{' '}
+          {' '}{t('footerAnd')}{' '}
           <a
             href="https://www.instagram.com/esteban._.d._.luffy/"
             target="_blank"
@@ -489,16 +524,6 @@ export default function PlannerPage() {
           </a>
         </div>
       </footer>
-
-      <PrerequisiteLines
-        hoveredCourseId={hoveredCourseId}
-        onPrereqColorsChange={setPrereqColors}
-      />
-      
-      <DragLayer 
-        courseId={dragState.courseId} 
-        position={{ x: dragState.x, y: dragState.y }} 
-      />
     </div>
   );
 }

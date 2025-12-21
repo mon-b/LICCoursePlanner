@@ -14,7 +14,7 @@
 
 .body {
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
   color: var(--text-primary);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   overflow-x: hidden; /* Importante para elementos que se salen de la pantalla */
@@ -260,13 +260,26 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
+  padding-top: 5rem; /* Espacio para el header fijo */
 }
 
 .header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  padding: 10px 20px;
+  box-sizing: border-box;
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 4rem;
+  align-items: center;
+  pointer-events: none;
+}
 
+.header > * {
+  pointer-events: auto;
+  margin-right: 0.5rem;
 }
 
 /* Layout disruptivo en escritorio: Hero a la izquierda, Features a la derecha */
@@ -500,6 +513,9 @@
   max-width: 1400px;
   margin: 0 auto;
   color: rgba(255, 255, 255, 0.7);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
 }
 
 .footerLink {
@@ -508,6 +524,8 @@
   font-weight: 600;
   transition: all 0.3s ease;
   display: inline-block;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
 }
 
 .footerLink:hover {
