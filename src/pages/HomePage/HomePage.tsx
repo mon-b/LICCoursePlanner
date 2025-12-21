@@ -1,14 +1,14 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import LanguageToggle from '../../components/LanguageToggle/LanguageToggle';
 import styles from './HomePage.module.css';
 
 export default function HomePage() {
   const { t } = useTranslation();
-  
+
   return (
     <div className={styles.body}>
-      {/* Elementos de fondo geométricos y luces */}
       <div className={styles.ambientLight}></div>
       <div className={styles.floatingShapes}>
         <div className={styles.shapeCube}></div>
@@ -21,57 +21,81 @@ export default function HomePage() {
         <div className={styles.shapeCircle}></div>
       </div>
 
-      <div className={styles.mainContainer}>
-        <header className={styles.header}>
-             <LanguageToggle />
-        </header>
-        
-        <div className={styles.contentGrid}>
-          {/* Sección Hero */}
-          <div className={styles.heroSection}>
-            <h1 className={styles.title}>
-              <span className={styles.titleGradient}>LICCourse</span>
-              Planner
-            </h1>
-            <p className={styles.subtitle}>{t('subtitle')}</p>
-            
-            <div className={styles.ctaWrapperDesktop}>
-                <Link to="/planner" className={styles.ctaButton}>
-                {t('goToPlanner')}
-                </Link>
+      <motion.header
+        className={styles.header}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+      >
+        <LanguageToggle />
+      </motion.header>
+
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 1.05 }}
+        transition={{ duration: 0.5, ease: [0.43, 0.13, 0.23, 0.96] }}
+        style={{ transformOrigin: 'center center', position: 'relative', zIndex: 1 }}
+      >
+        <div className={styles.mainContainer}>
+
+          <div className={styles.contentGrid}>
+            <div className={styles.heroSection}>
+              <h1 className={styles.title}>
+                <span className={styles.titleGradient}>LICCourse</span>
+                Planner
+              </h1>
+              <p className={styles.subtitle}>{t('subtitle')}</p>
+
+              <div className={styles.ctaWrapperDesktop}>
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  >
+                    <Link to="/planner" className={styles.ctaButton}>
+                    {t('goToPlanner')}
+                    </Link>
+                  </motion.div>
+              </div>
+            </div>
+
+            <div className={styles.featuresWrapper}>
+              <div className={`${styles.featureCard} ${styles.card1}`}>
+                <h3>{t('features.dragDrop.title')}</h3>
+                <p>{t('features.dragDrop.description')}</p>
+              </div>
+              <div className={`${styles.featureCard} ${styles.card2}`}>
+                <h3>{t('features.prerequisites.title')}</h3>
+                <p>{t('features.prerequisites.description')}</p>
+              </div>
+              <div className={`${styles.featureCard} ${styles.card3}`}>
+                <h3>{t('features.edit.title')}</h3>
+                <p>{t('features.edit.description')}</p>
+              </div>
+              <div className={`${styles.featureCard} ${styles.card4}`}>
+                <h3>{t('features.create.title')}</h3>
+                <p>{t('features.create.description')}</p>
+              </div>
             </div>
           </div>
 
-          {/* Sección de Características Desordenadas */}
-          <div className={styles.featuresWrapper}>
-            <div className={`${styles.featureCard} ${styles.card1}`}>
-              <h3>{t('features.dragDrop.title')}</h3>
-              <p>{t('features.dragDrop.description')}</p>
-            </div>
-            <div className={`${styles.featureCard} ${styles.card2}`}>
-              <h3>{t('features.prerequisites.title')}</h3>
-              <p>{t('features.prerequisites.description')}</p>
-            </div>
-            <div className={`${styles.featureCard} ${styles.card3}`}>
-              <h3>{t('features.edit.title')}</h3>
-              <p>{t('features.edit.description')}</p>
-            </div>
-            <div className={`${styles.featureCard} ${styles.card4}`}>
-              <h3>{t('features.create.title')}</h3>
-              <p>{t('features.create.description')}</p>
-            </div>
+          <div className={styles.bottomSection}>
+              <div className={styles.ctaWrapperMobile}>
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  >
+                    <Link to="/planner" className={styles.ctaButton}>
+                    {t('goToPlanner')}
+                    </Link>
+                  </motion.div>
+              </div>
           </div>
         </div>
-        
-        {/* CTA Móvil y Disclaimer */}
-        <div className={styles.bottomSection}>
-            <div className={styles.ctaWrapperMobile}>
-                <Link to="/planner" className={styles.ctaButton}>
-                {t('goToPlanner')}
-                </Link>
-            </div>
-        </div>
-      </div>
+      </motion.div>
 
       <footer className={styles.footer}>
         <div className={styles.footerContent}>
@@ -91,9 +115,9 @@ export default function HomePage() {
             rel="noopener noreferrer"
             className={styles.footerLink}
           >
-            fña🧙‍♂️
+            fña 🧙‍♂️
           </a>
-          {t('footerAnd')}{' '}
+          {' '}{t('footerAnd')}{' '}
           <a
             href="https://www.instagram.com/esteban._.d._.luffy/"
             target="_blank"

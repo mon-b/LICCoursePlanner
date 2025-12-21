@@ -327,6 +327,9 @@
   max-width: 1400px;
   margin: 0 auto;
   color: rgba(255, 255, 255, 0.7);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
 }
 
 .footerLink {
@@ -335,6 +338,8 @@
   font-weight: 600;
   transition: all 0.3s ease;
   display: inline-block;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
 }
 
 .footerLink:hover {
