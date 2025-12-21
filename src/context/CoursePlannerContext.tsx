@@ -2,6 +2,7 @@ import React, { createContext, useContext, useReducer, useEffect, ReactNode, use
 import { Course, AppState, PaletteConfig } from '../types/course';
 import { defaultData } from '../data/defaultData';
 import { optData } from '../data/optData';
+import { engData } from '../data/engData';
 
 const PALETTES: Record<string, PaletteConfig> = {
   'soft-pastel': {
@@ -22,6 +23,8 @@ const PALETTES: Record<string, PaletteConfig> = {
       'opt-ast': '#818cf8',
       optbio: '#34d399',
       optcom: '#fbbf24',
+      engdiag: '#eab308',
+      engcour: '#d97706',
     }
   },
   'original': {
@@ -41,7 +44,9 @@ const PALETTES: Record<string, PaletteConfig> = {
       econ: 'linear-gradient(135deg, #9543c5 0%, #7a359e 100%)',
       'opt-ast': 'linear-gradient(135deg, #130947 0%, #0a0530 100%)',
       optbio: 'linear-gradient(135deg, #164B35 0%, #0f3226 100%)',
-      optcom: 'linear-gradient(135deg, #5E4DB2 0%, #4a3d8f 100%)'
+      optcom: 'linear-gradient(135deg, #5E4DB2 0%, #4a3d8f 100%)',
+      'engdiag': 'linear-gradient(135deg, #FFD700 0%, #FDB931 100%)',
+      'engcour': 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)'
     }
   }
 };
@@ -247,7 +252,10 @@ function initializeDefaultState(): AppState {
     }))
   }));
   
-  const coursePool = optData[0].courses.map(course => ({
+  const coursePool = [
+    ...optData[0].courses,
+    ...engData[0].courses
+  ].map(course => ({
     id: course.id,
     type: course.type,
     taken: false
@@ -325,6 +333,7 @@ export function CoursePlannerProvider({ children }: { children: ReactNode }) {
     return [
       ...defaultData.flatMap(sem => sem.courses),
       ...optData[0].courses,
+      ...engData[0].courses,
       ...state.customCourses
     ];
   }, [state.customCourses]);

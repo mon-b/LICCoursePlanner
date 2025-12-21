@@ -39,7 +39,9 @@ export default function CourseCreationModal({ isOpen, onClose, onCreateCourse }:
     { value: 'optlet', label: t('courseTypes.optlet') },
     { value: 'econ', label: t('courseTypes.econ') },
     { value: 'opt-ast', label: t('courseTypes.opt-ast') },
-    { value: 'optbio', label: t('courseTypes.optbio') }
+    { value: 'optbio', label: t('courseTypes.optbio') },
+    { value: 'engdiag', label: t('courseTypes.engdiag') },
+    { value: 'engcour', label: t('courseTypes.engcour') }
   ];
   
   const handleSubmit = (e: React.FormEvent) => {
