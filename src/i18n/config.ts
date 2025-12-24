@@ -73,7 +73,7 @@ const resources = {
       },
       disclaimer: "The planner is still under development. Prerequisites or specific course details may be incorrect. Always verify official university information.",
       footerText: "Made with 💖 by",
-      footerAnd: "&",
+      footerAnd: "and",
       courseTypes: {
         fmat: "Math",
         dcc: "Min CS",
