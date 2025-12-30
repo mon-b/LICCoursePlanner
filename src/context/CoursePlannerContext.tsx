@@ -53,8 +53,8 @@ const PALETTES: Record<string, PaletteConfig> = {
 
 // Define available generations
 export const GENERATIONS = [
-  { id: 'genLegacy', name: 'Malla 2013-2023' },
-  { id: 'genNew', name: 'Malla 2024+' }
+  { id: 'genLegacy', name: 'Malla 2023-2024' },
+  { id: 'genNew', name: 'Malla 2025' }
 ];
 
 interface CoursePlannerContextType {
@@ -73,7 +73,7 @@ type CoursePlannerAction =
   | { type: 'TOGGLE_COURSE_TAKEN'; payload: { courseId: string } }
   | { type: 'ADD_SEMESTER' }
   | { type: 'DELETE_SEMESTER'; payload: { semesterNumber: number } }
-  | { type: 'RESET_PLANNER' }
+  | { type: 'RESET_PLANNER'; payload: { genId: string } }
   | { type: 'TOGGLE_COURSE_POOL' }
   | { type: 'CREATE_CUSTOM_COURSE'; payload: Course }
   | { type: 'UPDATE_COURSE'; payload: { originalId: string; course: Course } }
@@ -84,7 +84,7 @@ const CoursePlannerContext = createContext<CoursePlannerContextType | undefined>
 
 const STORAGE_KEY_PREFIX = 'coursePlannerState';
 const CURRENT_GEN_KEY = 'coursePlannerCurrentGen';
-const DATA_VERSION = 1;
+const DATA_VERSION = 2;
 
 const initialState: AppState = {
   semesters: [],
@@ -195,7 +195,7 @@ function coursePlannerReducer(state: AppState, action: CoursePlannerAction): App
     }
     
     case 'RESET_PLANNER': {
-      return initializeDefaultState();
+      return initializeDefaultState(action.payload.genId);
     }
     
     case 'TOGGLE_COURSE_POOL': {
@@ -253,10 +253,68 @@ function findCourseState(courseId: string, state: AppState) {
   return state.coursePool.find(c => c.id === courseId);
 }
 
-function initializeDefaultState(): AppState {
-  const semesters = defaultData.map(sem => ({
+function initializeDefaultState(genId: string = 'genLegacy'): AppState {
+  // Deep copy default data
+  let semestersData = JSON.parse(JSON.stringify(defaultData));
+
+  // Modify for 2025 Generation
+  if (genId === 'genNew') {
+    const courseMoves = [
+      { id: 'IIC2343', toSem: 4 }, // Arqui: Sem 2 -> Sem 4
+      { id: 'IIC2333', toSem: 5 }, // SO: Sem 4 -> Sem 5
+      { id: 'OPTC1',   toSem: 2 }  // Opt Ciencia: Sem 5 -> Sem 2
+    ];
+
+    // Helper to find and remove course from any semester
+    const extractCourse = (id: string) => {
+      for (const sem of semestersData) {
+        const idx = sem.courses.findIndex((c: any) => c.id === id);
+        if (idx !== -1) {
+          return sem.courses.splice(idx, 1)[0];
+        }
+      }
+      return null;
+    };
+
+    // Store extracted courses
+    const extractedCourses: Record<string, any> = {};
+    courseMoves.forEach(move => {
+      extractedCourses[move.id] = extractCourse(move.id);
+    });
+
+    // Insert into new locations maintaining order (before OFG/Teo)
+    courseMoves.forEach(move => {
+      const course = extractedCourses[move.id];
+      if (course) {
+        const targetSem = semestersData.find((s: any) => s.sem === move.toSem);
+        if (targetSem) {
+          // Find index of OFG or Teologico to insert before
+          // Usually they are the last ones or have specific IDs like TEO123, OFG2, OFG3
+          const lastCourseIndex = targetSem.courses.length > 0 ? targetSem.courses.length - 1 : 0;
+          const lastCourse = targetSem.courses[lastCourseIndex];
+          
+          if (lastCourse && (lastCourse.type === 'ofg' || lastCourse.id.startsWith('OFG') || lastCourse.id === 'TEO123')) {
+             targetSem.courses.splice(lastCourseIndex, 0, course);
+          } else {
+             targetSem.courses.push(course);
+          }
+        }
+      }
+    });
+
+    // Update Practice Credits (IIC2002)
+    // Find IIC2002 and update cred to 10
+    semestersData.forEach((sem: any) => {
+      const practice = sem.courses.find((c: any) => c.id === 'IIC2002');
+      if (practice) {
+        practice.cred = "10";
+      }
+    });
+  }
+
+  const semesters = semestersData.map((sem: any) => ({
     number: sem.sem,
-    courses: sem.courses.map(course => ({
+    courses: sem.courses.map((course: any) => ({
       id: course.id,
       type: course.type,
       taken: false
@@ -285,7 +343,6 @@ function initializeDefaultState(): AppState {
 }
 
 function getStorageKey(genId: string) {
-  // Backwards compatibility: legacy gen uses the base key
   if (genId === 'genLegacy') return STORAGE_KEY_PREFIX;
   return `${STORAGE_KEY_PREFIX}_${genId}`;
 }
@@ -308,7 +365,7 @@ function loadStateFromStorage(genId: string): AppState | null {
       typeof parsedState.coursePoolVisible === 'boolean'
     ) {
       if (parsedState.version !== DATA_VERSION) {
-        console.warn('State version mismatch (expected ' + DATA_VERSION + '), resetting state to apply updates.');
+        console.warn('State version mismatch (expected ' + DATA_VERSION + '), resetting state.');
         return null;
       }
       
@@ -348,31 +405,58 @@ export function CoursePlannerProvider({ children }: { children: ReactNode }) {
     coursePlannerReducer, 
     initialState, 
     (_initial) => {
-      // Load initial state based on default generation or saved preference
       const initialGen = localStorage.getItem(CURRENT_GEN_KEY) || 'genLegacy';
       const savedState = loadStateFromStorage(initialGen);
       if (savedState) {
         hasLoadedFromStorage.current = true;
         return savedState;
       }
-      return initializeDefaultState();
+      return initializeDefaultState(initialGen);
     }
   );
   
   const allCourses = useMemo((): Course[] => {
+    // Determine base data based on current generation?
+    // Ideally we should reflect the changes in allCourses too if we want tooltips to be correct regarding semesters/credits?
+    // However, defaultData is static.
+    // For now, modifiedCourses will handle overrides if we treated them as such, but here we are moving them in semesters.
+    // The "allCourses" is mainly used for palette and looking up static info. 
+    // The Credits change for IIC2002 needs to be reflected here too.
+    
+    let baseCourses = [...defaultData.flatMap(sem => sem.courses)];
+    
+    if (currentGeneration === 'genNew') {
+       // Update IIC2002 credits in this view as well
+       baseCourses = baseCourses.map(c => {
+         if (c.id === 'IIC2002') return { ...c, cred: "10" };
+         return c;
+       });
+    }
+
     return [
-      ...defaultData.flatMap(sem => sem.courses),
+      ...baseCourses,
       ...optData[0].courses,
       ...engData[0].courses,
       ...state.customCourses
     ];
-  }, [state.customCourses]);
+  }, [state.customCourses, currentGeneration]);
   
   const findCourseData = useCallback((courseId: string): Course | undefined => {
-    if (state.modifiedCourses[courseId]) {
-      return state.modifiedCourses[courseId];
+    const defaultCourse = allCourses.find(course => course.id === courseId);
+    const modifiedCourse = state.modifiedCourses[courseId];
+
+    if (modifiedCourse) {
+      if (defaultCourse) {
+         return {
+             ...modifiedCourse,
+             parity: defaultCourse.parity,
+             prereq: defaultCourse.prereq,
+             cred: defaultCourse.cred // Ensure credit updates propagate if they are static updates
+         };
+      }
+      return modifiedCourse;
     }
-    return allCourses.find(course => course.id === courseId);
+    return defaultCourse;
   }, [allCourses, state.modifiedCourses]);
 
   const getCurrentPalette = useCallback((): PaletteConfig => {
@@ -386,11 +470,9 @@ export function CoursePlannerProvider({ children }: { children: ReactNode }) {
   const switchGeneration = useCallback((newGenId: string) => {
     if (newGenId === currentGeneration) return;
 
-    // Save current state before switching
     saveStateToStorage(state, currentGeneration);
 
-    // Load new state
-    const newState = loadStateFromStorage(newGenId) || initializeDefaultState();
+    const newState = loadStateFromStorage(newGenId) || initializeDefaultState(newGenId);
     dispatch({ type: 'LOAD_STATE', payload: newState });
     
     setCurrentGeneration(newGenId);
