@@ -84,7 +84,7 @@ const CoursePlannerContext = createContext<CoursePlannerContextType | undefined>
 
 const STORAGE_KEY_PREFIX = 'coursePlannerState';
 const CURRENT_GEN_KEY = 'coursePlannerCurrentGen';
-const DATA_VERSION = 2;
+const DATA_VERSION = 3;
 
 const initialState: AppState = {
   semesters: [],
@@ -254,18 +254,22 @@ function findCourseState(courseId: string, state: AppState) {
 }
 
 function initializeDefaultState(genId: string = 'genLegacy'): AppState {
-  // Deep copy default data
   let semestersData = JSON.parse(JSON.stringify(defaultData));
 
-  // Modify for 2025 Generation
+  semestersData.forEach((sem: any) => {
+    const practice = sem.courses.find((c: any) => c.id === 'IIC2002');
+    if (practice) {
+      practice.cred = "10";
+    }
+  });
+
   if (genId === 'genNew') {
     const courseMoves = [
-      { id: 'IIC2343', toSem: 4 }, // Arqui: Sem 2 -> Sem 4
-      { id: 'IIC2333', toSem: 5 }, // SO: Sem 4 -> Sem 5
-      { id: 'OPTC1',   toSem: 2 }  // Opt Ciencia: Sem 5 -> Sem 2
+      { id: 'IIC2343', toSem: 4 },
+      { id: 'IIC2333', toSem: 5 },
+      { id: 'OPTC1',   toSem: 2 }
     ];
 
-    // Helper to find and remove course from any semester
     const extractCourse = (id: string) => {
       for (const sem of semestersData) {
         const idx = sem.courses.findIndex((c: any) => c.id === id);
@@ -276,41 +280,50 @@ function initializeDefaultState(genId: string = 'genLegacy'): AppState {
       return null;
     };
 
-    // Store extracted courses
     const extractedCourses: Record<string, any> = {};
     courseMoves.forEach(move => {
       extractedCourses[move.id] = extractCourse(move.id);
     });
 
-    // Insert into new locations maintaining order (before OFG/Teo)
     courseMoves.forEach(move => {
       const course = extractedCourses[move.id];
       if (course) {
         const targetSem = semestersData.find((s: any) => s.sem === move.toSem);
         if (targetSem) {
-          // Find index of OFG or Teologico to insert before
-          // Usually they are the last ones or have specific IDs like TEO123, OFG2, OFG3
-          const lastCourseIndex = targetSem.courses.length > 0 ? targetSem.courses.length - 1 : 0;
-          const lastCourse = targetSem.courses[lastCourseIndex];
-          
-          if (lastCourse && (lastCourse.type === 'ofg' || lastCourse.id.startsWith('OFG') || lastCourse.id === 'TEO123')) {
-             targetSem.courses.splice(lastCourseIndex, 0, course);
-          } else {
-             targetSem.courses.push(course);
-          }
+          targetSem.courses.push(course);
         }
       }
     });
-
-    // Update Practice Credits (IIC2002)
-    // Find IIC2002 and update cred to 10
-    semestersData.forEach((sem: any) => {
-      const practice = sem.courses.find((c: any) => c.id === 'IIC2002');
-      if (practice) {
-        practice.cred = "10";
-      }
-    });
   }
+
+  const typePriority: Record<string, number> = {
+    'dcc': 1,
+    'eti': 1,
+    'major': 2,
+    'opt': 3,
+    'opt-cien': 3,
+    'optcomp': 3,
+    'optlet': 3,
+    'econ': 3,
+    'opt-ast': 3,
+    'optbio': 3,
+    'optcom': 3,
+    'fmat': 4,
+    'opt-mat': 4,
+    'ofg': 5
+  };
+
+  const getPriority = (course: any) => {
+    if (course.id === 'TEO123') return 5;
+    return typePriority[course.type] || 2;
+  };
+
+  [1, 2, 3, 4, 5, 6, 7, 8].forEach(semNum => {
+    const targetSem = semestersData.find((s: any) => s.sem === semNum);
+    if (targetSem) {
+      targetSem.courses.sort((a: any, b: any) => getPriority(a) - getPriority(b));
+    }
+  });
 
   const semesters = semestersData.map((sem: any) => ({
     number: sem.sem,
