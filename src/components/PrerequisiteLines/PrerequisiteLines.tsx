@@ -29,13 +29,48 @@ const PREREQ_COLORS = [
 export default function PrerequisiteLines({ hoveredCourseId, onPrereqColorsChange }: PrerequisiteLinesProps) {
   const { findCourseData, state } = useCoursePlanner();
   const [lines, setLines] = React.useState<LineData[]>([]);
+  const [activeSetIndex, setActiveSetIndex] = React.useState(0);
   const lastHoveredRectRef = useRef<DOMRect | null>(null);
+  const lastActiveSetIndexRef = useRef<number | null>(null);
   const animationFrameRef = useRef<number | null>(null);
+  
+  const getValidPrereqSets = React.useCallback((prereqString: string) => {
+    const rawSets = getPrerequisiteSets(prereqString);
+    return rawSets.filter(set => {
+      return set.every(courseId => findCourseData(courseId) !== undefined);
+    });
+  }, [findCourseData]);
+
+  React.useEffect(() => {
+    setActiveSetIndex(0);
+    lastActiveSetIndexRef.current = null;
+  }, [hoveredCourseId]);
+
+  React.useEffect(() => {
+    if (!hoveredCourseId) return;
+
+    const hoveredCourse = findCourseData(hoveredCourseId);
+    if (!hoveredCourse?.prereq) return;
+
+    const validSets = getValidPrereqSets(hoveredCourse.prereq);
+    
+    if (validSets.length <= 1) {
+      setActiveSetIndex(0);
+      return;
+    }
+
+    const intervalId = setInterval(() => {
+      setActiveSetIndex(prev => (prev + 1) % validSets.length);
+    }, 500);
+
+    return () => clearInterval(intervalId);
+  }, [hoveredCourseId, findCourseData, getValidPrereqSets]);
 
   React.useEffect(() => {
     if (!hoveredCourseId) {
       setLines([]);
       lastHoveredRectRef.current = null;
+      lastActiveSetIndexRef.current = null;
       if (onPrereqColorsChange) {
         onPrereqColorsChange(new Map());
       }
@@ -55,7 +90,14 @@ export default function PrerequisiteLines({ hoveredCourseId, onPrereqColorsChang
       return;
     }
 
-    const prereqList = parsePrerequisites(hoveredCourse.prereq);
+    const validSets = getValidPrereqSets(hoveredCourse.prereq);
+    
+    if (validSets.length === 0) {
+       setLines([]);
+       return;
+    }
+
+    const currentPrereqList = validSets[activeSetIndex % validSets.length];
 
     const findElement = (id: string) => 
       document.querySelector(`[data-course-id="${id}"]`) || 
@@ -71,7 +113,10 @@ export default function PrerequisiteLines({ hoveredCourseId, onPrereqColorsChang
       const hoveredRect = hoveredElement.getBoundingClientRect();
 
       const lastRect = lastHoveredRectRef.current;
+      const lastIndex = lastActiveSetIndexRef.current;
+
       const hasChanged = !lastRect ||
+        lastIndex !== activeSetIndex ||
         Math.abs(lastRect.top - hoveredRect.top) > 0.5 ||
         Math.abs(lastRect.left - hoveredRect.left) > 0.5 ||
         Math.abs(lastRect.width - hoveredRect.width) > 0.5 ||
@@ -83,6 +128,7 @@ export default function PrerequisiteLines({ hoveredCourseId, onPrereqColorsChang
       }
 
       lastHoveredRectRef.current = hoveredRect;
+      lastActiveSetIndexRef.current = activeSetIndex;
 
       const allCourseElements = document.querySelectorAll('[data-course-id]');
       const obstacles: Rect[] = [];
@@ -117,7 +163,7 @@ export default function PrerequisiteLines({ hoveredCourseId, onPrereqColorsChang
 
       const newLines: LineData[] = [];
 
-      prereqList.forEach((prereqId, index) => {
+      currentPrereqList.forEach((prereqId, index) => {
         const prereqElement = findElement(prereqId);
         
         if (prereqElement) {
@@ -185,7 +231,7 @@ export default function PrerequisiteLines({ hoveredCourseId, onPrereqColorsChang
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [hoveredCourseId, findCourseData, state, onPrereqColorsChange]);
+  }, [hoveredCourseId, findCourseData, state, onPrereqColorsChange, activeSetIndex, getValidPrereqSets]);
 
   if (lines.length === 0) {
     return null;
@@ -245,21 +291,98 @@ export default function PrerequisiteLines({ hoveredCourseId, onPrereqColorsChang
   );
 }
 
-function parsePrerequisites(prereq: string): string[] {
+function getPrerequisiteSets(prereq: string): string[][] {
+  if (!prereq) return [];
+  const normalized = prereq.replace(/\s+/g, ' ').trim();
+  return parseAndExpand(normalized);
+}
+
+function parseAndExpand(text: string): string[][] {
+  text = text.trim();
+  if (!text) return [];
+
+  if (text.startsWith('(') && text.endsWith(')')) {
+    let depth = 0;
+    let isWrapped = true;
+    for(let i=0; i<text.length; i++) {
+        if (text[i] === '(') depth++;
+        else if (text[i] === ')') depth--;
+        if (depth === 0 && i < text.length - 1) {
+            isWrapped = false;
+            break;
+        }
+    }
+    if (isWrapped) {
+        return parseAndExpand(text.substring(1, text.length - 1));
+    }
+  }
+
+  const orParts = splitTopLevel(text, ' o ');
+  if (orParts.length > 1) {
+    const results: string[][] = [];
+    for (const part of orParts) {
+        results.push(...parseAndExpand(part));
+    }
+    return results;
+  }
+
+  const andParts = splitTopLevel(text, ' y ');
+  if (andParts.length > 1) {
+    const setsToCombine = andParts.map(part => parseAndExpand(part));
+    return cartesianProduct(setsToCombine);
+  }
+
+  const cleanId = text.replace('(c)', '').trim();
+  
+  if (cleanId.toLowerCase().includes('créditos')) {
+      return [[]]; 
+  }
+
+  if (/^[A-Z]{3}/.test(cleanId)) {
+      return [[cleanId]];
+  }
+
+  return [];
+}
+
+function cartesianProduct(setsList: string[][][]): string[][] {
+    let results: string[][] = [[]];
+
+    for (const sets of setsList) {
+        const nextResults: string[][] = [];
+        if (sets.length === 0) return [];
+
+        for (const existingPath of results) {
+            for (const newSet of sets) {
+                nextResults.push([...existingPath, ...newSet]);
+            }
+        }
+        results = nextResults;
+    }
+    
+    return results;
+}
+
+function splitTopLevel(text: string, separator: string): string[] {
   const result: string[] = [];
-
-  const alternatives = prereq.split(' o ');
-
-  alternatives.forEach(alt => {
-    const andParts = alt.split(' y ');
-    andParts.forEach(part => {
-      const cleaned = part.replace(/[()]/g, '').trim();
-      const courseId = cleaned.replace('(c)', '').trim();
-      if (courseId && !result.includes(courseId)) {
-        result.push(courseId);
-      }
-    });
-  });
-
+  let current = '';
+  let depth = 0;
+  
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    
+    if (char === '(') depth++;
+    else if (char === ')') depth--;
+    
+    if (depth === 0 && text.substring(i, i + separator.length) === separator) {
+      result.push(current);
+      current = '';
+      i += separator.length - 1;
+    } else {
+      current += char;
+    }
+  }
+  
+  if (current) result.push(current);
   return result;
 }
