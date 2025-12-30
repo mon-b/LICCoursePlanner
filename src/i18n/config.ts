@@ -50,7 +50,8 @@ const resources = {
         core: "Curriculum Courses",
         math: "Mathematics",
         electives: "Electives",
-        general: "General"
+        general: "General",
+        english: "English requirements"
       },
       features: {
         dragDrop: {
@@ -87,7 +88,9 @@ const resources = {
         optlet: "OPT Literature",
         econ: "OPT Economics",
         "opt-ast": "OPT Astronomy",
-        optbio: "OPT Biology"
+        optbio: "OPT Biology",
+        engdiag: "English Diagnostic Test",
+        engcour: "English Courses"
       },
       footer: "Made with 💖 by <a href=\"https://instagram.com/w1ndtempos\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #8b45ff; text-decoration: none; font-weight: 600;\">Mon 🌸</a> and <a href=\"https://www.instagram.com/fercooncha\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #8b45ff; text-decoration: none; font-weight: 600;\">fña🧙‍♂️</a>"
     }
@@ -105,7 +108,7 @@ const resources = {
       deleteSemester: "Eliminar Semestre",
       resetPlanner: "Reiniciar Planner",
       resetPlan: "Reiniciar Planner",
-      exportPNG: "Guardar como PNG",
+      exportPNG: "Guardar Como PNG",
       confirmAddSemester: "¿Añadir un nuevo semestre?",
       confirmDeleteSemester: "¿Quieres eliminar este semestre?",
       confirmReset: "¿Estás seguro que quieres reiniciar el planner? Todos los cambios se perderán.",
@@ -141,7 +144,8 @@ const resources = {
         core: "Cursos Malla",
         math: "Matemáticos",
         electives: "Electivos",
-        general: "Formación General"
+        general: "Formación General",
+        english: "Requisito Inglés"
       },
       features: {
         dragDrop: {
@@ -179,7 +183,9 @@ const resources = {
         optlet: "OPR Letras",
         econ: "OPR Economía",
         "opt-ast": "OPR Astronomía",
-        optbio: "OPR Biología"
+        optbio: "OPR Biología",
+        engdiag: "Diagnóstico Inglés",
+        engcour: "Cursos de Inglés",
       }
     }
   }

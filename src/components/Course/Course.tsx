@@ -115,13 +115,15 @@ export default function Course({
       'eti': 'eti',
       'opt': 'opt',
       'optcomp': 'optcomp',
-      'opt-cien': 'optCien',
+      'opt-cien': 'opt-cien',
       'optcom': 'optcom',
-      'opt-mat': 'optMat',
-      'opt-ast': 'optAst',
+      'opt-mat': 'opt-mat',
+      'opt-ast': 'opt-ast',
       'optlet': 'optlet',
       'optbio': 'optbio',
       'econ': 'econ',
+      'engdiag': 'engdiag',
+      'engcour': 'engcour',
       'general': 'general'
     };
     return typeMap[type] || 'opt';
