@@ -348,7 +348,7 @@ export const defaultData: Semester[] = [
         "prereq": "IIC2133",
         "cred": "10",
         "hide": false,
-        "parity": "even",
+        "parity": "both",
         "type": "major",
         "name_stylized": "Diseño y Análisis de Algoritmos",
         "number": 30
@@ -360,7 +360,7 @@ export const defaultData: Semester[] = [
         "prereq": "IIC2333",
         "cred": "10",
         "hide": false,
-        "parity": "even",
+        "parity": "both",
         "type": "major",
         "name_stylized": "Seguridad Computacional",
         "number": 31
@@ -372,7 +372,7 @@ export const defaultData: Semester[] = [
         "prereq": null,
         "cred": "10",
         "hide": false,
-        "parity": "even",
+        "parity": "both",
         "type": "eti",
         "name_stylized": "Ética para la Cs de la Computación",
         "number": 32
