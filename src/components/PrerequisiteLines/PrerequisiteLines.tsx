@@ -61,7 +61,7 @@ export default function PrerequisiteLines({ hoveredCourseId, onPrereqColorsChang
 
     const intervalId = setInterval(() => {
       setActiveSetIndex(prev => (prev + 1) % validSets.length);
-    }, 500);
+    }, 1000);
 
     return () => clearInterval(intervalId);
   }, [hoveredCourseId, findCourseData, getValidPrereqSets]);
