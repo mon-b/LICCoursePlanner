@@ -76,7 +76,8 @@ export default function CoursePool({
     { id: 'opt_com', label: t('courseTypes.optcom'), types: ['optcom'] },
     { id: 'opt_astro', label: t('courseTypes.opt-ast'), types: ['opt-ast'] },
     { id: 'opt_bio', label: t('courseTypes.optbio'), types: ['optbio'] },
-    { id: 'general', label: t('categories.general'), types: ['ofg', 'eti'] }
+    { id: 'general', label: t('categories.general'), types: ['ofg', 'eti'] },
+    { id: 'english', label: t('categories.english'), types: ['engdiag', 'engcour'] }
   ], [t]);
   
   const filteredCourses = useMemo(() => {

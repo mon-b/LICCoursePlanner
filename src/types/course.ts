@@ -12,7 +12,9 @@ export type CourseType =
   | 'econ' 
   | 'opt-ast' 
   | 'optbio' 
-  | 'optcom';
+  | 'optcom'
+  | 'engdiag'
+  | 'engcour';
 
 export type CourseParity = 'even' | 'odd' | 'both' | null;
 
@@ -63,6 +65,8 @@ export interface PaletteConfig {
     'opt-ast': string;
     optbio: string;
     optcom: string;
+    engdiag: string;
+    engcour: string;
   };
 }
 
