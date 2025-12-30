@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import html2canvas from 'html2canvas';
-import { useCoursePlanner } from '../../context/CoursePlannerContext';
+import { useCoursePlanner, GENERATIONS } from '../../context/CoursePlannerContext';
 import { validatePrerequisites, isParityValid } from '../../utils/courseValidation';
 import Semester from '../../components/Semester/Semester';
 import CoursePool from '../../components/CoursePool/CoursePool';
@@ -11,6 +11,7 @@ import CourseSelector from '../../components/CourseSelector/CourseSelector';
 import CourseCreationModal from '../../components/CourseCreationModal/CourseCreationModal';
 import LanguageToggle from '../../components/LanguageToggle/LanguageToggle';
 import PaletteToggle from '../../components/PaletteToggle/PaletteToggle';
+import GenerationToggle from '../../components/GenerationToggle/GenerationToggle';
 import PrerequisiteLines from '../../components/PrerequisiteLines/PrerequisiteLines';
 import DragLayer from '../../components/DragLayer/DragLayer';
 import styles from './PlannerPage.module.css';
@@ -29,7 +30,7 @@ interface DropTarget {
 
 export default function PlannerPage() {
   const { t } = useTranslation();
-  const { state, dispatch, findCourseData } = useCoursePlanner();
+  const { state, dispatch, findCourseData, currentGeneration, switchGeneration } = useCoursePlanner();
   
   const [dragState, setDragState] = useState<DragState>({
     courseId: null,
@@ -229,7 +230,7 @@ export default function PlannerPage() {
 
   const handleResetPlanner = () => {
     if (window.confirm(t('confirmReset'))) {
-      dispatch({ type: 'RESET_PLANNER' });
+      dispatch({ type: 'RESET_PLANNER', payload: { genId: currentGeneration } });
     }
   };
 
@@ -292,6 +293,8 @@ export default function PlannerPage() {
             <h1 className={styles.title}>{t('title')}</h1>
           </Link>
           <div className={styles.headerActions}>
+            <GenerationToggle />
+
             <button className={styles.headerButton} onClick={handleAddSemester}>
               <span className={styles.headerIcon}>➕</span>
               {t('addSemester')}
