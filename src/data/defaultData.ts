@@ -459,7 +459,7 @@ export const defaultData: Semester[] = [
         "name": "PRÁCTICA DE CIENCIA DE LA COMPUTACIÓN",
         "name_english": "Computer Science Internship",
         "prereq": "(IIC2513 o IIC2531 o IIC2613 o IIC2612) y ETI1001",
-        "cred": "5",
+        "cred": "10",
         "hide": false,
         "parity": null,
         "type": "dcc",
