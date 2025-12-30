@@ -348,7 +348,7 @@ export const defaultData: Semester[] = [
         "prereq": "IIC2133 o (IIC2132 y IIC2212) o ICS2122 o IRB2002 o IDI2025 o IBM2123",
         "cred": "10",
         "hide": false,
-        "parity": "even",
+        "parity": "both",
         "type": "major",
         "name_stylized": "Diseño y Análisis de Algoritmos",
         "number": 30
@@ -360,7 +360,7 @@ export const defaultData: Semester[] = [
         "prereq": "(IIC2333 o IIC2512) o (IIC2133 o IIC2132)",
         "cred": "10",
         "hide": false,
-        "parity": "even",
+        "parity": "both",
         "type": "major",
         "name_stylized": "Seguridad Computacional",
         "number": 31
@@ -372,7 +372,7 @@ export const defaultData: Semester[] = [
         "prereq": "(IIC2143 o IIC2142) y IIC2513",
         "cred": "10",
         "hide": false,
-        "parity": "even",
+        "parity": "both",
         "type": "eti",
         "name_stylized": "Ética para la Cs de la Computación",
         "number": 32
