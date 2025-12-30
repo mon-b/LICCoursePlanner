@@ -70,6 +70,7 @@ type CoursePlannerAction =
 const CoursePlannerContext = createContext<CoursePlannerContextType | undefined>(undefined);
 
 const STORAGE_KEY = 'coursePlannerState';
+const DATA_VERSION = 1;
 
 const initialState: AppState = {
   semesters: [],
@@ -78,7 +79,8 @@ const initialState: AppState = {
   modifiedCourses: {},
   semesterCount: 8,
   coursePoolVisible: false,
-  currentPalette: 'soft-pastel'
+  currentPalette: 'soft-pastel',
+  version: DATA_VERSION
 };
 
 function findNextAvailableSemesterNumber(semesters: { number: number; courses: any[] }[]): number {
@@ -260,7 +262,8 @@ function initializeDefaultState(): AppState {
     modifiedCourses: {},
     semesterCount: 8,
     coursePoolVisible: false,
-    currentPalette: 'soft-pastel'
+    currentPalette: 'soft-pastel',
+    version: DATA_VERSION
   };
 }
 
@@ -280,6 +283,11 @@ function loadStateFromStorage(): AppState | null {
       typeof parsedState.semesterCount === 'number' &&
       typeof parsedState.coursePoolVisible === 'boolean'
     ) {
+      if (parsedState.version !== DATA_VERSION) {
+        console.warn('State version mismatch (expected ' + DATA_VERSION + '), resetting state to apply updates.');
+        return null;
+      }
+      
       if (!parsedState.currentPalette) {
         parsedState.currentPalette = 'soft-pastel';
       }

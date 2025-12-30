@@ -74,4 +74,5 @@ export interface AppState {
   semesterCount: number;
   coursePoolVisible: boolean;
   currentPalette: string;
+  version?: number;
 }
