@@ -37,9 +37,13 @@ export default function PrerequisiteLines({ hoveredCourseId, onPrereqColorsChang
   const getValidPrereqSets = React.useCallback((prereqString: string) => {
     const rawSets = getPrerequisiteSets(prereqString);
     return rawSets.filter(set => {
-      return set.every(courseId => findCourseData(courseId) !== undefined);
+      return set.every(courseId => {
+        const exists = findCourseData(courseId) !== undefined;
+        const isInPool = state.coursePool.some(c => c.id === courseId);
+        return exists && !isInPool;
+      });
     });
-  }, [findCourseData]);
+  }, [findCourseData, state.coursePool]);
 
   React.useEffect(() => {
     setActiveSetIndex(0);
