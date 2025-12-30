@@ -19,7 +19,7 @@ export function validatePrerequisites(
   checkedCourses = new Set<string>()
 ): boolean {
   if (checkedCourses.has(courseId)) {
-    return true;
+    return true; 
   }
   checkedCourses.add(courseId);
   
@@ -28,77 +28,106 @@ export function validatePrerequisites(
     return true;
   }
   
-  const prereqGroups = parsePrerequisites(course.prereq);
-  
-  for (const orGroup of prereqGroups) {
-    const orGroupSatisfied = orGroup.some(prereq => {
-      if (prereq.type === 'credits') {
-        const totalCredits = calculateCompletedCredits(targetSemesterNumber, state, findCourseData);
-        return totalCredits >= prereq.minCredits;
-      }
+  return evaluatePrerequisiteRecursive(
+    course.prereq, 
+    targetSemesterNumber, 
+    state, 
+    findCourseData, 
+    checkedCourses
+  );
+}
 
-      if (prereq.isCoreq) {
-        return isInPreviousSemester(prereq.id, targetSemesterNumber, state, findCourseData) ||
-               isInSameSemester(prereq.id, targetSemesterNumber, state, findCourseData);
-      } else {
-        return isInPreviousSemester(prereq.id, targetSemesterNumber, state, findCourseData) &&
-               validatePrerequisites(prereq.id, targetSemesterNumber, state, findCourseData, checkedCourses);
-      }
-    });
+function evaluatePrerequisiteRecursive(
+  expression: string,
+  targetSemesterNumber: number,
+  state: AppState,
+  findCourseData: (id: string) => Course | undefined,
+  checkedCourses: Set<string>
+): boolean {
+  const trimmed = expression.trim();
+  if (!trimmed) return true;
+
+  if (trimmed.startsWith('(') && trimmed.endsWith(')')) {
+     const inner = trimmed.substring(1, trimmed.length - 1);
+     let depth = 0;
+     let isWrapped = true;
+     for(let i=0; i<trimmed.length; i++) {
+        if(trimmed[i] === '(') depth++;
+        else if(trimmed[i] === ')') depth--;
+        if (depth === 0 && i < trimmed.length - 1) {
+            isWrapped = false;
+            break;
+        }
+     }
+     if (isWrapped) {
+         return evaluatePrerequisiteRecursive(inner, targetSemesterNumber, state, findCourseData, checkedCourses);
+     }
+  }
+
+  const orParts = splitTopLevel(trimmed, ' o ');
+  if (orParts.length > 1) {
+    return orParts.some(part => 
+        evaluatePrerequisiteRecursive(part, targetSemesterNumber, state, findCourseData, checkedCourses)
+    );
+  }
+
+  const andParts = splitTopLevel(trimmed, ' y ');
+  if (andParts.length > 1) {
+    return andParts.every(part => 
+        evaluatePrerequisiteRecursive(part, targetSemesterNumber, state, findCourseData, checkedCourses)
+    );
+  }
+
+  const creditsMatch = trimmed.match(/créditos\s*>=\s*(\d+)/i);
+  if (creditsMatch) {
+    const minCredits = parseInt(creditsMatch[1], 10);
+    const totalCredits = calculateCompletedCredits(targetSemesterNumber, state, findCourseData);
+    return totalCredits >= minCredits;
+  }
+
+  const isCoreq = trimmed.includes('(c)');
+  const cleanId = trimmed.replace('(c)', '').trim();
+  
+  if (!/^[A-Z]{3,}/.test(cleanId)) {
+      return true; 
+  }
+
+  const inPrevious = isInPreviousSemester(cleanId, targetSemesterNumber, state, findCourseData);
+  
+  if (inPrevious) {
+      return true;
+  }
+  
+  if (isCoreq) {
+      const inSame = isInSameSemester(cleanId, targetSemesterNumber, state, findCourseData);
+      if (inSame) return true;
+  }
+
+  return false;
+}
+
+function splitTopLevel(text: string, separator: string): string[] {
+  const result: string[] = [];
+  let current = '';
+  let depth = 0;
+  
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
     
-    if (!orGroupSatisfied) {
-      return false;
+    if (char === '(') depth++;
+    else if (char === ')') depth--;
+    
+    if (depth === 0 && text.substring(i, i + separator.length) === separator) {
+      result.push(current);
+      current = '';
+      i += separator.length - 1;
+    } else {
+      current += char;
     }
   }
   
-  return true;
-}
-
-type PrerequisiteItem = 
-  | { type: 'course'; id: string; isCoreq: boolean }
-  | { type: 'credits'; minCredits: number };
-
-function parsePrerequisites(prereqString: string): PrerequisiteItem[][] {
-  if (!prereqString) return [];
-  
-  const andGroups = prereqString.split(' y ');
-  
-  const groups = andGroups.map(group => {
-    const orGroup = group.split(' o ');
-    return orGroup.map(course => {
-      const trimmedCourse = course.trim();
-
-      const creditsMatch = trimmedCourse.match(/créditos\s*>=\s*(\d+)/i);
-      if (creditsMatch) {
-        return {
-          type: 'credits',
-          minCredits: parseInt(creditsMatch[1], 10)
-        } as PrerequisiteItem;
-      }
-
-      const coreqMatch = trimmedCourse.match(/([A-Z]+\d+)\(c\)/);
-      if (coreqMatch) {
-        return {
-          type: 'course',
-          id: coreqMatch[1],
-          isCoreq: true
-        } as PrerequisiteItem;
-      }
-      
-      const normalMatch = trimmedCourse.match(/([A-Z]+\d+)/);
-      if (normalMatch) {
-        return {
-          type: 'course',
-          id: normalMatch[1],
-          isCoreq: false
-        } as PrerequisiteItem;
-      }
-      
-      return null;
-    }).filter((item): item is PrerequisiteItem => item !== null);
-  });
-  
-  return groups;
+  if (current) result.push(current);
+  return result;
 }
 
 function calculateCompletedCredits(
