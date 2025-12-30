@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, useEffect, ReactNode, useRef, useMemo, useCallback } from 'react';
+import React, { createContext, useContext, useReducer, useEffect, ReactNode, useRef, useMemo, useCallback, useState } from 'react';
 import { Course, AppState, PaletteConfig } from '../types/course';
 import { defaultData } from '../data/defaultData';
 import { optData } from '../data/optData';
@@ -51,6 +51,12 @@ const PALETTES: Record<string, PaletteConfig> = {
   }
 };
 
+// Define available generations
+export const GENERATIONS = [
+  { id: 'genLegacy', name: 'Malla 2013-2023' },
+  { id: 'genNew', name: 'Malla 2024+' }
+];
+
 interface CoursePlannerContextType {
   state: AppState;
   dispatch: React.Dispatch<CoursePlannerAction>;
@@ -58,6 +64,8 @@ interface CoursePlannerContextType {
   findCourseData: (courseId: string) => Course | undefined;
   getCurrentPalette: () => PaletteConfig;
   getAvailablePalettes: () => PaletteConfig[];
+  currentGeneration: string;
+  switchGeneration: (genId: string) => void;
 }
 
 type CoursePlannerAction =
@@ -74,7 +82,8 @@ type CoursePlannerAction =
 
 const CoursePlannerContext = createContext<CoursePlannerContextType | undefined>(undefined);
 
-const STORAGE_KEY = 'coursePlannerState';
+const STORAGE_KEY_PREFIX = 'coursePlannerState';
+const CURRENT_GEN_KEY = 'coursePlannerCurrentGen';
 const DATA_VERSION = 1;
 
 const initialState: AppState = {
@@ -275,9 +284,16 @@ function initializeDefaultState(): AppState {
   };
 }
 
-function loadStateFromStorage(): AppState | null {
+function getStorageKey(genId: string) {
+  // Backwards compatibility: legacy gen uses the base key
+  if (genId === 'genLegacy') return STORAGE_KEY_PREFIX;
+  return `${STORAGE_KEY_PREFIX}_${genId}`;
+}
+
+function loadStateFromStorage(genId: string): AppState | null {
   try {
-    const savedState = localStorage.getItem(STORAGE_KEY);
+    const key = getStorageKey(genId);
+    const savedState = localStorage.getItem(key);
     if (!savedState) return null;
     
     const parsedState = JSON.parse(savedState);
@@ -313,9 +329,10 @@ function loadStateFromStorage(): AppState | null {
   }
 }
 
-function saveStateToStorage(state: AppState): void {
+function saveStateToStorage(state: AppState, genId: string): void {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const key = getStorageKey(genId);
+    localStorage.setItem(key, JSON.stringify(state));
   } catch (error) {
     console.error('Failed to save state to localStorage:', error);
   }
@@ -323,12 +340,17 @@ function saveStateToStorage(state: AppState): void {
 
 export function CoursePlannerProvider({ children }: { children: ReactNode }) {
   const hasLoadedFromStorage = useRef(false);
+  const [currentGeneration, setCurrentGeneration] = useState(() => {
+     return localStorage.getItem(CURRENT_GEN_KEY) || 'genLegacy';
+  });
   
   const [state, dispatch] = useReducer(
     coursePlannerReducer, 
     initialState, 
     (_initial) => {
-      const savedState = loadStateFromStorage();
+      // Load initial state based on default generation or saved preference
+      const initialGen = localStorage.getItem(CURRENT_GEN_KEY) || 'genLegacy';
+      const savedState = loadStateFromStorage(initialGen);
       if (savedState) {
         hasLoadedFromStorage.current = true;
         return savedState;
@@ -360,14 +382,28 @@ export function CoursePlannerProvider({ children }: { children: ReactNode }) {
   const getAvailablePalettes = useCallback((): PaletteConfig[] => {
     return Object.values(PALETTES);
   }, []);
+
+  const switchGeneration = useCallback((newGenId: string) => {
+    if (newGenId === currentGeneration) return;
+
+    // Save current state before switching
+    saveStateToStorage(state, currentGeneration);
+
+    // Load new state
+    const newState = loadStateFromStorage(newGenId) || initializeDefaultState();
+    dispatch({ type: 'LOAD_STATE', payload: newState });
+    
+    setCurrentGeneration(newGenId);
+    localStorage.setItem(CURRENT_GEN_KEY, newGenId);
+  }, [currentGeneration, state]);
   
   useEffect(() => {
     if (hasLoadedFromStorage.current) {
-      saveStateToStorage(state);
+      saveStateToStorage(state, currentGeneration);
     } else {
       hasLoadedFromStorage.current = true;
     }
-  }, [state]);
+  }, [state, currentGeneration]);
   
   const value = useMemo(() => ({
     state,
@@ -375,8 +411,10 @@ export function CoursePlannerProvider({ children }: { children: ReactNode }) {
     allCourses,
     findCourseData,
     getCurrentPalette,
-    getAvailablePalettes
-  }), [state, allCourses, findCourseData, getCurrentPalette, getAvailablePalettes]);
+    getAvailablePalettes,
+    currentGeneration,
+    switchGeneration
+  }), [state, allCourses, findCourseData, getCurrentPalette, getAvailablePalettes, currentGeneration, switchGeneration]);
   
   return (
     <CoursePlannerContext.Provider value={value}>
