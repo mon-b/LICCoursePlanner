@@ -501,3 +501,48 @@
   background: #1a1a2e;
   color: white;
 }
+
+.progressBar {
+  flex-shrink: 0;
+  background: rgba(15, 15, 35, 0.85);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(139, 69, 255, 0.15);
+  padding: 0.5rem 20px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  z-index: 1;
+}
+
+.progressLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.progressTrack {
+  flex: 1;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 5px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #8b45ff 0%, #3b82f6 100%);
+  border-radius: 5px;
+  transition: width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 0 12px rgba(139, 69, 255, 0.4);
+}
+
+.progressPercent {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  min-width: 60px;
+  text-align: right;
+}

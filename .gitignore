@@ -3,6 +3,7 @@
 node_modules/
 GEMINI.md
 CLAUDE.md
+AGENTS.md
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

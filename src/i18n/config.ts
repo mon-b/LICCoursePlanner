@@ -1,4 +1,4 @@
-import i18n, { t } from 'i18next';
+import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 const resources = {
   en: {
@@ -92,7 +92,8 @@ const resources = {
         engdiag: "English Diagnostic Test",
         engcour: "English Courses"
       },
-      footer: "Made with 💖 by <a href=\"https://instagram.com/w1ndtempos\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #8b45ff; text-decoration: none; font-weight: 600;\">Mon 🌸</a> and <a href=\"https://www.instagram.com/fercooncha\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #8b45ff; text-decoration: none; font-weight: 600;\">fña🧙‍♂️</a>"
+      footer: "Made with 💖 by <a href=\"https://instagram.com/w1ndtempos\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #8b45ff; text-decoration: none; font-weight: 600;\">Mon 🌸</a> and <a href=\"https://www.instagram.com/fercooncha\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #8b45ff; text-decoration: none; font-weight: 600;\">fña🧙‍♂️</a>",
+      progress: "Progress: {{percent}}% ({{completed}}/{{total}} credits)"
     }
   },
   es: {
@@ -167,6 +168,7 @@ const resources = {
       },
       disclaimer: "El planner aún está en desarrollo. Los prerrequisitos o detalles de los ramos pueden ser incorrectos. Verifica siempre la información oficial de la universidad.",
       footer: "Hecho con 💖 por <a href=\"https://instagram.com/w1ndtempos\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #8b45ff; text-decoration: none; font-weight: 600;\">Mon 🌸</a> y <a href=\"https://www.instagram.com/fercooncha\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #8b45ff; text-decoration: none; font-weight: 600;\">fña🧙‍♂️</a>",
+      progress: "Progreso: {{percent}}% ({{completed}}/{{total}} créditos)",
       footerText: "Hecho con 💖 por",
       footerAnd: "y",
       courseTypes: {
