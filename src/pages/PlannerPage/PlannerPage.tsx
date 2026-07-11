@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import html2canvas from 'html2canvas';
@@ -278,6 +278,25 @@ export default function PlannerPage() {
 
   const sidePanelOpen = state.coursePoolVisible || !!editingCourseId || !!selectingCourseId;
 
+  const progress = useMemo(() => {
+    let totalCredits = 0;
+    let completedCredits = 0;
+
+    state.semesters.forEach(sem => {
+      sem.courses.forEach(cs => {
+        const courseData = findCourseData(cs.id);
+        const credits = parseInt(courseData?.cred || '0', 10);
+        totalCredits += credits;
+        if (cs.taken) {
+          completedCredits += credits;
+        }
+      });
+    });
+
+    const percent = totalCredits > 0 ? Math.round((completedCredits / totalCredits) * 100) : 0;
+    return { completedCredits, totalCredits, percent };
+  }, [state.semesters, findCourseData]);
+
   return (
     <div className={styles.container}>
       <div className={styles.backgroundGradient}></div>
@@ -460,6 +479,19 @@ export default function PlannerPage() {
           setShowCourseModal(false);
         }}
       />
+
+      <div className={styles.progressBar}>
+        <span className={styles.progressLabel}>
+          {t('progress', { percent: progress.percent, completed: progress.completedCredits, total: progress.totalCredits })}
+        </span>
+        <div className={styles.progressTrack}>
+          <div
+            className={styles.progressFill}
+            style={{ width: `${progress.percent}%` }}
+          />
+        </div>
+        <span className={styles.progressPercent}>{progress.percent}%</span>
+      </div>
 
       <footer className={styles.footer}>
         <div className={styles.footerContent}>
